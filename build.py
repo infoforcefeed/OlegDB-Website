@@ -59,7 +59,7 @@ def _render_file(file_yo):
                         block_data = file_yo['blocks'].get(block_name, "")
                         to_write = block_data
 
-                output.write(to_write)
+                output.write(to_write.strip())
         else:
             for line in in_file:
                 to_write = line
@@ -90,7 +90,6 @@ def main():
         block_str = ""
         block_name = ""
         for line in tfile:
-            # vArIaBlE DeClArAtIoNs:
             stripped = line.strip()
             if "xXx" in stripped and "=" in stripped:
                 var = _parse_variable(line)
@@ -104,9 +103,9 @@ def main():
             elif "xXx" in stripped:
                 reading_block = True
                 block_name = stripped.split("xXx")[1].strip()
-
-            if reading_block is True:
+            if reading_block is True and "xXx" not in stripped:
                 block_str = block_str + stripped
+
 
 
         all_templates.append(file_meta)
