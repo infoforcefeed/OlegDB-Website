@@ -55,9 +55,11 @@ def _render_file(file_yo):
                         to_write = _interpolate(line, file_yo)
                     else:
                         # ChIlD BloCk oR SoMeThIng, Yo
+                        beginning = line.strip().split("xXx")[0]
+                        end = line.strip().split("xXx")[2]
                         block_name = line.strip().split("xXx")[1].strip()
                         block_data = file_yo['blocks'].get(block_name, "")
-                        to_write = block_data
+                        to_write = beginning + block_data + end
 
                 output.write(to_write.strip())
         else:
@@ -88,6 +90,7 @@ def main():
 
         reading_block = False
         block_str = ""
+        end_str = ""
         block_name = ""
         for line in tfile:
             stripped = line.strip()
@@ -95,14 +98,17 @@ def main():
                 var = _parse_variable(line)
                 file_meta['vars'][var[0]] = var[1]
             elif "xXx TTYL xXx" == stripped:
-                print("Ending block.")
-                file_meta['blocks'][block_name] = block_str
+                file_meta['blocks'][block_name] = block_str + end_str
                 reading_block = False
                 block_str = ""
                 block_name = ""
+                end_str = ""
             elif "xXx" in stripped:
                 reading_block = True
-                block_name = stripped.split("xXx")[1].strip()
+                lstripped = stripped.split("xXx")
+                block_name = lstripped[1].strip()
+                block_str = lstripped[0]
+                end_str = lstripped[2]
             if reading_block is True and "xXx" not in stripped:
                 block_str = block_str + stripped
 
