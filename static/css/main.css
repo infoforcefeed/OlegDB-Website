@@ -43,6 +43,7 @@ footer {
     position: fixed;
     top: 420px;
     left: 340px;
+    z-index: 1000;
 }
 
 /* Index Page */
