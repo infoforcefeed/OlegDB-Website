@@ -3,8 +3,9 @@ html {
     font-family: 'Times New Romain';
 }
 #m-muh_container, footer, header {
+    clear: both;
     margin: 0 auto;
-    width: 1140px;
+    width: 960px;
 }
 header, footer {
     display: block;
@@ -15,7 +16,7 @@ header, footer {
     float: left;
     width: 50%;
 }
-.right ul {
+header .right ul {
     margin-top: 2em;
 }
 .right {
@@ -33,9 +34,19 @@ header, footer {
 footer {
     border-top: solid 1px #999;
 }
+.mug {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
 
 /* Index Page */
 #oleg_logo {
     margin: 0 auto;
-    width: 400px;
+    width: 100%;
+}
+#talky_talk {
+    width: auto;
+    padding-top: 10em;
+    padding-left: 8em;
 }
