@@ -39,6 +39,11 @@ footer {
     width: 50%;
     vertical-align: top;
 }
+#busted_pixel {
+    position: fixed;
+    top: 420px;
+    left: 340px;
+}
 
 /* Index Page */
 #oleg_logo {
