@@ -1,3 +1,4 @@
+/* Global */
 html {
     font-family: 'Times New Romain';
 }
@@ -5,10 +6,35 @@ html {
     margin: 0 auto;
     width: 1140px;
 }
+header, footer {
+    display: block;
+    list-style-type: none;
+    list-style: none;
+}
+.left {
+    float: left;
+    width: 50%;
+}
+.right ul {
+    margin-top: 2em;
+}
+.right {
+    width: 50%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    float: right;
+    text-align: right;
+}
+.right li, .left li {
+    display: inline;
+    margin-right: 1em;
+    margin-left: 1em;
+}
 footer {
     border-top: solid 1px #999;
 }
 
+/* Index Page */
 #oleg_logo {
     margin: 0 auto;
     width: 400px;
