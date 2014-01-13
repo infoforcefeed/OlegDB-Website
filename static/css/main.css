@@ -2,6 +2,17 @@
 html {
     font-family: 'Raleway', sans-serif;
 }
+header ul, footer ul {
+    list-style: none;
+}
+header ul li, footer ul li {
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+header .pull-right, footer .pull-right {
+    text-align: right;
+}
 #busted_pixel {
     position: fixed;
     top: 420px;
