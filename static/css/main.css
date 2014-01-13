@@ -14,6 +14,17 @@ a {
 a:hover {
     color: #B14C6D;
 }
+#logo_col {
+    margin-right: 1em;
+}
+header {
+    padding-bottom: 1em;
+}
+header img {
+    display: inline;
+    width: 6em;
+    margin-right: 2em;
+}
 header, footer {
     background-color: #F5EADC;
 }
@@ -26,6 +37,7 @@ header ul li, footer ul li {
     margin-right: 1em;
 }
 header h1 {
+    display: inline;
     margin-top: 0px;
 }
 header .pull-right, footer .pull-right {
@@ -63,11 +75,14 @@ footer ul {
 }
 #fading {
     color: #F09E3C;
-    background-color: #F5EADC;
+    /* background-color: #F5EADC; */
     padding-top: 6em;
-    padding-bottom: 8em;
+    padding-bottom: 4em;
     min-height: 6em;
 }
 #fading h2 {
     display: inline;
+}
+#curl2sudo {
+    border-bottom: solid 1px #AAA;
 }
