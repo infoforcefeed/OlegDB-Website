@@ -14,11 +14,9 @@ function fade_change(element, text) {
             clearInterval(timer);
             element.innerHTML = text;
             element.style.opacity = 0;
-            element.style.filter = 'alpha(opacity=0)';
             fade_in(element);
         }
         element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ')';
         op -= op * 0.1;
     }, 50);
 }
@@ -30,7 +28,6 @@ function fade_in(element) {
             element.style.opacity = 1.0;
         }
         element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ')';
         op += 0.05;
     }, 50);
 }
