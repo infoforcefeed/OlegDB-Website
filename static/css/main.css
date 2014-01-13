@@ -2,6 +2,10 @@
 html {
     color: #444;
     font-family: 'Raleway', sans-serif;
+    background-color: #F5EADC;
+}
+#main_container {
+    background-color: #FFF;
 }
 a {
     text-decoration: none;
