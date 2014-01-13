@@ -16,6 +16,9 @@ header h1 {
 header .pull-right, footer .pull-right {
     text-align: right;
 }
+footer {
+    border-top: solid 1px #aaa;
+}
 footer ul {
     padding-left: 0px;
 }
