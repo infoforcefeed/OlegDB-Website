@@ -38,11 +38,11 @@ function change_text() {
     var rand = Math.floor(Math.random() * slogans.length);
     change_me = document.getElementById("changing_text");
     fade_change(change_me, slogans[rand]);
-    setTimeout(change_text, 7000);
+    setTimeout(change_text, 4000);
 }
 window.onload = function() {
     var rand = Math.floor(Math.random() * slogans.length);
     change_me = document.getElementById("changing_text");
     change_me.innerHTML = slogans[rand];
-    setInterval(change_text, 7000);
+    setInterval(change_text, 4000);
 };
