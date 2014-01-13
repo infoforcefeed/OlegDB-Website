@@ -3,60 +3,27 @@ xXx TITLE xXx
     Project Home
 xXx TTYL xXx
 xXx SCRIPTS xXx
-<script>
-slogans = [
-    "when mission critical just doesn't make any sense.",
-    "when you just don't really need master-master replication.",
-    "when those other databases are just too relational.",
-    "when determinism really isn't your thing.",
-    "when JSON is holding you back.",
-    "when concurrency isn't cool anymore."
-];
-function fade_change(element, text) {
-    var op = 1;
-    var timer = setInterval(function () {
-        if (op <= 0.1){
-            clearInterval(timer);
-            element.innerHTML = text;
-            element.style.opacity = 0.0;
-            fade_in(element);
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op -= op * 0.1;
-    }, 50);
-}
-function fade_in(element) {
-    var op = 0;
-    var timer = setInterval(function () {
-        if (op >= 1.0){
-            clearInterval(timer);
-            element.style.opacity = 1.0;
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op += 0.05;
-    }, 50);
-}
-function change_text() {
-    var rand = Math.floor(Math.random() * slogans.length);
-    change_me = document.getElementById("changing_text");
-    fade_change(change_me, slogans[rand]);
-    setTimeout(change_text, 7000);
-}
-window.onload = function() {
-    var rand = Math.floor(Math.random() * slogans.length);
-    change_me = document.getElementById("changing_text");
-    change_me.innerHTML = slogans[rand];
-    setInterval(change_text, 7000);
-};
-</script>
+<script type="text/javascript" src="/static/js/index.js"></script>
 xXx TTYL xXx
 xXx CONTENT xXx
+    <div id="fading">
+        <div class="grid grid-pad">
+            <div class="col-5-12">
+                <div class="right_text content">
+                    <h2>A database for those times: </h2>
+                </div>
+            </div>
+            <div class="col-7-12">
+                <div class="content">
+                    <h2 id="changing_text">when concurrency isn't cool anymore.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="grid grid-pad">
         <div class="col-1-1">
-            <div id="h1_here_bro" class="center_text content">
-                <h2>A database for those times </h2><h2 id="changing_text"></h2>
+            <div class="center_text content">
+                <p>Benchmarks and curl2sudo&reg; install script coming soon.</p>
             </div>
         </div>
     </div>
@@ -100,9 +67,15 @@ xXx CONTENT xXx
         </div>
     </div>
     <div class="grid grid-pad">
-        <div class="col-1-1">
-            <div class="center_text content">
-                <p>Benchmarks and curl2sudo&reg; install script coming soon.</p>
+        <div class="col-1-2">
+            <div class="content">
+                <img class="oleg_logo" id="oleg_logo3" src="/static/img/olegdb3.svg"></img>
+            </div>
+        </div>
+        <div class="col-1-2">
+            <div class="content">
+                <h3>Portable by most definitions of the word</h3>
+                <p>OlegDB exports an API, so if you want to embed it go ahead. Don't want to worry about it? Use the server!</p>
             </div>
         </div>
     </div>

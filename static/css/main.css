@@ -1,6 +1,17 @@
 /* Global */
 html {
+    color: #444;
     font-family: 'Raleway', sans-serif;
+}
+a {
+    text-decoration: none;
+    color: #510922;
+}
+a:hover {
+    color: #B14C6D;
+}
+header, footer {
+    background-color: #F5EADC;
 }
 header ul, footer ul {
     list-style: none;
@@ -15,9 +26,6 @@ header h1 {
 }
 header .pull-right, footer .pull-right {
     text-align: right;
-}
-footer {
-    border-top: solid 1px #aaa;
 }
 footer ul {
     padding-left: 0px;
@@ -38,10 +46,24 @@ footer ul {
 #oleg_logo2 {
     width: 20em;
 }
+#oleg_logo3 {
+    width: 22em;
+    margin-bottom: 2em;
+}
 .center_text {
     margin-top: 3em;
     text-align: center;
 }
-#h1_here_bro h2 {
+.right_text {
+    text-align: right;
+}
+#fading {
+    color: #F09E3C;
+    background-color: #F5EADC;
+    padding-top: 6em;
+    padding-bottom: 8em;
+    min-height: 6em;
+}
+#fading h2 {
     display: inline;
 }
