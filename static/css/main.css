@@ -86,3 +86,7 @@ footer ul {
 #curl2sudo {
     border-bottom: solid 1px #AAA;
 }
+/* FAQ */
+.italic {
+    font-style: italic;
+}
