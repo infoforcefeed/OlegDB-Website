@@ -1,43 +1,6 @@
 /* Global */
 html {
-    font-family: 'Times New Romain';
-}
-#m-muh_container, footer, header {
-    clear: both;
-    margin: 0 auto;
-    width: 960px;
-}
-header, footer {
-    display: block;
-    list-style-type: none;
-    list-style: none;
-}
-.left {
-    float: left;
-    width: 50%;
-}
-header .right ul {
-    margin-top: 2em;
-}
-.right {
-    width: 50%;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    float: right;
-    text-align: right;
-}
-.right li, .left li {
-    display: inline;
-    margin-right: 1em;
-    margin-left: 1em;
-}
-footer {
-    border-top: solid 1px #999;
-}
-.mug {
-    display: inline-block;
-    width: 50%;
-    vertical-align: top;
+    font-family: 'Raleway', sans-serif;
 }
 #busted_pixel {
     position: fixed;
@@ -50,7 +13,4 @@ footer {
 #oleg_logo {
     margin: 0 auto;
     width: 100%;
-}
-#talky_talk {
-    width: auto;
 }
