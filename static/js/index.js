@@ -1,10 +1,11 @@
 slogans = [
     "when mission critical just doesn't make any sense.",
-    "when you just don't really need master-master replication.",
+    "when you just don't need multi-master replication.",
     "when those other databases are just too relational.",
     "when determinism really isn't your thing.",
     "when JSON is holding you back.",
     "when you want to take a chance.",
+    "when persistence means turning fsync on.",
     "when concurrency has too much overhead."
 ];
 function fade_change(element, text) {
@@ -35,11 +36,11 @@ function change_text() {
     var rand = Math.floor(Math.random() * slogans.length);
     change_me = document.getElementById("changing_text");
     fade_change(change_me, slogans[rand]);
-    setTimeout(change_text, 4000);
+    setTimeout(change_text, 6000);
 }
 window.onload = function() {
     var rand = Math.floor(Math.random() * slogans.length);
     change_me = document.getElementById("changing_text");
     change_me.innerHTML = slogans[rand];
-    setTimeout(change_text, 4000);
+    setTimeout(change_text, 6000);
 };
