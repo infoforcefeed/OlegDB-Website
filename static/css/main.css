@@ -52,40 +52,6 @@ footer ul {
     left: 340px;
     z-index: 1000;
 }
-
-/* Index Page */
-.oleg_logo {
-    margin: 0 auto;
-    width: 16em;
-    display: block;
-}
-#oleg_logo2 {
-    width: 20em;
-}
-#oleg_logo3 {
-    width: 22em;
-    margin-bottom: 2em;
-}
-.center_text {
-    margin-top: 3em;
-    text-align: center;
-}
-.right_text {
-    text-align: right;
-}
-#fading {
-    color: #F09E3C;
-    /* background-color: #F5EADC; */
-    padding-top: 6em;
-    padding-bottom: 4em;
-    min-height: 6em;
-}
-#fading h2 {
-    display: inline;
-}
-#curl2sudo {
-    border-bottom: solid 1px #AAA;
-}
 /* FAQ */
 .italic {
     font-style: italic;
