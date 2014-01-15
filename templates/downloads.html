@@ -2,16 +2,35 @@ xXx PARENT=templates/base.html xXx
 xXx TITLE xXx
     Downloads
 xXx TTYL xXx
+xXx SCRIPTS xXx
+<link rel="stylesheet" href="/static/css/downloads.css" />
+xXx TTYL xXx
 xXx CONTENT xXx
     <div class="grid grid-pad">
-        <div class="col-1-1">
+        <div class="col-1-3">
             <div class="content">
-                <h2>Source</h2>
-                <p><a href="https://github.com/infoforcefeed/Project-Oleg">Proudly hosted on Github</a></p>
-                <h2>Unstable</h2>
-                <p>Coming soon...</p>
-                <h2>Stable</h2>
-                <p>Coming soon...</p>
+                <div class="downloadable">
+                    <h2>Source</h2>
+                    <p><a href="https://github.com/infoforcefeed/Project-Oleg">Proudly hosted on Github</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-1-3">
+            <div class="content">
+                <div class="downloadable">
+                    <h2>Cutting Edge</h2>
+                    <p>Coming soon...</p>
+                </div>
+                <pre>MD5 9cc4984913693a69fe030ebda6dfbdf9</pre>
+            </div>
+        </div>
+        <div class="col-1-3">
+            <div class="content">
+                <div class="danger downloadable">
+                    <h2>Hemmorhaging Edge</h2>
+                    <p>Coming soon...</p>
+                </div>
+                <pre>MD5 9cc4984913693a69fe030ebda6dfbdf9</pre>
             </div>
         </div>
     </div>
