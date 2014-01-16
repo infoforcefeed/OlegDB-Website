@@ -3,11 +3,11 @@ slogans = [
     "when mission critical just doesn't make any sense.",
     "when you just don't need multi-master replication.",
     "when those other databases are just too relational.",
+    "when you're not quite sure what web scale means.",
     "when determinism really isn't your thing.",
     "when JSON is holding you back.",
     "when you want to take a chance.",
-    "when persistence means turning fsync on.",
-    "when concurrency has too much overhead."
+    "when persistence means turning fsync on."
 ];
 function fade_change(element, text) {
     var op = 1;
