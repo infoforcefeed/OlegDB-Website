@@ -37,8 +37,7 @@ function change_text() {
     index++;
     change_me = document.getElementById("changing_text");
     fade_change(change_me, slogans[index % slogans.length]);
-    setTimeout(change_text, 6000);
 }
 window.onload = function() {
-    setTimeout(change_text, 6000);
+    setInterval(change_text, 6000);
 };
