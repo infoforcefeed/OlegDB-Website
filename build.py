@@ -1,9 +1,32 @@
 #!/usr/bin/env python3
 from os import listdir
 from json import dumps
+import re
 
 TEMPLATE_DIR = "templates/"
 BUILD_DIR = "built/"
+
+# Question: Hey qpfiffer, why is this indented all weird?
+# Man I don't know leave me alone.
+context = { "questions":
+            [ "Is this a joke?"
+            , "Why are you doing this?"
+            , "Can I use this in production?"
+            , "Should I use this in production?"
+            , "Why did you make X the way it is? Other people do Y."
+            , "Why isn't there a 32-bit version?"
+            , "Are you guys CS 100 students?"
+            ],
+            "answers": 
+            [ "No. We use this everyday for all of our projects."
+            , "\"My goal is to outrank redis with one of the worst OSS products on the free market.\"<p class=\"italic\">Kyle Terry, Senior Developer</p>"
+            , "Yeah, sure whatever."
+            , "Yes, most definitely."
+            , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
+            , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
+            , "We were. Never really made it past that."
+            ]
+        }
 
 def _parse_variable(variable_variables):
     split = variable_variables.strip().split("xXx")[1].strip()
@@ -87,14 +110,21 @@ def main():
         file_meta['filename'] = radical_file
         file_meta['vars'] = {}
         file_meta['blocks'] = {}
+        file_meta['loops'] = []
 
         reading_block = False
         block_str = ""
         end_str = ""
         block_name = ""
+
+        reading_loop = False
+        loop_str = ""
+        loop_variable = None
+        loop_list = None
+        loops_seen = 0
         for line in tfile:
             stripped = line.strip()
-            if "xXx" in stripped and "=" in stripped:
+            if "xXx" in stripped and "=" in stripped.split("xXx")[1]:
                 var = _parse_variable(line)
                 file_meta['vars'][var[0]] = var[1]
             elif "xXx TTYL xXx" == stripped:
@@ -103,16 +133,55 @@ def main():
                 block_str = ""
                 block_name = ""
                 end_str = ""
-            elif "xXx" in stripped:
+            elif "xXx BBL xXx" == stripped:
+                regex = re.compile("xXx (?P<variable>[a-zA-Z\$]+) xXx")
+                broken_man = regex.split(loop_str)
+                temp_loop_str = ""
+
+                i = 0
+                for thing in context[loop_list]:
+                    # Lookit these higher order functions, godDAMN
+                    def loop_func(x):
+                        if x == 'i':
+                            return str(i)
+                        elif x == loop_variable:
+                            return str(thing)
+                        elif "$" in x and x in regex.findall(loop_str):
+                            #fUcK
+                            y = x.split("$")
+                            if y[1] == 'i':
+                                muh_list =  context.get(y[0], None)
+                                return muh_list[i] if muh_list else ""
+                            return context.get(y[0], None)[int(y[1])]
+                        return x
+                    # Why doesn't Python's map return a new list?
+                    bro = [loop_func(x) for x in broken_man]
+                    temp_loop_str = temp_loop_str + "".join(bro)
+                    i = i + 1
+
+                # AsSuMe WeRe In A bLoCk
+                block_str = block_str + temp_loop_str
+                reading_loop = False
+                # wE DoNe LoOpIn NoW
+            # We LoOpIn BaBy
+            elif "xXx LOOP " in stripped:
+                variables = stripped.split("xXx")[1].strip().replace("LOOP ", "").split(" ")
+                loop_variable = variables[0]
+                loop_list = variables[1]
+                loop_str = ""
+                if context.get(loop_list):
+                    print("We've entered a timeskip!")
+                    reading_loop = True
+            elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = stripped.split("xXx")
                 block_name = lstripped[1].strip()
                 block_str = lstripped[0]
                 end_str = lstripped[2]
-            if reading_block is True and "xXx" not in stripped:
+            if reading_loop is False and reading_block is True and "xXx" not in stripped:
                 block_str = block_str + stripped
-
-
+            if reading_loop is True and "xXx LOOP" not in stripped and "xXx BBL xXx" != stripped:
+                loop_str = loop_str + stripped
 
         all_templates.append(file_meta)
 
