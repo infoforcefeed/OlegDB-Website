@@ -46,6 +46,7 @@
     color: #DDD;
 }
 #curl2sudo pre {
+    white-space: pre-wrap;
     width: 50%;
     background-color: #DDD;
     border-radius: 5px;
