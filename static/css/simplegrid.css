@@ -127,8 +127,6 @@ body {
 }
 
 @media handheld, only screen and (max-width: 767px) {
-
-	
 	.grid {
 		width: 100%;
 		min-width: 0;
@@ -137,7 +135,6 @@ body {
 		padding-left: 0px;
 		padding-right: 0px;
 	}
-	
 	[class*='col-'] {
 		width: auto;
 		float: none;

@@ -85,3 +85,6 @@
     min-height: 10em;
     border: solid 1px #BBB;
 }
+.float_right_me {
+    float: right;
+}
