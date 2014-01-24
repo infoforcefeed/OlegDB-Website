@@ -11,6 +11,9 @@ a {
     text-decoration: none;
     color: #510922;
 }
+header h1 a {
+    vertical-align: middle;
+}
 a:hover {
     color: #B14C6D;
 }
