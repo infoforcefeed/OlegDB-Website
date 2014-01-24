@@ -25,6 +25,14 @@ context = { "questions":
             , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
             , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
             , "We were. Never really made it past that."
+            ],
+            "doctitles":
+            [ "General Overview"
+            , "More to come"
+            ],
+            "docfull":
+            [ "OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous."
+            , ""
             ]
         }
 

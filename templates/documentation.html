@@ -1,0 +1,22 @@
+xXx PARENT=templates/base.html xXx
+xXx TITLE xXx
+    Website Credits
+xXx TTYL xXx
+xXx CONTENT xXx
+    <div class="grid grid-pad">
+        <div class="col-1-1">
+            <div class="content">
+                <h1>Overview</h1>
+                <ul>
+                xXx LOOP title doctitles xXx
+                    <li><a href="#xXx i xXx">xXx title xXx</a></li>
+                xXx BBL xXx
+                </ul>
+                xXx LOOP doc docfull xXx
+                <h3 id="xXx i xXx">xXx doctitles$i xXx</h3>
+                <p>xXx doc xXx</p>
+                xXx BBL xXx
+            </div>
+        </div>
+    </div>
+xXx TTYL xXx
