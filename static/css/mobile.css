@@ -1,0 +1,13 @@
+/* INDEX */
+.no_float_on_small {
+    float: none;
+}
+#curl2sudo pre {
+    width: 75%;
+}
+#fading .right_text {
+    text-align: left;
+}
+#logo_col {
+    display: none;
+}

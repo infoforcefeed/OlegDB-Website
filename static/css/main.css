@@ -33,6 +33,7 @@ header ul, footer ul {
 }
 header ul li, footer ul li {
     display: inline-block;
+    vertical-align: middle;
     margin-left: 1em;
     margin-right: 1em;
 }
@@ -52,7 +53,9 @@ footer ul {
     left: 340px;
     z-index: 1000;
 }
-/* FAQ */
 .italic {
     font-style: italic;
+}
+#git_icon img {
+    width: 2em;
 }
