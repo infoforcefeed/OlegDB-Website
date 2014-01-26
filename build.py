@@ -26,24 +26,38 @@ context = { "questions":
             , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
             , "We were. Never really made it past that."
             ],
-            "doctitles":
-            [ "General Overview"
-            , "More to come"
-            ],
-            "docfull":
-            [ "OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous."
-            , ""
-            ]
         }
 
 def build_doc_context(include_dir):
-    pass
+    oleg_header = open("{}/oleg.h".format(include_dir))
 
-def _parse_variable(variable_variables):
-    split = variable_variables.strip().split("xXx")[1].strip()
-    var_name = split.split("=")[0]
-    value = split.split("=")[1]
-    return (var_name, value)
+    reading_docs = False
+    raw_code = ""
+    for line in oleg_header:
+        docline = False
+        stripped = line.strip()
+        if stripped == '*/':
+            continue
+
+        # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
+        if reading_docs and stripped.startswith("/*"):
+            raise Exception("Yo I think you messed up your formatting. Read too far.")
+        if "xXx" in line and "*" in stripped[:2]:
+            docline = True
+            reading_docs = True
+            (variable, value) = _parse_variable(stripped)
+            if variable == variable.upper():
+                # SpEcIaL
+                if context.get(variable, False):
+                    context[variable].append(value)
+                else:
+                    context[variable] = [value]
+        if reading_docs and not docline:
+            raw_code = raw_code + stripped
+        if stripped.endswith(";") or "#define" in stripped.lower():
+            reading_docs = False
+
+    oleg_header.close()
 
 def _parse_variable(variable_variables):
     split = variable_variables.strip().split("xXx")[1].strip()
