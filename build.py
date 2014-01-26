@@ -30,32 +30,49 @@ context = { "questions":
 
 def build_doc_context(include_dir):
     oleg_header = open("{}/oleg.h".format(include_dir))
+    docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
+            "RETURNS", "TYPEDEF"]
 
     reading_docs = False
     raw_code = ""
+    doc_object = {}
+    prev_stripped = None
     for line in oleg_header:
         docline = False
         stripped = line.strip()
         if stripped == '*/':
             continue
 
+        print(stripped)
         # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
         if reading_docs and stripped.startswith("/*"):
             raise Exception("Yo I think you messed up your formatting. Read too far.")
         if "xXx" in line and "*" in stripped[:2]:
-            docline = True
-            reading_docs = True
             (variable, value) = _parse_variable(stripped)
-            if variable == variable.upper():
-                # SpEcIaL
-                if context.get(variable, False):
-                    context[variable].append(value)
+
+            if not reading_docs:
+                doc_object["name"] = value
+                doc_object["type"] = variable
+                doc_object["params"] = []
+                reading_docs = True
+            else:
+                docline = True
+                if variable in docstring_special:
+                    # SpEcIaL
+                    doc_object[variable] = value
                 else:
-                    context[variable] = [value]
+                    doc_object["params"].append((variable, value))
         if reading_docs and not docline:
             raw_code = raw_code + stripped
-        if stripped.endswith(";") or "#define" in stripped.lower():
+        if stripped == "" and reading_docs:
             reading_docs = False
+            if context.get(doc_object["type"], False):
+                context[doc_object["type"]].append(doc_object)
+            else:
+                context[doc_object["type"]] = [doc_object]
+            doc_object = {}
+            raw_code = ""
+        prev_stripped = stripped
 
     oleg_header.close()
 
