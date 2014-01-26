@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from os import listdir
 from json import dumps
-import re
+import re, argparse
 
 TEMPLATE_DIR = "templates/"
 BUILD_DIR = "built/"
@@ -35,6 +35,9 @@ context = { "questions":
             , ""
             ]
         }
+
+def build_doc_context(include_dir):
+    pass
 
 def _parse_variable(variable_variables):
     split = variable_variables.strip().split("xXx")[1].strip()
@@ -211,4 +214,9 @@ def main():
     # BeCaUsE WhY NoT
     return 0
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Build the OlegDB website.')
+    parser.add_argument('include_dir', type=str,
+        help='The location of the OlegDB header files.')
+    args = parser.parse_args()
+    build_doc_context(args.include_dir)
     main()
