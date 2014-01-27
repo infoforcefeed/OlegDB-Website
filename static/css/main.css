@@ -59,6 +59,9 @@ footer ul {
 .italic {
     font-style: italic;
 }
+.bold {
+    font-weight: bold;
+}
 #git_icon img {
     width: 2em;
 }

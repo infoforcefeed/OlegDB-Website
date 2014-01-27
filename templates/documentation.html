@@ -2,6 +2,9 @@ xXx PARENT=templates/base.html xXx
 xXx TITLE xXx
     Website Credits
 xXx TTYL xXx
+xXx SCRIPTS xXx
+<link rel="stylesheet" href="/static/css/documentation.css" />
+xXx TTYL xXx
 xXx CONTENT xXx
     <div class="grid grid-pad">
         <div class="col-1-1">
@@ -15,36 +18,43 @@ xXx CONTENT xXx
                     <li><a href="#functions">Functions</a></li>
                 </ul>
 
-                <h3 id="overview">General Overview</h3>
-                <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
-
-                <h2 id="macros">Macros</h2>
-                xXx LOOP macro DEFINE xXx
-                <h3>xXx macro$name xXx</h3>
-                <pre><code>xXx macro$raw_code xXx</code></pre>
-                <p>xXx macro$DESCRIPTION xXx</p>
-                xXx BBL xXx
-
-                <h2 id="enums">Enums</h2>
-                xXx LOOP enum ENUM xXx
-                <h3>xXx enum$name xXx</h3>
-                <pre><code>xXx enum$raw_code xXx</code></pre>
-                <p>xXx enum$DESCRIPTION xXx</p>
-                xXx BBL xXx
-
-                <h2 id="structures">Structures</h2>
-                xXx LOOP struct STRUCT xXx
-                <h3>xXx struct$name xXx</h3>
-                <pre><code>xXx struct$raw_code xXx</code></pre>
-                <p>xXx struct$DESCRIPTION xXx</p>
-                xXx BBL xXx
-
-                <h2 id="functions">Functions</h2>
-                xXx LOOP function FUNCTION xXx
-                <h3>xXx function$name xXx</h3>
-                <pre><code>xXx function$raw_code xXx</code></pre>
-                <p>xXx function$DESCRIPTION xXx</p>
-                xXx BBL xXx
+                <div class="doc_chunk">
+                    <h2 id="overview">General Overview</h2>
+                    <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
+                </div>
+                <div class="doc_chunk">
+                    <h2 id="macros">Macros</h2>
+                    xXx LOOP macro DEFINE xXx
+                    <h3>xXx macro$name xXx</h3>
+                    <pre><code>xXx macro$raw_code xXx</code></pre>
+                    <p>xXx macro$DESCRIPTION xXx</p>
+                    xXx BBL xXx
+                </div>
+                <div class="doc_chunk">
+                    <h2 id="enums">Enums</h2>
+                    xXx LOOP enum ENUM xXx
+                    <h3>xXx enum$name xXx</h3>
+                    <pre><code>xXx enum$raw_code xXx</code></pre>
+                    <p>xXx enum$DESCRIPTION xXx</p>
+                    xXx BBL xXx
+                </div>
+                <div class="doc_chunk">
+                    <h2 id="structures">Structures</h2>
+                    xXx LOOP struct STRUCT xXx
+                    <h3>xXx struct$name xXx</h3>
+                    <pre><code>xXx struct$raw_code xXx</code></pre>
+                    <p>xXx struct$DESCRIPTION xXx</p>
+                    xXx BBL xXx
+                </div>
+                <div class="doc_chunk">
+                    <h2 id="functions">Functions</h2>
+                    xXx LOOP function FUNCTION xXx
+                    <h3>xXx function$name xXx</h3>
+                    <pre><code>xXx function$raw_code xXx</code></pre>
+                    <p>xXx function$DESCRIPTION xXx</p>
+                    <p><span class="bold">Returns:</span> xXx function$RETURNS xXx</p>
+                    xXx BBL xXx
+                </div>
             </div>
         </div>
     </div>

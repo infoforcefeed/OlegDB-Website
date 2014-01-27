@@ -140,6 +140,41 @@ def _render_file(file_yo):
         in_file.close()
         output.close()
 
+def _render_loop(loop_str, loop_list, loop_variable):
+    temp_loop_str = ""
+    regex = re.compile("xXx (?P<variable>[a-zA-Z_\$]+) xXx")
+    broken_man = regex.split(loop_str)
+
+    i = 0
+    for thing in context[loop_list]:
+        # Lookit these higher order functions, godDAMN
+        def loop_func(x):
+            if x == 'i':
+                return str(i)
+            elif x == loop_variable:
+                return str(thing)
+            elif "$" in x and x in regex.findall(loop_str):
+                #fUcK
+                y = x.split("$")
+                if y[1] == 'i':
+                    # i is special, it is an itervar
+                    muh_list =  context.get(y[0], None)
+                    return muh_list[i] if muh_list else ""
+                elif y[1].isdigit():
+                    # They are trying to index a list
+                    return context.get(y[0], None)[int(y[1])]
+                elif y[0] == loop_variable:
+                    return thing[y[1]]
+                # All else fails try to use the dict variable
+                return thing[y[1]]
+            return x
+        # Why doesn't Python's map return a new list?
+        bro = [loop_func(x) for x in broken_man]
+        temp_loop_str = temp_loop_str + "".join(bro)
+        i = i + 1
+
+    return temp_loop_str
+
 def main():
     all_templates = []
     for radical_file in listdir(TEMPLATE_DIR):
@@ -160,10 +195,6 @@ def main():
         block_name = ""
 
         reading_loop = False
-        loop_str = ""
-        loop_variable = None
-        loop_list = None
-        loops_seen = 0
         for line in tfile:
             stripped = line.strip()
             if "xXx" in stripped and "=" in stripped.split("xXx")[1]:
@@ -176,38 +207,7 @@ def main():
                 block_name = ""
                 end_str = ""
             elif "xXx BBL xXx" == stripped:
-                regex = re.compile("xXx (?P<variable>[a-zA-Z_\$]+) xXx")
-                broken_man = regex.split(loop_str)
-                temp_loop_str = ""
-
-                i = 0
-                for thing in context[loop_list]:
-                    # Lookit these higher order functions, godDAMN
-                    def loop_func(x):
-                        if x == 'i':
-                            return str(i)
-                        elif x == loop_variable:
-                            return str(thing)
-                        elif "$" in x and x in regex.findall(loop_str):
-                            #fUcK
-                            y = x.split("$")
-                            if y[1] == 'i':
-                                # i is special, it is an itervar
-                                muh_list =  context.get(y[0], None)
-                                return muh_list[i] if muh_list else ""
-                            elif y[1].isdigit():
-                                # They are trying to index a list
-                                return context.get(y[0], None)[int(y[1])]
-                            elif y[0] == loop_variable:
-                                return thing[y[1]]
-                            # All else fails try to use the dict variable
-                            return thing[y[1]]
-                        return x
-                    # Why doesn't Python's map return a new list?
-                    bro = [loop_func(x) for x in broken_man]
-                    temp_loop_str = temp_loop_str + "".join(bro)
-                    i = i + 1
-
+                temp_loop_str = _render_loop(loop_str, loop_list, loop_variable)
                 # AsSuMe WeRe In A bLoCk
                 block_str = block_str + temp_loop_str
                 reading_loop = False
