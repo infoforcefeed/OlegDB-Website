@@ -43,29 +43,29 @@ def build_doc_context(include_dir):
         if stripped == '*/':
             continue
 
-        print(stripped)
         # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
         if reading_docs and stripped.startswith("/*"):
             raise Exception("Yo I think you messed up your formatting. Read too far.")
         if "xXx" in line and "*" in stripped[:2]:
             (variable, value) = _parse_variable(stripped)
 
+            docline = True
             if not reading_docs:
                 doc_object["name"] = value
                 doc_object["type"] = variable
                 doc_object["params"] = []
                 reading_docs = True
             else:
-                docline = True
                 if variable in docstring_special:
                     # SpEcIaL
                     doc_object[variable] = value
                 else:
                     doc_object["params"].append((variable, value))
-        if reading_docs and not docline:
-            raw_code = raw_code + stripped
+        if reading_docs and not docline and stripped != "":
+            raw_code = raw_code + line
         if stripped == "" and reading_docs:
             reading_docs = False
+            doc_object["raw_code"] = raw_code
             if context.get(doc_object["type"], False):
                 context[doc_object["type"]].append(doc_object)
             else:
@@ -126,7 +126,7 @@ def _render_file(file_yo):
                         block_data = file_yo['blocks'].get(block_name, "")
                         to_write = beginning + block_data + end
 
-                output.write(to_write.strip())
+                output.write(to_write.strip() if "core" not in to_write else to_write)
         else:
             for line in in_file:
                 to_write = line
@@ -176,7 +176,7 @@ def main():
                 block_name = ""
                 end_str = ""
             elif "xXx BBL xXx" == stripped:
-                regex = re.compile("xXx (?P<variable>[a-zA-Z\$]+) xXx")
+                regex = re.compile("xXx (?P<variable>[a-zA-Z_\$]+) xXx")
                 broken_man = regex.split(loop_str)
                 temp_loop_str = ""
 
@@ -192,9 +192,16 @@ def main():
                             #fUcK
                             y = x.split("$")
                             if y[1] == 'i':
+                                # i is special, it is an itervar
                                 muh_list =  context.get(y[0], None)
                                 return muh_list[i] if muh_list else ""
-                            return context.get(y[0], None)[int(y[1])]
+                            elif y[1].isdigit():
+                                # They are trying to index a list
+                                return context.get(y[0], None)[int(y[1])]
+                            elif y[0] == loop_variable:
+                                return thing[y[1]]
+                            # All else fails try to use the dict variable
+                            return thing[y[1]]
                         return x
                     # Why doesn't Python's map return a new list?
                     bro = [loop_func(x) for x in broken_man]

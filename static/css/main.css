@@ -62,3 +62,9 @@ footer ul {
 #git_icon img {
     width: 2em;
 }
+pre code {
+    display:block;
+    padding:5px;
+    background-color:#DDD;
+    border:solid 1px #AAA
+}
