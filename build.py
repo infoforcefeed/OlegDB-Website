@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from os import listdir
 from json import dumps
+from collections import deque
 import re, argparse
 
 TEMPLATE_DIR = "templates/"
@@ -140,12 +141,19 @@ def _render_file(file_yo):
         in_file.close()
         output.close()
 
-def _render_loop(loop_str, loop_list, loop_variable):
+def _render_loop(loop_obj):
+    loop_list = loop_obj["loop_list"]
+    loop_str = loop_obj["loop_str"]
+    loop_variable = loop_obj["loop_variable"]
+    outer_loop_variable = loop_obj["outer_loop_variable"]
+
     temp_loop_str = ""
     regex = re.compile("xXx (?P<variable>[a-zA-Z_\$]+) xXx")
     broken_man = regex.split(loop_str)
 
     i = 0
+    if not context.get(loop_list):
+        import ipdb; ipdb.set_trace()
     for thing in context[loop_list]:
         # Lookit these higher order functions, godDAMN
         def loop_func(x):
@@ -194,7 +202,7 @@ def main():
         end_str = ""
         block_name = ""
 
-        reading_loop = False
+        loop_stack = deque([])
         for line in tfile:
             stripped = line.strip()
             if "xXx" in stripped and "=" in stripped.split("xXx")[1]:
@@ -206,31 +214,33 @@ def main():
                 block_str = ""
                 block_name = ""
                 end_str = ""
-            elif "xXx BBL xXx" == stripped:
-                temp_loop_str = _render_loop(loop_str, loop_list, loop_variable)
-                # AsSuMe WeRe In A bLoCk
-                block_str = block_str + temp_loop_str
-                reading_loop = False
-                # wE DoNe LoOpIn NoW
             # We LoOpIn BaBy
             elif "xXx LOOP " in stripped:
                 variables = stripped.split("xXx")[1].strip().replace("LOOP ", "").split(" ")
-                loop_variable = variables[0]
-                loop_list = variables[1]
-                loop_str = ""
-                if context.get(loop_list):
-                    print("We've entered a timeskip!")
-                    reading_loop = True
+                print("We've entered timeskip {}!".format(variables[1]))
+                loop_stack.append({
+                    "loop_variable": variables[0],
+                    "loop_str": "",
+                    "loop_list": variables[1]
+                })
+
+            elif "xXx BBL xXx" == stripped:
+                loop = loop_stack.popleft()
+                print("We're leaving timeskip {}!".format(loop["loop_list"]))
+                temp_loop_str = _render_loop(loop)
+                # AsSuMe WeRe In A bLoCk
+                block_str = block_str + temp_loop_str
+                # wE DoNe LoOpIn NoW
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = stripped.split("xXx")
                 block_name = lstripped[1].strip()
                 block_str = lstripped[0]
                 end_str = lstripped[2]
-            if reading_loop is False and reading_block is True and "xXx" not in stripped:
+            if len(loop_stack) is 0 and reading_block is True and "xXx" not in stripped:
                 block_str = block_str + stripped
-            if reading_loop is True and "xXx LOOP" not in stripped and "xXx BBL xXx" != stripped:
-                loop_str = loop_str + stripped
+            if len(loop_stack) > 0 and "xXx LOOP" not in stripped and "xXx BBL xXx" != stripped:
+                loop_stack[-1]["loop_str"] = loop_stack[-1]["loop_str"] + stripped
 
         all_templates.append(file_meta)
 

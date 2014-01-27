@@ -17,7 +17,6 @@ xXx CONTENT xXx
                     <li><a href="#structures">Structures</a></li>
                     <li><a href="#functions">Functions</a></li>
                 </ul>
-
                 <div class="doc_chunk">
                     <h2 id="overview">General Overview</h2>
                     <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
@@ -36,6 +35,10 @@ xXx CONTENT xXx
                     <h3>xXx enum$name xXx</h3>
                     <pre><code>xXx enum$raw_code xXx</code></pre>
                     <p>xXx enum$DESCRIPTION xXx</p>
+                    <ul>
+                        xXx LOOP param enum$params xXx
+                        <li><span class="bold">xXx param$0 xXx:</span> xXx param$1 xXx</li>
+                        xXx BBL xXx
                     xXx BBL xXx
                 </div>
                 <div class="doc_chunk">
