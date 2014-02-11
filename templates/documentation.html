@@ -11,7 +11,12 @@ xXx CONTENT xXx
             <div class="content">
                 <h1>Overview</h1>
                 <ul>
-                    <li><a href="#overview">General Overview</a></li>
+                    <li>
+                        <a href="#overview">General Overview</a>
+                        <ul>
+                            <a href="#getting_started">Getting Started</a>
+                        </ul>
+                    </li>
                     <li>
                         <a href="#macros">Macros</a>
                         <ul>
@@ -49,6 +54,16 @@ xXx CONTENT xXx
                 <div class="doc_chunk">
                     <h2 id="overview">General Overview</h2>
                     <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
+                    <h3 id="getting_started">Getting Started</h3>
+                    <p>Running OlegDB using the builtin Erlang interfaces allows you to manipulate data using your standard REST interface commands, GET, POST, DELETE, etc.</p>
+                    <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
+                    <pre>
+                        <code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code>
+                    </pre>
+                    <p>Retrieving data is just as simple:</p>
+                    <pre><code>$ curl http://localhost:8080/turtles/test</code></pre>
+                    <p>Deleting keys can be done by using DELETE:</p>
+                    <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
                 </div>
                 <div class="doc_chunk">
                     <h2 id="macros">Macros</h2>
