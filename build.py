@@ -16,6 +16,7 @@ context = { "questions":
             , "Why did you make X the way it is? Other people do Y."
             , "Why isn't there a 32-bit version?"
             , "Are you guys CS 100 students?"
+            , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
             ],
             "answers": 
             [ "No. We use this everyday for all of our projects."
@@ -25,6 +26,7 @@ context = { "questions":
             , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
             , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
             , "We were. Never really made it past that."
+            , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments haved turned the project into a double-edged sword, ready to cut into anyone and anything."
             ],
         }
 
