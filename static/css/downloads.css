@@ -6,6 +6,9 @@
     border: solid 1px #BBB;
     text-align: center;
 }
+.downloadable img {
+    height: 5em;
+}
 .danger {
     border: solid 2px #FBB;
 }
