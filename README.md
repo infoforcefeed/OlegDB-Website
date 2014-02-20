@@ -4,9 +4,7 @@ Heres a website for you troubles. You'll need python3 because I use the
 Installation
 ============
 ````
-./build.py
-rsync -Pavz built/* you@sick.website.org:/var/www/sick_website/
+./build.py ~/your/path/to/the/oleg/source/code/include/ && ./deploy.sh
 ````
 
-Man that was easy. Oh wait you'll need the `static/` directory too, so throw
-that in there too.
+Man that was easy.
