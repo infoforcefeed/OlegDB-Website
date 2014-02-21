@@ -287,11 +287,12 @@ def main():
             if active_loops > 0:
                 def recurse_bro(item):
                     if item is not None:
-                        if "xXx LOOP" in stripped and item["loop_depth"] != active_loops:
-                            item["loop_str"] = item["loop_str"] + stripped
-                        elif "xXx LOOP" not in stripped:
-                            item["loop_str"] = item["loop_str"] + stripped
-                        recurse_bro(item["loop_subloop"])
+                        if item["loop_depth"] <= active_loops:
+                            if "xXx LOOP" in stripped and item["loop_depth"] != active_loops:
+                                item["loop_str"] = item["loop_str"] + stripped
+                            elif "xXx LOOP" not in stripped:
+                                item["loop_str"] = item["loop_str"] + stripped
+                            recurse_bro(item["loop_subloop"])
                 recurse_bro(loop_stack)
 
         all_templates.append(file_meta)
