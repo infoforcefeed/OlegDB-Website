@@ -63,6 +63,10 @@ xXx CONTENT xXx
                     <pre><code>$ curl http://localhost:8080/turtles/test</code></pre>
                     <p>Deleting keys can be done by using DELETE:</p>
                     <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
+                    <p>You can also tell Oleg what the Content-Type is:</p>
+                    <pre>
+                        <code>$ curl -X POST -d '<p>Raphael</p>' http://localhost:8080/turtles/test --header "Content-Type:text/html"</code>
+                    </pre>
                 </div>
                 <div class="doc_chunk">
                     <h2 id="macros">Macros</h2>
