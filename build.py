@@ -1,14 +1,4 @@
 #!/usr/bin/env python2
-"""
-GRESHUNKEL: A static site generator for the dead inside
-
-This is a line-by-line static-site generator CUSTOM MADE for the olegdb.org
-website. You run it, it builds everything in the templates directory with a
-minimal and barely functional DSL, and out comes HTML. Garbage!
-
-Oh yeah, it also reads in the source code in the oleg header to build documen-
-tation. Neat!
-"""
 from os import listdir
 from json import dumps
 from collections import deque
