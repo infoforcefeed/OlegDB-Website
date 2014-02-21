@@ -1,4 +1,5 @@
 index = 0;
+var masterInterval;
 slogans = [
     "when mission critical just doesn't make any sense.",
     "when you just don't need multi-master replication.",
@@ -38,6 +39,12 @@ function change_text() {
     change_me = document.getElementById("changing_text");
     fade_change(change_me, slogans[index % slogans.length]);
 }
-window.onload = function() {
-    setInterval(change_text, 6000);
-};
+start_change = function() {
+    masterInterval = window.setInterval(change_text, 6000);
+}
+stop_change = function() {
+    window.clearInterval(masterInterval);
+}
+window.onload = function() { start_change(); };
+window.addEventListener('blur', stop_change);
+window.addEventListener('focus', start_change);

@@ -4,3 +4,6 @@
 .doc_chunk h2 {
     border-bottom: solid 1px #DDD; 
 }
+p span {
+    font-family: monospace;
+}

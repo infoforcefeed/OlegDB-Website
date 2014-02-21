@@ -75,7 +75,7 @@
     height: 5em;
     margin: 0 auto;
 }
-#pricing h1, h2 {
+#pricing h1, #pricing h2 {
     text-align: center;
 }
 #pricing article {
@@ -87,4 +87,7 @@
 }
 .float_right_me {
     float: right;
+}
+#editorials h1, #editorials h2 {
+    text-align: center;
 }
