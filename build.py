@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """
 GRESHUNKEL: A static site generator for the dead inside
 
@@ -8,7 +9,6 @@ minimal and barely functional DSL, and out comes HTML. Garbage!
 Oh yeah, it also reads in the source code in the oleg header to build documen-
 tation. Neat!
 """
-#!/usr/bin/env python3
 from os import listdir
 from json import dumps
 from collections import deque
@@ -153,19 +153,34 @@ def _render_file(file_yo):
         in_file.close()
         output.close()
 
+def _loop_context_interpolate(variable, loop_variable, current_item, i):
+    if variable[1] == 'i':
+        # i is special, it is an itervar
+        muh_list =  context.get(variable[0], None)
+        return muh_list[i] if muh_list else ""
+    elif variable[1].isdigit():
+        # They are trying to index a list
+        return context.get(variable[0], None)[int(variable[1])]
+    elif variable[0] == loop_variable:
+        return current_item[variable[1]]
+    # All else fails try to use the dict variable
+    return current_item[variable[1]]
+
 def _render_loop(loop_obj):
     loop_list = loop_obj["loop_list"]
     loop_str = loop_obj["loop_str"]
     loop_variable = loop_obj["loop_variable"]
-    outer_loop_variable = loop_obj["outer_loop_variable"]
+    #outer_loop_variable = loop_obj["outer_loop_variable"]
 
     temp_loop_str = ""
-    regex = re.compile("xXx (?P<variable>[a-zA-Z_\$]+) xXx")
-    broken_man = regex.split(loop_str)
+    regex = re.compile("xXx (?P<variable>[a-zA-Z_0-9\$]+) xXx")
+    wombat = re.compile("xXx LOOP (?P<variable>[a-zA-S_]+) (?P<fancy_list>[a-zA-S_\$]+) xXx(?P<subloop>.*)xXx BBL xXx")
+    shattered_loops = wombat.split(loop_str)
+    if len(shattered_loops) != 1:
+        print "BEEP BEEP BEEP SUBLOOP DETECTED"
+        import ipdb; ipdb.set_trace()
 
     i = 0
-    if not context.get(loop_list):
-        import ipdb; ipdb.set_trace()
     for thing in context[loop_list]:
         # Lookit these higher order functions, godDAMN
         def loop_func(x):
@@ -176,21 +191,18 @@ def _render_loop(loop_obj):
             elif "$" in x and x in regex.findall(loop_str):
                 #fUcK
                 y = x.split("$")
-                if y[1] == 'i':
-                    # i is special, it is an itervar
-                    muh_list =  context.get(y[0], None)
-                    return muh_list[i] if muh_list else ""
-                elif y[1].isdigit():
-                    # They are trying to index a list
-                    return context.get(y[0], None)[int(y[1])]
-                elif y[0] == loop_variable:
-                    return thing[y[1]]
-                # All else fails try to use the dict variable
-                return thing[y[1]]
+                if y[0] == loop_variable and y[1].isdigit():
+                    return thing[int(y[1])]
+                return _loop_context_interpolate(y, loop_variable, thing, i)
             return x
-        # Why doesn't Python's map return a new list?
-        bro = [loop_func(x) for x in broken_man]
-        temp_loop_str = temp_loop_str + "".join(bro)
+        broken_man = regex.split(shattered_loops[0])
+        for chunk in broken_man:
+            bro = loop_func(chunk)
+            temp_loop_str = temp_loop_str + "".join(bro)
+            if len(shattered_loops) != 1:
+                # HACKIEST SHIT THAT EVER HACKED
+                context[shattered_loops[2]] = thing["params"]
+                temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"])
         i = i + 1
 
     return temp_loop_str
@@ -214,7 +226,8 @@ def main():
         end_str = ""
         block_name = ""
 
-        loop_stack = deque([])
+        loop_stack = None
+        active_loops = 0
         for line in tfile:
             stripped = line.strip()
             if "xXx" in stripped and "=" in stripped.split("xXx")[1]:
@@ -229,30 +242,56 @@ def main():
             # We LoOpIn BaBy
             elif "xXx LOOP " in stripped:
                 variables = stripped.split("xXx")[1].strip().replace("LOOP ", "").split(" ")
-                print("We've entered timeskip {}!".format(variables[1]))
-                loop_stack.append({
-                    "loop_variable": variables[0],
-                    "loop_str": "",
-                    "loop_list": variables[1]
-                })
+                active_loops = active_loops + 1
+                print "We've entered timeskip {}!".format(variables[1])
+                if loop_stack is None:
+                    loop_stack = {
+                        "loop_depth": active_loops,
+                        "loop_variable": variables[0],
+                        "loop_str": "",
+                        "loop_list": variables[1],
+                        "loop_subloop": None
+                    }
+                else:
+                    #ThIs WoRkS FoR MoRe ThAn TwO LoOpS
+                    def recurse_bro(item):
+                        if item is None:
+                            loop_stack["loop_subloop"] = {
+                                "loop_depth": active_loops,
+                                "loop_variable": variables[0],
+                                "loop_str": "",
+                                "loop_list": variables[1],
+                                "loop_subloop": None
+                            }
+                        else:
+                            recurse_bro(item["loop_subloop"])
+                    recurse_bro(loop_stack)
 
             elif "xXx BBL xXx" == stripped:
-                loop = loop_stack.popleft()
-                print("We're leaving timeskip {}!".format(loop["loop_list"]))
-                temp_loop_str = _render_loop(loop)
-                # AsSuMe WeRe In A bLoCk
-                block_str = block_str + temp_loop_str
-                # wE DoNe LoOpIn NoW
+                active_loops = active_loops - 1
+                if active_loops == 0:
+                    temp_loop_str = _render_loop(loop_stack)
+                    # AsSuMe WeRe In A bLoCk
+                    block_str = block_str + temp_loop_str
+                    # wE DoNe LoOpIn NoW
+                    loop_stack = None
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = stripped.split("xXx")
                 block_name = lstripped[1].strip()
                 block_str = lstripped[0]
                 end_str = lstripped[2]
-            if len(loop_stack) is 0 and reading_block is True and "xXx" not in stripped:
+            if active_loops == 0 and reading_block is True and "xXx" not in stripped:
                 block_str = block_str + stripped
-            if len(loop_stack) > 0 and "xXx LOOP" not in stripped and "xXx BBL xXx" != stripped:
-                loop_stack[-1]["loop_str"] = loop_stack[-1]["loop_str"] + stripped
+            if active_loops > 0:
+                def recurse_bro(item):
+                    if item is not None:
+                        if "xXx LOOP" in stripped and item["loop_depth"] != active_loops:
+                            item["loop_str"] = item["loop_str"] + stripped
+                        elif "xXx LOOP" not in stripped:
+                            item["loop_str"] = item["loop_str"] + stripped
+                        recurse_bro(item["loop_subloop"])
+                recurse_bro(loop_stack)
 
         all_templates.append(file_meta)
 
