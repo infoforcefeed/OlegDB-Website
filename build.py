@@ -204,6 +204,11 @@ def _render_loop(loop_obj):
             # HACKIEST SHIT THAT EVER HACKED
             context[shattered_loops[2]] = thing["params"]
             temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"])
+            if shattered_loops[4] != "":
+                broken_man = regex.split(shattered_loops[4])
+                for chunk in broken_man:
+                    bro = loop_func(chunk)
+                    temp_loop_str = temp_loop_str + "".join(bro)
         i = i + 1
 
     return temp_loop_str
