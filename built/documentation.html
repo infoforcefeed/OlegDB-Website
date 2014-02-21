@@ -19,7 +19,7 @@
     uint32_t          hash;
     struct ol_bucket  *next; /* The next ol_bucket in this chain, if any */
 } ol_bucket;
-</code></pre><p>This is the object stored in the database's hashtable. Contains references to value, key, etc.</p><h3 id="ol_database">ol_database</h3><pre><code>typedef struct ol_database {
+</code></pre><p>This is the object stored in the database's hashtable. Contains references to value, key, etc.</p><p><span class="bold">key[KEY_SIZE]:</span> The key used for this bucket.</p><p><span class="bold">klen:</span> Length of the key.</p><p><span class="bold">*content_type:</span> The content-type of this object. Defaults to "application/octet-stream".</p><p><span class="bold">ctype_size:</span> Length of the string representing content-type.</p><p><span class="bold">data_ptr:</span> Location of this key's value.</p><p><span class="bold">data_size:</span> Length of the value in bytes.</p><p><span class="bold">hash:</span> Hashed value of this key.</p><p><span class="bold">next:</span> Collisions are resolved via linked list. This contains the pointer to the next object in the chain, or NULL.</p><h3 id="ol_database">ol_database</h3><pre><code>typedef struct ol_database {
     void      (*get_db_file_name)(struct ol_database *db,const char *p,char*);
     void      (*enable)(int, int*);
     void      (*disable)(int, int*);
@@ -36,7 +36,7 @@
     size_t    cur_ht_size;
     ol_bucket **hashes;
 } ol_database;
-</code></pre><p>The object representing a database.</p><h3 id="ol_meta">ol_meta</h3><pre><code>typedef struct ol_meta {
+</code></pre><p>The object representing a database.</p><p><span class="bold">get_db_name:</span> A function pointer that returns the path/name.db to reduec code duplication. Used for writing and reading of dump files.</p><p><span class="bold">name:</span> The name of the database.</p><p><span class="bold">path[PATH_LENGTH]:</span> Path to the database's working directory.</p><p><span class="bold">dump_file:</span> Path and filename of db dump.</p><p><span class="bold">aol_file:</span> Path and filename of the append only log.</p><p><span class="bold">aolfd:</span> Pointer of FILE type to append only log.</p><p><span class="bold">rcrd_cnt:</span> Number of records in the database.</p><p><span class="bold">key_collisions:</span> Number of key collisions this database has had since initialization.</p><p><span class="bold">created:</span> Timestamp of when the database was initialized.</p><p><span class="bold">cur_ht_size:</span> The current amount, in bytes, of space allocated for storing ol_bucket objects.</p><p><span class="bold">**hashes:</span> The actual hashtable. Stores ol_bucket instances.</p><h3 id="ol_meta">ol_meta</h3><pre><code>typedef struct ol_meta {
     time_t uptime;
 } ol_meta;
 </code></pre><p>Structure used to record meta-information about the database.</p></div><div class="doc_chunk"><h2 id="functions">Functions</h2><h3 id="ol_open">ol_open</h3><pre><code>ol_database *ol_open(char *path, char *name);
