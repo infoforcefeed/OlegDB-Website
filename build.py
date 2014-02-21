@@ -178,7 +178,6 @@ def _render_loop(loop_obj):
     shattered_loops = wombat.split(loop_str)
     if len(shattered_loops) != 1:
         print "BEEP BEEP BEEP SUBLOOP DETECTED"
-        import ipdb; ipdb.set_trace()
 
     i = 0
     for thing in context[loop_list]:
@@ -186,6 +185,8 @@ def _render_loop(loop_obj):
         def loop_func(x):
             if x == 'i':
                 return str(i)
+            elif x == "BBL":
+                return ""
             elif x == loop_variable:
                 return str(thing)
             elif "$" in x and x in regex.findall(loop_str):
@@ -199,10 +200,10 @@ def _render_loop(loop_obj):
         for chunk in broken_man:
             bro = loop_func(chunk)
             temp_loop_str = temp_loop_str + "".join(bro)
-            if len(shattered_loops) != 1:
-                # HACKIEST SHIT THAT EVER HACKED
-                context[shattered_loops[2]] = thing["params"]
-                temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"])
+        if len(shattered_loops) != 1:
+            # HACKIEST SHIT THAT EVER HACKED
+            context[shattered_loops[2]] = thing["params"]
+            temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"])
         i = i + 1
 
     return temp_loop_str
