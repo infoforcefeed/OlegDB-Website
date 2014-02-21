@@ -1,3 +1,13 @@
+"""
+GRESHUNKEL: A static site generator for the dead inside
+
+This is a line-by-line static-site generator CUSTOM MADE for the olegdb.org
+website. You run it, it builds everything in the templates directory with a
+minimal and barely functional DSL, and out comes HTML. Garbage!
+
+Oh yeah, it also reads in the source code in the oleg header to build documen-
+tation. Neat!
+"""
 #!/usr/bin/env python3
 from os import listdir
 from json import dumps
@@ -18,7 +28,7 @@ context = { "questions":
             , "Are you guys CS 100 students?"
             , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
             ],
-            "answers": 
+            "answers":
             [ "No. We use this everyday for all of our projects."
             , "\"My goal is to outrank redis with one of the worst OSS products on the free market.\"<p class=\"italic\">Kyle Terry, Senior Developer</p>"
             , "Yeah, sure whatever."
