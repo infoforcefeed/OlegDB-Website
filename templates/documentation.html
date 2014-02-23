@@ -65,7 +65,7 @@ xXx CONTENT xXx
                     <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
                     <p>You can also tell Oleg what the Content-Type is:</p>
                     <pre>
-                        <code>$ curl -X POST -d '<p>Raphael</p>' http://localhost:8080/turtles/test --header "Content-Type:text/html"</code>
+                        <code>$ curl -X POST  --header "Content-Type:text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code>
                     </pre>
                 </div>
                 <div class="doc_chunk">
