@@ -62,8 +62,15 @@ footer ul {
 .bold {
     font-weight: bold;
 }
-#git_icon img {
+#git_icon {
     width: 2em;
+    height: 2em;
+    background-size: 2em;
+    display: block;
+    background-image: url("../img/git.svg");
+}
+#git_icon:hover {
+    background-image: url("../img/git_hover.svg");
 }
 pre code {
     display:block;
