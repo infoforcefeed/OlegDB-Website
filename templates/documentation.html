@@ -14,7 +14,8 @@ xXx CONTENT xXx
                     <li>
                         <a href="#overview">General Overview</a>
                         <ul>
-                            <a href="#getting_started">Getting Started</a>
+                            <li><a href="#getting_started">Getting Started</a></li>
+                            <li><a href="#technical_overview">Technical Overview</a></li>
                         </ul>
                     </li>
                     <li>
@@ -67,6 +68,10 @@ xXx CONTENT xXx
                     <pre>
                         <code>$ curl -X POST  --header "Content-Type:text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code>
                     </pre>
+
+                    <h3 id="technical_overview">Technical Overview</h3>
+                    <p>At it's heart, OlegDB is just a hash table. Hashes are generated with murmur3 and stored in a single large chunk of memory. Collisions are dealt with using <a href="http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists">linked lists</a>. The table is regrown when it reaches maximum capacity.</p>
+                    <p>Keys are hard truncated to the value of <a href="#KEY_SIZE"><code>KEY_SIZE</code></a>. This happens transparently.</p>
                 </div>
                 <div class="doc_chunk">
                     <h2 id="macros">Macros</h2>
