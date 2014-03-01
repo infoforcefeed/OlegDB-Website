@@ -16,6 +16,7 @@ context = { "questions":
             , "Why isn't there a 32-bit version?"
             , "Are you guys CS 100 students?"
             , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
+            , "What other projects do you like?"
             ],
             "answers":
             [ "No. We use this everyday for all of our projects."
@@ -26,6 +27,17 @@ context = { "questions":
             , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
             , "We were. Never really made it past that."
             , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments haved turned the project into a double-edged sword, ready to cut into anyone and anything."
+            ,
+            """ We like every flavor-of-the-week database. Here are a couple:
+            <ul>
+                <li><a href="http://fallabs.com/kyotocabinet/">Kyoto Cabinet</a></li>
+                <li><a href="http://redis.io/">Redis</a></li>
+                <li><a href="http://www.postgresql.org/">PostgreSQL</a></li>
+                <li><a href="http://sphia.org/">Sophia</a></li>
+                <li><a href="http://www.actordb.com/">ActorDB</a></li>
+                <li><a href="https://github.com/shuttler/nessDB">NessDB</a></li>
+            </ul>
+            """
             ],
         }
 
