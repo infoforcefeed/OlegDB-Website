@@ -1,7 +1,5 @@
 #!/usr/bin/env python2
 from os import listdir
-from json import dumps
-from collections import deque
 import re, argparse
 
 TEMPLATE_DIR = "templates/"
@@ -75,7 +73,6 @@ def build_doc_context(include_dir):
                 context[doc_object["type"]] = [doc_object]
             doc_object = {}
             raw_code = ""
-        prev_stripped = stripped
 
     oleg_header.close()
 
