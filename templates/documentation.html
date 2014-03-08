@@ -66,7 +66,31 @@ xXx CONTENT xXx
                     <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
                     <p>You can also tell Oleg what the Content-Type is:</p>
                     <pre>
-                        <code>$ curl -X POST  --header "Content-Type:text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code>
+                        <code>$ curl -X POST  --header "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code>
+                    </pre>
+                    <p>OlegDB support lazy key expiration. You can specify an expiration date by setting the <b>X-OlegDB-use-by</b> header to a <b>UTC</b> POSIX timestamp .
+                    <pre>
+                        <code>
+$ curl -X POST \
+-H "X-OlegDB-use-by: $(date +%s)" \
+-H "Content-Type: application/json" \
+-d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
+
+$ curl -v http://localhost:8080/turtles/Johnny
+> GET /turtles/Johnny HTTP/1.1
+> User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+> Host: localhost:8080
+> Accept: */*
+> 
+< HTTP/1.1 404 Not Found
+< Status: 404 Not Found
+< Server: OlegDB/fresh_cuts_n_jams
+< Content-Length: 26
+< Connection: close
+< Content-Type: text/plain
+< 
+These aren't your ghosts.
+                        </code>
                     </pre>
 
                     <h3 id="technical_overview">Technical Overview</h3>
