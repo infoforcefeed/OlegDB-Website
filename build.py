@@ -88,6 +88,10 @@ def build_doc_context(include_dir):
 
     oleg_header.close()
 
+    key_raw_code = [x for x in context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
+    extracted_ks = key_raw_code.split(' ')[2].strip()
+    context['EXTRACTED_KEY_SIZE'] = extracted_ks
+
 def _parse_variable(variable_variables):
     split = variable_variables.strip().split("xXx")[1].strip()
     var_name = split.split("=")[0]
@@ -106,7 +110,7 @@ def _interpolate(line, file_meta):
         else:
             to_write = to_write[0] + to_write[2]
     else:
-        to_write = to_write[0] + to_write[2]
+        to_write = to_write[0] + context.get(to_write[1].strip(), '<h1>SOMETHINGWENTWRONG</h1>') + to_write[2]
 
     return to_write
 
@@ -280,6 +284,9 @@ def main():
                     block_str = block_str + temp_loop_str
                     # wE DoNe LoOpIn NoW
                     loop_stack = None
+            elif "xXx" in stripped and reading_block is True:
+                if '@' in stripped:
+                    stripped = _interpolate(stripped.replace("@", ""), {})
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = stripped.split("xXx")
