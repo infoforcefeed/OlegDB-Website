@@ -52,6 +52,9 @@
                             <li><a href="#technical_overview">Technical Overview</a></li>
                         </ul>
                     </li>
+                </ul>
+                <h1>liboleg</h1>
+                <ul>
                     <li>
                         <a href="#macros">Macros</a>
                         <ul>
@@ -79,46 +82,58 @@
                     <h3 id="getting_started">Getting Started</h3>
                     <p>Running OlegDB using the builtin Erlang interfaces allows you to manipulate data using your standard REST interface commands, GET, POST, DELETE, etc.</p>
                     <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
-                    <pre>
-                        <code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code>
-                    </pre>
+                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code></pre>
                     <p>Retrieving data is just as simple:</p>
                     <pre><code>$ curl http://localhost:8080/turtles/test</code></pre>
                     <p>Deleting keys can be done by using DELETE:</p>
                     <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
                     <p>You can also tell Oleg what the Content-Type is:</p>
-                    <pre>
-                        <code>$ curl -X POST  --header "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code>
-                    </pre>
+                    <pre><code>$ curl -X POST  --header "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code></pre>
                     <p>OlegDB support lazy key expiration. You can specify an expiration date by setting the <b>X-OlegDB-use-by</b> header to a <b>UTC</b> POSIX timestamp .
-                    <pre>
-                        <code>
+                    <pre><code>
 $ curl -X POST \
 -H "X-OlegDB-use-by: $(date +%s)" \
 -H "Content-Type: application/json" \
 -d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
+&gt; POST /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; X-OlegDB-use-by: 1394323192
+&gt; Content-Type: application/json
+&gt; Content-Length: 27
+&gt; 
+* upload completely sent off: 27out of 27 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: text/plain
+&lt; Connection: close
+&lt; Content-Length: 7
+&lt;
+無駄
 
 $ curl -v http://localhost:8080/turtles/Johnny
-> GET /turtles/Johnny HTTP/1.1
-> User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
-> Host: localhost:8080
-> Accept: */*
-> 
-< HTTP/1.1 404 Not Found
-< Status: 404 Not Found
-< Server: OlegDB/fresh_cuts_n_jams
-< Content-Length: 26
-< Connection: close
-< Content-Type: text/plain
-< 
+&gt; GET /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt;
 These aren't your ghosts.
-                        </code>
-                    </pre>
+</code></pre>
+                    <p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We used the bash command <code>`date +%s`</code> which returns a timestamp. Then, immediately trying to access the key again results in a 404, because the key expired.</p>
 
                     <h3 id="technical_overview">Technical Overview</h3>
                     <p>At it's heart, OlegDB is just a hash table. Hashes are generated with murmur3 and stored in a single large chunk of memory. Collisions are dealt with using <a href="http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists">linked lists</a>. The table is regrown when it reaches maximum capacity.</p>
                     <p>Keys are hard truncated to the value of <a href="#KEY_SIZE"><code>KEY_SIZE</code></a>. This happens transparently.</p>
                 </div>
+                <h1>liboleg</h1>
                 <div class="doc_chunk">
                     <h2 id="macros">Macros</h2>
 <h3 id="VERSION">VERSION</h3><pre><code>#define VERSION "0.1.0"
