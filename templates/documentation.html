@@ -17,7 +17,6 @@ xXx CONTENT xXx
                             <li><a href="#installation">Installation</a></li>
                             <li><a href="#getting_started">Getting Started</a></li>
                             <li><a href="#wtf">What the hell is up with your responses?</a></li>
-                            <li><a href="#technical_overview">Technical Overview</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -61,10 +60,10 @@ xXx CONTENT xXx
         <div class="col-9-12">
             <div class="content">
                 <div class="doc_chunk">
-                    <h2 id="overview">General Overview</h2>
+                    <h2 class="perma" id="overview">General Overview <a href="#overview">&para;</a></h2>
                     <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
 
-                    <h3 id="installation">Installation</h3>
+                    <h3 class="perma" id="installation">Installation <a href="#installation">&para;</a></h3>
                     <p>Installing OlegDB is pretty simple, you only need a POSIX compliant system, make, gcc/clang (thats all we've tested) and Erlang. You'll also need the <a href="downloads.html">source code for Oleg.</a></p>
                     <p>Once you have your fanciful medley of computer science tools, you're ready to dive into a length and complex process of program compilation. Sounds foreboding? Have no fear, people have been doing this for <a href="http://en.wikipedia.org/wiki/Make_(software)">at least a quarter of a century.</a></p>
                     <p>I'm going to assume you've extracted the source tarball into a folder called <code>~/src/olegdb</code> and that you haven't <code>cd</code>'d into it yet. Lets smash some electrons together:</p>
@@ -81,7 +80,7 @@ $ sudo make install
 $ olegdb &lt;data_directory&gt; 0.0.0.0 1337 #Starts OlegDB listening on the 0.0.0.0 IP, with port 1337
 $ olegdb &lt;data_directory&gt; data.shithouse.tv 666 #Hostnames work too</code></pre>
 
-                    <h3 id="getting_started">Getting Started</h3>
+                    <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
                     <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
                     <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
                     <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code></pre>
@@ -131,26 +130,22 @@ These aren't your ghosts.
 </code></pre>
                     <p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We used the bash command <code>`date +%s`</code> which returns a timestamp. Then, immediately trying to access the key again results in a 404, because the key expired.</p>
 
-                    <h3 id="wtf">What the hell is up with your responses?</h3>
+                    <h3 class="perma" id="wtf">What the hell is up with your responses? <a href="#wtf">&para;</a></h3>
                     <p>We have fun with our HTTP responses. Really all you need is the HTTP status code to see if something worked or not. 404 means not found, 200 means the operation completed successfully, 500 if something bad happened, etc.</p>
-
-                    <h3 id="technical_overview">Technical Overview</h3>
-                    <p>At it's heart, OlegDB is just a hash table. Hashes are generated with murmur3 and stored in a single large chunk of memory. Collisions are dealt with using <a href="http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists">linked lists</a>. The table is regrown when it reaches maximum capacity.</p>
-                    <p>Keys are hard truncated to the value of <a href="#KEY_SIZE"><code>KEY_SIZE</code></a>. This happens transparently.</p>
                 </div>
                 <h1>liboleg</h1>
                 <div class="doc_chunk">
-                    <h2 id="macros">Macros</h2>
+                    <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
                     xXx LOOP macro DEFINE xXx
-                    <h3 id="xXx macro$name xXx">xXx macro$name xXx</h3>
+                    <h3 class="perma" id="xXx macro$name xXx">xXx macro$name xXx <a href="#xXx macro$name xXx">&para;</a></h3>
                     <pre><code>xXx macro$raw_code xXx</code></pre>
                     <p>xXx macro$DESCRIPTION xXx</p>
                     xXx BBL xXx
                 </div>
                 <div class="doc_chunk">
-                    <h2 id="enums">Enums</h2>
+                    <h2 class="perma" id="enums">Enums <a href="#enums">&para;</a></h2>
                     xXx LOOP enum ENUM xXx
-                    <h3 id="xXx enum$name xXx">xXx enum$name xXx</h3>
+                    <h3 class="perma" id="xXx enum$name xXx">xXx enum$name xXx <a href="#xXx enum$name xXx">&para;</a></h3>
                     <pre><code>xXx enum$raw_code xXx</code></pre>
                     <p>xXx enum$DESCRIPTION xXx</p>
                         xXx LOOP param enum$params xXx
@@ -159,9 +154,9 @@ These aren't your ghosts.
                     xXx BBL xXx
                 </div>
                 <div class="doc_chunk">
-                    <h2 id="structures">Structures</h2>
+                    <h2 class="perma" id="structures">Structures <a href="#structures">&para;</a></h2>
                     xXx LOOP struct STRUCT xXx
-                    <h3 id="xXx struct$name xXx">xXx struct$name xXx</h3>
+                    <h3 class="perma" id="xXx struct$name xXx">xXx struct$name xXx <a href="#xXx struct$name xXx">&para;</a></h3>
                     <pre><code>xXx struct$raw_code xXx</code></pre>
                     <p>xXx struct$DESCRIPTION xXx</p>
                         xXx LOOP param struct$params xXx
@@ -170,9 +165,9 @@ These aren't your ghosts.
                     xXx BBL xXx
                 </div>
                 <div class="doc_chunk">
-                    <h2 id="functions">Functions</h2>
+                    <h2 class="perma" id="functions">Functions <a href="#functions">&para;</a></h2>
                     xXx LOOP function FUNCTION xXx
-                    <h3 id="xXx function$name xXx">xXx function$name xXx</h3>
+                    <h3 class="perma" id="xXx function$name xXx">xXx function$name xXx <a href="#xXx function$name xXx">&para;</a></h3>
                     <pre><code>xXx function$raw_code xXx</code></pre>
                     <p>xXx function$DESCRIPTION xXx</p>
                         xXx LOOP hark function$params xXx
