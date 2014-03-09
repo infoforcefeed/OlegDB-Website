@@ -43,6 +43,9 @@ header ul li, footer ul li {
     margin-left: 1em;
     margin-right: 1em;
 }
+header ul li:last-child {
+    margin-right: 0em;
+}
 header h1 {
     display: inline;
     margin-top: 0px;

@@ -17,3 +17,14 @@
 .mobile_show {
     display: inline;
 }
+#right_side_nav {
+    text-align: left;
+}
+#right_side_nav ul {
+    padding-left: 0px;
+}
+#right_side_nav li {
+    float: none;
+    margin-left: 0em;
+    margin-right: 0.5em;
+}
