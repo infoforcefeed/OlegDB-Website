@@ -286,7 +286,7 @@ def main():
                     loop_stack = None
             elif "xXx" in stripped and reading_block is True:
                 if '@' in stripped:
-                    stripped = _interpolate(stripped.replace("@", ""), {})
+                    line = stripped = _interpolate(stripped.replace("@", ""), {})
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = line.split("xXx")
