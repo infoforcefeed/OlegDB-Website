@@ -84,3 +84,9 @@ pre code {
     background-color:#DDD;
     border:solid 1px #AAA
 }
+.perma a {
+    display: none;
+}
+.perma:hover a {
+    display: inline;
+}

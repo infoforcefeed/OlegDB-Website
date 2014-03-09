@@ -7,9 +7,3 @@
 p span {
     font-family: monospace;
 }
-.perma a {
-    display: none;
-}
-.perma:hover a {
-    display: inline;
-}
