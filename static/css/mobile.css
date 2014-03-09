@@ -11,3 +11,9 @@
 #logo_col {
     display: none;
 }
+.mobile_hide {
+    display: none;
+}
+.mobile_show {
+    display: inline;
+}
