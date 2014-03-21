@@ -85,7 +85,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                     <li>
                         <a href="#functions">Functions</a>
                         <ul>
-<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_close_save">ol_close_save</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ks">ol_unjar_ks</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li>                        </ul>
+<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_close_save">ol_close_save</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ks">ol_unjar_ks</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li>                        </ul>
                     </li>
                 </ul>
             </div>
@@ -98,20 +98,20 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
 
                     <h3 class="perma" id="installation">Installation <a href="#installation">&para;</a></h3>
                     <p>Installing OlegDB is pretty simple, you only need a POSIX compliant system, make, gcc/clang (thats all we've tested) and Erlang. You'll also need the <a href="downloads.html">source code for Oleg.</a></p>
-                    <p>Once you have your fanciful medley of computer science tools, you're ready to dive into a length and complex process of program compilation. Sounds foreboding? Have no fear, people have been doing this for <a href="http://en.wikipedia.org/wiki/Make_(software)">at least a quarter of a century.</a></p>
+                    <p>Once you have your fanciful medley of computer science tools, you're ready to dive into a lengthy and complex process of program compilation. Sound foreboding? Have no fear, people have been doing this for <a href="http://en.wikipedia.org/wiki/Make_(software)">at least a quarter of a century.</a></p>
                     <p>I'm going to assume you've extracted the source tarball into a folder called <code>~/src/olegdb</code> and that you haven't <code>cd</code>'d into it yet. Lets smash some electrons together:</p>
                     <pre><code>$ cd ~/src/olegdb
 $ make
 $ sudo make install
 </code></pre>
-                    <p>If you really wanted to could specify a different installation directory, the default is <code>/usr/local</code>. You can do this by setting <code>PREFIX</code></p>
+                    <p>If you really wanted to, you could specify a different installation directory. The default is <code>/usr/local</code>. You can do this by setting <code>PREFIX</code></p>
                     <pre><code>$ sudo make PREFIX=/usr/ install</code></pre>
                     <p>Actually running OlegDB and getting it do stuff after this point is trivial, if your installation prefix is in your PATH you should just be able to run something like the following:</p>
                     <pre><code>$ olegdb &lt;data_directory&gt;</code></pre>
-                    <p>...where <code>&lt;data_directory&gt;</code> is the place you want Oleg to store persistent data information. Make it /dev/null if you want, I don't care. You can also specify IP/port information from the commandline:<p>
-                    <pre><code>$ olegdb &lt;data_directory&gt; 1978 #Starts OlegDB listening on port 1978
-$ olegdb &lt;data_directory&gt; 0.0.0.0 1337 #Starts OlegDB listening on the 0.0.0.0 IP, with port 1337
-$ olegdb &lt;data_directory&gt; data.shithouse.tv 666 #Hostnames work too</code></pre>
+                    <p>...where <code>&lt;data_directory&gt;</code> is the place you want Oleg to store persistent data information. Make it <code>/dev/null</code> if you want, I don't care. You can also specify IP/port information from the commandline:<p>
+                    <pre><code>$ olegdb /tmp 1978 #Starts OlegDB listening on port 1978
+$ olegdb /tmp 0.0.0.0 1337 #Starts OlegDB listening on the 0.0.0.0 IP, with port 1337
+$ olegdb /tmp data.shithouse.tv 666 #Hostnames work too</code></pre>
 
                     <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
                     <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
@@ -122,7 +122,7 @@ $ olegdb &lt;data_directory&gt; data.shithouse.tv 666 #Hostnames work too</code>
                     <p>Deleting keys can be done by using DELETE:</p>
                     <pre><code>$ curl -X DELETE http://localhost:8080/turtles/test</code></pre>
                     <p>You can also tell Oleg what the Content-Type is:</p>
-                    <pre><code>$ curl -X POST  --header "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code></pre>
+                    <pre><code>$ curl -X POST -H "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/test</code></pre>
                     <p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the <b>X-OlegDB-use-by</b> header to a <b>UTC</b> POSIX timestamp .
                     <pre><code>
 $ curl -X POST \
@@ -130,7 +130,7 @@ $ curl -X POST \
 -H "Content-Type: application/json" \
 -d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
 &gt; POST /turtles/Johnny HTTP/1.1
-&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
 &gt; Host: localhost:8080
 &gt; Accept: */*
 &gt; X-OlegDB-use-by: 1394323192
@@ -148,7 +148,7 @@ $ curl -X POST \
 
 $ curl -v http://localhost:8080/turtles/Johnny
 &gt; GET /turtles/Johnny HTTP/1.1
-&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
 &gt; Host: localhost:8080
 &gt; Accept: */*
 &gt;
@@ -162,6 +162,22 @@ $ curl -v http://localhost:8080/turtles/Johnny
 These aren't your ghosts.
 </code></pre>
                     <p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We used the bash command <code>`date +%s`</code> which returns a timestamp. Then, immediately trying to access the key again results in a 404, because the key expired.</p>
+                    <p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p>
+                    <pre><code>
+$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
+&gt; HEAD /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.35.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+* Server OlegDB/fresh_cuts_n_jams is not blacklisted
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 0
+&lt; Content-Type: application/json
+&lt; Expires: 1395368972
+&lt;
+</code></pre>
 
                     <h3 class="perma" id="wtf">What the hell is up with your responses? <a href="#wtf">&para;</a></h3>
                     <p>We have fun with our HTTP responses. Really all you need is the HTTP status code to see if something worked or not. 404 means not found, 200 means the operation completed successfully, 500 if something bad happened, etc.</p>
@@ -234,10 +250,11 @@ These aren't your ghosts.
 </code></pre><p>Put a value into the mayo. It's easy to piss in a bucket, it's not easy to piss in 19 jars. Uses default content type.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">*value:</span> The value to insert.</p><p><span class="bold">vsize:</span> The size of the value in bytes.</p><p><span class="bold">Returns:</span> 0 on sucess.</p><h3 class="perma" id="ol_jar_ct">ol_jar_ct <a href="#ol_jar_ct">&para;</a></h3><pre><code>int ol_jar_ct(ol_database *db, const char *key, size_t klen, unsigned char *value, size_t vsize,
         const char *content_type, const size_t content_type_size);
 </code></pre><p>Put a value into the mayo. It's easy to piss in a bucket, it's not easy to piss in 19 jars. Allows you to specify content type.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The key to use.</p><p><span class="bold">*value:</span> The value to insert.</p><p><span class="bold">vsize:</span> The size of the value in bytes.</p><p><span class="bold">*content_type:</span> The content type to store, or really anything. Store your middle name if you want to.</p><p><span class="bold">content_type_size:</span> The length of the content_type string.</p><p><span class="bold">Returns:</span> 0 on sucess.</p><h3 class="perma" id="ol_content_type">ol_content_type <a href="#ol_content_type">&para;</a></h3><pre><code>char *ol_content_type(ol_database *db, const char *key, size_t klen);
-</code></pre><p>Retrieves the content type for a given key from the database.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> Stored content type, or NULL if it was not found.</p><h3 class="perma" id="ol_scoop">ol_scoop <a href="#ol_scoop">&para;</a></h3><pre><code>int ol_scoop(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Retrieves the content type for a given key from the database.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> Stored content type, or NULL if it was not found.</p><h3 class="perma" id="ol_expiration">ol_expiration <a href="#ol_expiration">&para;</a></h3><pre><code>struct tm *ol_expiration_time(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Retrieves the expiration time for a given key from the database.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> Stored struct tm *representing the time that this key will expire, or NULL if not found.</p><h3 class="perma" id="ol_scoop">ol_scoop <a href="#ol_scoop">&para;</a></h3><pre><code>int ol_scoop(ol_database *db, const char *key, size_t klen);
 </code></pre><p>Removes an object from the database. Get that crap out of the mayo jar.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 on success, 2 if the object wasn't found.</p><h3 class="perma" id="ol_uptime">ol_uptime <a href="#ol_uptime">&para;</a></h3><pre><code>int ol_uptime(ol_database *db);
-</code></pre><p>Gets the time, in seconds, that a database has been up.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">Returns:</span> Uptime in seconds since database initialization.</p><h3 class="perma" id="ol_spoil">ol_spoil <a href="#ol_spoil">&para;</a></h3><pre><code>int ol_spoil(ol_database *db, const char *key, size_t klen, struct tm *time);
-</code></pre><p>Sets the expiration value of a key. Will fail if no bucket under the chosen key exists.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">time:</span> The <b>UTC</b> time to set the expiration to.</p><p><span class="bold">Returns:</span> 0 upon success, -1 if otherwise.</p><h3 class="perma" id="ol_ht_bucket_max">ol_ht_bucket_max <a href="#ol_ht_bucket_max">&para;</a></h3><pre><code>int ol_ht_bucket_max(size_t ht_size);
+</code></pre><p>Gets the time, in seconds, that a database has been up.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">Returns:</span> Uptime in seconds since database initialization.</p><h3 class="perma" id="ol_spoil">ol_spoil <a href="#ol_spoil">&para;</a></h3><pre><code>int ol_spoil(ol_database *db, const char *key, size_t klen, struct tm *expiration_date);
+</code></pre><p>Sets the expiration value of a key. Will fail if no bucket under the chosen key exists.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">expiration_date:</span> The <b>UTC</b> time to set the expiration to.</p><p><span class="bold">Returns:</span> 0 upon success, -1 if otherwise.</p><h3 class="perma" id="ol_ht_bucket_max">ol_ht_bucket_max <a href="#ol_ht_bucket_max">&para;</a></h3><pre><code>int ol_ht_bucket_max(size_t ht_size);
 </code></pre><p>Does some sizeof witchery to return the maximum current size of the database.</p><p><span class="bold">*ht_size:</span> The size you want to divide by sizeof(ol_bucket).</p><p><span class="bold">Returns:</span> The maximum possible bucket slots for db.</p>                </div>
             </div>
         </div>
