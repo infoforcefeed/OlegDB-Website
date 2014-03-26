@@ -45,6 +45,11 @@ start_change = function() {
 stop_change = function() {
     window.clearInterval(masterInterval);
 }
-window.onload = function() { start_change(); };
+window.onload = function() {
+    change_me = document.getElementById("changing_text");
+    rand_int = Math.floor(Math.random()*slogans.length);
+    change_me.innerHTML = slogans[rand_int];
+    start_change();
+};
 window.addEventListener('blur', stop_change);
 window.addEventListener('focus', start_change);
