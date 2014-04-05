@@ -1,104 +1,13 @@
 #!/usr/bin/env python2
+from greshunkel.utils import parse_variable
 from os import listdir
 import re
 
+POSTS_DIR = "posts/"
 TEMPLATE_DIR = "templates/"
 BUILD_DIR = "built/"
 
-# Question: Hey qpfiffer, why is this indented all weird?
-# Man I don't know leave me alone.
-context = { "questions":
-            [ "Is this a joke?"
-            , "Why are you doing this?"
-            , "Can I use this in production?"
-            , "Should I use this in production?"
-            , "Why did you make X the way it is? Other people do Y."
-            , "Why isn't there a 32-bit version?"
-            , "Are you guys CS 100 students?"
-            , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
-            , "What other projects do you like?"
-            ],
-            "answers":
-            [ "No. We use this everyday for all of our projects."
-            , "\"My goal is to outrank redis with one of the worst OSS products on the free market.\"<p class=\"italic\">Kyle Terry, Senior Developer</p>"
-            , "Yeah, sure whatever."
-            , "Yes, most definitely."
-            , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
-            , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
-            , "We were. Never really made it past that."
-            , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments haved turned the project into a double-edged sword, ready to cut into anyone and anything."
-            ,
-            """ We like every flavor-of-the-week database. Here are a couple:
-            <ul>
-                <li><a href="http://fallabs.com/kyotocabinet/">Kyoto Cabinet</a></li>
-                <li><a href="http://redis.io/">Redis</a></li>
-                <li><a href="http://www.postgresql.org/">PostgreSQL</a></li>
-                <li><a href="http://sphia.org/">Sophia</a></li>
-                <li><a href="http://www.actordb.com/">ActorDB</a></li>
-                <li><a href="https://github.com/shuttler/nessDB">NessDB</a></li>
-            </ul>
-            """
-            ],
-        }
-
-def build_doc_context(include_dir):
-    oleg_header = open("{}/oleg.h".format(include_dir))
-    docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
-            "RETURNS", "TYPEDEF"]
-
-    reading_docs = False
-    raw_code = ""
-    doc_object = {}
-    prev_stripped = None
-    for line in oleg_header:
-        docline = False
-        stripped = line.strip()
-        if stripped == '*/':
-            continue
-
-        # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
-        if reading_docs and stripped.startswith("/*"):
-            raise Exception("Yo I think you messed up your formatting. Read too far.")
-        if "xXx" in line and "*" in stripped[:2]:
-            (variable, value) = _parse_variable(stripped)
-
-            docline = True
-            if not reading_docs:
-                doc_object["name"] = value
-                doc_object["type"] = variable
-                doc_object["params"] = []
-                reading_docs = True
-            else:
-                if variable in docstring_special:
-                    # SpEcIaL
-                    doc_object[variable] = value
-                else:
-                    doc_object["params"].append((variable, value))
-        if reading_docs and not docline and stripped != "":
-            raw_code = raw_code + line
-        if stripped == "" and reading_docs:
-            reading_docs = False
-            doc_object["raw_code"] = raw_code
-            if context.get(doc_object["type"], False):
-                context[doc_object["type"]].append(doc_object)
-            else:
-                context[doc_object["type"]] = [doc_object]
-            doc_object = {}
-            raw_code = ""
-
-    oleg_header.close()
-
-    key_raw_code = [x for x in context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
-    extracted_ks = key_raw_code.split(' ')[2].strip()
-    context['EXTRACTED_KEY_SIZE'] = extracted_ks
-
-def _parse_variable(variable_variables):
-    split = variable_variables.strip().split("xXx")[1].strip()
-    var_name = split.split("=")[0]
-    value = split.split("=")[1]
-    return (var_name, value)
-
-def _interpolate(line, file_meta):
+def _interpolate(line, file_meta, context):
     to_write = line
     to_write = to_write.strip().split("xXx")
     if "=" in to_write:
@@ -156,7 +65,7 @@ def _render_file(file_yo):
         in_file.close()
         output.close()
 
-def _loop_context_interpolate(variable, loop_variable, current_item, i):
+def _loop_context_interpolate(variable, loop_variable, current_item, i, context):
     if variable[1] == 'i':
         # i is special, it is an itervar
         muh_list =  context.get(variable[0], None)
@@ -169,7 +78,7 @@ def _loop_context_interpolate(variable, loop_variable, current_item, i):
     # All else fails try to use the dict variable
     return current_item[variable[1]]
 
-def _render_loop(loop_obj):
+def _render_loop(loop_obj, context):
     loop_list = loop_obj["loop_list"]
     loop_str = loop_obj["loop_str"]
     loop_variable = loop_obj["loop_variable"]
@@ -197,7 +106,7 @@ def _render_loop(loop_obj):
                 y = x.split("$")
                 if y[0] == loop_variable and y[1].isdigit():
                     return thing[int(y[1])]
-                return _loop_context_interpolate(y, loop_variable, thing, i)
+                return _loop_context_interpolate(y, loop_variable, thing, i, context)
             return x
         broken_man = regex.split(shattered_loops[0])
         for chunk in broken_man:
@@ -206,7 +115,7 @@ def _render_loop(loop_obj):
         if len(shattered_loops) != 1:
             # HACKIEST SHIT THAT EVER HACKED
             context[shattered_loops[2]] = thing["params"]
-            temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"])
+            temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"], context)
             if shattered_loops[4] != "":
                 broken_man = regex.split(shattered_loops[4])
                 for chunk in broken_man:
@@ -216,7 +125,7 @@ def _render_loop(loop_obj):
 
     return temp_loop_str
 
-def main():
+def main(context):
     all_templates = []
     for radical_file in listdir(TEMPLATE_DIR):
         if not radical_file.endswith(".html"):
@@ -240,7 +149,7 @@ def main():
         for line in tfile:
             stripped = line.strip()
             if "xXx" in stripped and "=" in stripped.split("xXx")[1]:
-                var = _parse_variable(line)
+                var = parse_variable(line)
                 file_meta['vars'][var[0]] = var[1]
             elif "xXx TTYL xXx" == stripped:
                 file_meta['blocks'][block_name] = block_str + end_str
@@ -279,14 +188,14 @@ def main():
             elif "xXx BBL xXx" == stripped:
                 active_loops = active_loops - 1
                 if active_loops == 0:
-                    temp_loop_str = _render_loop(loop_stack)
+                    temp_loop_str = _render_loop(loop_stack, context)
                     # AsSuMe WeRe In A bLoCk
                     block_str = block_str + temp_loop_str
                     # wE DoNe LoOpIn NoW
                     loop_stack = None
             elif "xXx" in stripped and reading_block is True:
                 if '@' in stripped:
-                    line = stripped = _interpolate(stripped.replace("@", ""), {})
+                    line = stripped = _interpolate(stripped.replace("@", ""), {}, context)
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = line.split("xXx")
