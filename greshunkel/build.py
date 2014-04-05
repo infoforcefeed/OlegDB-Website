@@ -1,27 +1,11 @@
 #!/usr/bin/env python2
-from greshunkel.utils import parse_variable
+from greshunkel.utils import parse_variable, interpolate
 from os import listdir
 import re
 
 POSTS_DIR = "posts/"
 TEMPLATE_DIR = "templates/"
 BUILD_DIR = "built/"
-
-def _interpolate(line, file_meta, context):
-    to_write = line
-    to_write = to_write.strip().split("xXx")
-    if "=" in to_write:
-        # We FoUnD a LiNe tHaT hAs a vArIaBlE iN iT
-        varname = to_write.strip().split("=")[0]
-        if file_meta['vars'].get(varname):
-            var = file_meta['vars'][varname]
-            to_write = to_write[0] + var + to_write[2]
-        else:
-            to_write = to_write[0] + to_write[2]
-    else:
-        to_write = to_write[0] + context.get(to_write[1].strip(), '<h1>SOMETHINGWENTWRONG</h1>') + to_write[2]
-
-    return to_write
 
 def _render_file(file_yo):
     if file_yo.get("children"):
@@ -42,7 +26,7 @@ def _render_file(file_yo):
                 to_write = line
                 if 'xXx' in line:
                     if '=' in line:
-                        to_write = _interpolate(line, file_yo)
+                        to_write = interpolate(line, file_yo)
                     else:
                         # ChIlD BloCk oR SoMeThIng, Yo
                         beginning = line.split("xXx")[0]
@@ -56,7 +40,7 @@ def _render_file(file_yo):
             for line in in_file:
                 to_write = line
                 if 'xXx' in line:
-                    to_write = _interpolate(line, file_yo)
+                    to_write = interpolate(line, file_yo)
 
                 output.write(to_write)
 
@@ -195,7 +179,7 @@ def main(context):
                     loop_stack = None
             elif "xXx" in stripped and reading_block is True:
                 if '@' in stripped:
-                    line = stripped = _interpolate(stripped.replace("@", ""), {}, context)
+                    line = stripped = interpolate(stripped.replace("@", ""), {}, context)
             elif "xXx" in stripped and reading_block is False:
                 reading_block = True
                 lstripped = line.split("xXx")
