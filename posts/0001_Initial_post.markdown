@@ -1,6 +1,7 @@
 ---
 title:Using OlegDB with Django
-author:Quinlan 'The Cobra' Pfiffer
+author:Quinlan Pfiffer
+icon_class:
 date: 2014-04-05
 ---
 

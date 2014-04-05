@@ -45,7 +45,7 @@ def build_blog_context(default_context):
         if not post.endswith(".markdown"):
             continue
 
-        new_post = {'meta': {}}
+        new_post = {}
         dashes_seen = 0
         reading_meta = True
         muh_file = open(POSTS_DIR + post)
@@ -61,7 +61,7 @@ def build_blog_context(default_context):
 
             if reading_meta and ':' in line:
                 split_line = stripped.split(":")
-                new_post['meta'][split_line[0]] = split_line[1]
+                new_post[split_line[0]] = split_line[1]
 
         default_context['POSTS'].append(new_post)
         muh_file.close()
