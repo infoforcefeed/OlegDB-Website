@@ -1,3 +1,4 @@
+from greshunkel.build import POSTS_DIR
 from greshunkel.utils import parse_variable
 
 # Question: Hey qpfiffer, why is this indented all weird?
@@ -35,6 +36,10 @@ BASE_CONTEXT = { "questions":
             """
             ],
         }
+
+def build_blog_context(default_context):
+    default_context['POSTS'] = []
+    return default_context
 
 def build_doc_context(include_dir, default_context):
     oleg_header = open("{}/oleg.h".format(include_dir))
