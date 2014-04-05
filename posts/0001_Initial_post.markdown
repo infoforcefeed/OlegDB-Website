@@ -1,6 +1,7 @@
 ---
-title: Using OlegDB with Django
-author: Quinlan 'The Cobra' Pfiffer
+title:Using OlegDB with Django
+author:Quinlan 'The Cobra' Pfiffer
+date: 2014-04-05
 ---
 
 Using OlegDB with Django is trivial. Just install [django-olegdbcache](https://github.com/infoforcefeed/django-olegdbcache)
