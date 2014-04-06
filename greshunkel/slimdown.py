@@ -7,7 +7,6 @@ import re
 class Slimdown(object):
     def __init__(self):
         self.rules = [
-            (r'\n([^\n]+)' ,  r'<p>\1</p>'),
             (r'````([^`]*)````' ,  r'<pre><code>\1</code></pre>'),
             (r'`([^`]*)`' ,  r'<code>\1</code>'),
             (r'\[([^\[]+)\]\(([^\)]+)\)' ,  r'<a href=\2>\1</a>'),
@@ -54,7 +53,7 @@ class Slimdown(object):
 
     def render(self, text):
         text = "\n{text}\n".format(text=text)
-        import ipdb; ipdb.set_trace()
+        text = "".join(["<p>{}</p>".format(x.strip()) for x in text.split("\n\n")])
         for rule, output in self.rules:
             regex = re.compile(rule)
             text = regex.sub(output, text)

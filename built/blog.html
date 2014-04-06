@@ -56,11 +56,20 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <div class="grid grid-pad">
         <div class="col-1-1">
             <div class="content">
-<h2 class="post_title">Using OlegDB with Django</h2><p><span class=" author_icon"></span><span class="author_name">Quinlan Pfiffer</span></p><p>Using OlegDB with Django is trivial. Just install <a href=https://github.com/infoforcefeed/django-olegdbcache>django-olegdbcache</a></p>and you can be ready to go in seconds.
-<p>You can either grab it from pip:</p><p><pre><code>$ pip install django-OlegDBCache</p></code></pre>
-<p>or get it via ssh and use your standard <code>setup.py</code> muckery. Once thats all</p>accomplished, all you have to do is tweak your settings a bit:
-<p><pre><code></p>CACHES = {<p>    "default": {</p>        "BACKEND": "django_olegdbcache.oleg.OlegDBCache",<p>        "LOCATION": "http://localhost:8080"</p>    }<p>}</p></code></pre>
-<p>This, of course, assumes that OlegDB is running and accessible on</p><code>localhost:8080</code>. Why would you try to use a cache without the cache running?<p>Silly goose.</p>            </div>
+<h2 class="post_title">Using OlegDB with Django</h2><p><span class=" author_icon"></span><span class="author_name">Quinlan Pfiffer</span></p><p>Using OlegDB with Django is trivial. Just install <a href=https://github.com/infoforcefeed/django-olegdbcache>django-olegdbcache</a>
+and you can be ready to go in seconds.</p><p>You can either grab it from pip:</p><p><pre><code>
+$ pip install django-OlegDBCache
+</code></pre></p><p>or get it via ssh and use your standard <code>setup.py</code> muckery. Once thats all
+accomplished, all you have to do is tweak your settings a bit:</p><p><pre><code>
+CACHES = {
+    "default": {
+        "BACKEND": "django_olegdbcache.oleg.OlegDBCache",
+        "LOCATION": "http://localhost:8080"
+    }
+}
+</code></pre></p><p>This, of course, assumes that OlegDB is running and accessible on
+<code>localhost:8080</code>. Why would you try to use a cache without the cache running?
+Silly goose.</p><p></p>            </div>
         </div>
     </div>
 
