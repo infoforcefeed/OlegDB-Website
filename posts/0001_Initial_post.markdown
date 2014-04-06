@@ -14,7 +14,7 @@ You can either grab it from pip:
 $ pip install django-OlegDBCache
 ````
 
-or get it via ssh and use your standard `setup.py` muckery. Once thats all 
+or get it via ssh and use your standard `setup.py` muckery. Once thats all
 accomplished, all you have to do is tweak your settings a bit:
 
 ````
