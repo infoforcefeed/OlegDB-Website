@@ -4,6 +4,7 @@ from os import listdir
 import re
 
 POSTS_DIR = "posts/"
+BLOGPOST_TEMPLATE = "templates/blog_post.html"
 TEMPLATE_DIR = "templates/"
 BUILD_DIR = "built/"
 
@@ -214,7 +215,12 @@ def main(context):
                     }
 
     for base_file in tree:
-        _render_file(tree[base_file])
+        if base_file != BLOGPOST_TEMPLATE:
+            _render_file(tree[base_file])
+
+    #for post in listdir(POSTS_DIR):
+    #    import ipdb; ipdb.set_trace()
+    #    "ASDF"
 
     # BeCaUsE WhY NoT
     return 0

@@ -5,6 +5,9 @@
     margin-top: 0;
     margin-bottom: 0em;
 }
+.blog_item {
+    border-bottom: 1px solid #BBB;
+}
 /*
 .author_icon {
     width: 32px;
