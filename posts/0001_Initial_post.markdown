@@ -10,12 +10,14 @@ and you can be ready to go in seconds.
 
 You can either grab it from pip:
 
-`pip install django-olegdbcache`
+````
+$ pip install django-OlegDBCache
+````
 
 or get it via ssh and use your standard `setup.py` muckery. Once thats all 
 accomplished, all you have to do is tweak your settings a bit:
 
-```python
+````
 CACHES = {
     "default": {
         "BACKEND": "django_olegdbcache.oleg.OlegDBCache",

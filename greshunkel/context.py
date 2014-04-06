@@ -1,5 +1,6 @@
 from greshunkel.build import POSTS_DIR
 from greshunkel.utils import parse_variable
+from greshunkel.slimdown import Slimdown
 from os import listdir
 
 # Question: Hey qpfiffer, why is this indented all weird?
@@ -41,6 +42,7 @@ BASE_CONTEXT = { "questions":
 def build_blog_context(default_context):
     default_context['POSTS'] = []
 
+    slimmin = Slimdown()
     for post in listdir(POSTS_DIR):
         if not post.endswith(".markdown"):
             continue
@@ -49,6 +51,7 @@ def build_blog_context(default_context):
         dashes_seen = 0
         reading_meta = True
         muh_file = open(POSTS_DIR + post)
+        all_text = ""
         for line in muh_file:
             stripped = line.strip()
             if stripped == '---':
@@ -63,6 +66,10 @@ def build_blog_context(default_context):
                 split_line = stripped.split(":")
                 new_post[split_line[0]] = split_line[1]
 
+            if not reading_meta:
+                all_text += line
+
+        new_post['content'] = slimmin.render(all_text)
         default_context['POSTS'].append(new_post)
         muh_file.close()
     return default_context
