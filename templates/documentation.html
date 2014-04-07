@@ -84,7 +84,7 @@ $ olegdb /tmp data.shithouse.tv 666 #Hostnames work too</code></pre>
                     <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
                     <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
                     <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
-                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code></pre>
+                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red</code></pre>
                     <p>Retrieving data is just as simple:</p>
                     <pre><code>$ curl http://localhost:8080/turtles/test</code></pre>
                     <p>Deleting keys can be done by using DELETE:</p>

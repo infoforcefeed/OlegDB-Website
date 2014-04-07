@@ -95,7 +95,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
             <div class="content">
                 <div class="doc_chunk">
                     <h2 class="perma" id="overview">General Overview <a href="#overview">&para;</a></h2>
-                    <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href=\"https://en.wikipedia.org/wiki/MurmurHash\">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
+                    <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
 
                     <h3 class="perma" id="installation">Installation <a href="#installation">&para;</a></h3>
                     <p>Installing OlegDB is pretty simple, you only need a POSIX compliant system, make, gcc/clang (thats all we've tested) and Erlang. You'll also need the <a href="downloads.html">source code for Oleg.</a></p>
@@ -117,7 +117,7 @@ $ olegdb /tmp data.shithouse.tv 666 #Hostnames work too</code></pre>
                     <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
                     <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
                     <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
-                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/test</code></pre>
+                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red</code></pre>
                     <p>Retrieving data is just as simple:</p>
                     <pre><code>$ curl http://localhost:8080/turtles/test</code></pre>
                     <p>Deleting keys can be done by using DELETE:</p>
