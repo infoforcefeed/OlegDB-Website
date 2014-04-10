@@ -32,6 +32,14 @@ xXx CONTENT xXx
                         </ul>
                     </li>
                     <li>
+                        <a href="#typedefs">Type Definitions</a>
+                        <ul>
+                        xXx LOOP type TYPEDEF xXx
+                            <li><a href="#xXx type$name xXx">xXx type$name xXx</a></li>
+                        xXx BBL xXx
+                        </ul>
+                    </li>
+                    <li>
                         <a href="#enums">Enums</a>
                         <ul>
                         xXx LOOP enum ENUM xXx
@@ -157,6 +165,17 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
                     <h3 class="perma" id="xXx macro$name xXx">xXx macro$name xXx <a href="#xXx macro$name xXx">&para;</a></h3>
                     <pre><code>xXx macro$raw_code xXx</code></pre>
                     <p>xXx macro$DESCRIPTION xXx</p>
+                    xXx BBL xXx
+                </div>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
+                    xXx LOOP type TYPEDEF xXx
+                    <h3 class="perma" id="xXx type$name xXx">xXx type$name xXx <a href="#xXx type$name xXx">&para;</a></h3>
+                    <pre><code>xXx type$raw_code xXx</code></pre>
+                    <p>xXx type$DESCRIPTION xXx</p>
+                        xXx LOOP param type$params xXx
+                        <p><span class="bold">xXx param$0 xXx:</span> xXx param$1 xXx</p>
+                        xXx BBL xXx
                     xXx BBL xXx
                 </div>
                 <div class="doc_chunk">
