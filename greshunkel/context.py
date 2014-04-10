@@ -11,7 +11,6 @@ BASE_CONTEXT = { "questions":
             , "Can I use this in production?"
             , "Should I use this in production?"
             , "Why did you make X the way it is? Other people do Y."
-            , "Why isn't there a 32-bit version?"
             , "Are you guys CS 100 students?"
             , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
             , "What other projects do you like?"
@@ -22,7 +21,6 @@ BASE_CONTEXT = { "questions":
             , "Yeah, sure whatever."
             , "Yes, most definitely."
             , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
-            , "We'd rather not be a contributor to the <a href=\"http://en.wikipedia.org/wiki/Year_2038_problem\">Year 2038 problem.</a>"
             , "We were. Never really made it past that."
             , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments haved turned the project into a double-edged sword, ready to cut into anyone and anything."
             ,
@@ -123,7 +121,10 @@ def build_doc_context(include_dir, default_context):
     oleg_header.close()
 
     key_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
+    version_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'VERSION'][0]['raw_code']
     extracted_ks = key_raw_code.split(' ')[2].strip()
+    extracted_version = key_raw_code.split(' ')[2].strip()
     default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
+    default_context['EXTRACTED_VERSION'] = extracted_version
 
     return default_context

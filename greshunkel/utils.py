@@ -4,8 +4,9 @@
 
 def parse_variable(variable_variables):
     split = variable_variables.strip().split("xXx")[1].strip()
-    var_name = split.split("=")[0]
-    value = split.split("=")[1]
+    kill_splitter = split.split("=", 1)
+    var_name = kill_splitter[0]
+    value = kill_splitter[1]
     return (var_name, value)
 
 def interpolate(line, file_meta, context):
