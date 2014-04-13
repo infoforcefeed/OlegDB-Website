@@ -12,7 +12,8 @@ def _render_file(file_yo):
     if file_yo.get("children"):
         # We DoNt ReNdEr FiLeS wItH cHiLdReN
         for base_file in file_yo["children"]:
-            _render_file(base_file)
+            if base_file['file'] != BLOGPOST_TEMPLATE:
+                _render_file(base_file)
     else:
         output = open(BUILD_DIR + file_yo["filename"], "w+")
         parent_file = None
@@ -215,8 +216,7 @@ def main(context):
                     }
 
     for base_file in tree:
-        if base_file != BLOGPOST_TEMPLATE:
-            _render_file(tree[base_file])
+        _render_file(tree[base_file])
 
     #for post in listdir(POSTS_DIR):
     #    import ipdb; ipdb.set_trace()
