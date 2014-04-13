@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 from greshunkel.utils import parse_variable, interpolate
-from os import listdir
+from os import listdir, makedirs, path
 import re
 
 POSTS_DIR = "posts/"
@@ -201,6 +201,11 @@ def parse_file(context, radical_file):
 
 def main(context):
     all_templates = []
+    required_dirs = ['./built', './built/blog']
+    for dirn in required_dirs:
+        if not path.exists(dirn):
+            makedirs(dirn)
+
     for radical_file in listdir(TEMPLATE_DIR):
         # We don't want to render the blog_post template by itself.
         if TEMPLATE_DIR + radical_file == BLOGPOST_TEMPLATE:
@@ -226,9 +231,10 @@ def main(context):
         _render_file(tree[base_file])
 
     for post in context['POSTS']:
-        context['post_meta'] = post
+        # UGLY HACK YOU DUMB SHIT
+        context['dumb_meta'] = [post]
         post_meta = parse_file(context, BLOGPOST_FILE)
-        _render_file(post_meta, output_filename=post['built_filename'])
+        _render_file(post_meta, output_filename="blog/" + post['built_filename'])
 
     # BeCaUsE WhY NoT
     return 0
