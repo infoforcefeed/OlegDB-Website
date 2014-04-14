@@ -3,6 +3,7 @@ from greshunkel.utils import parse_variable
 from greshunkel.slimdown import Slimdown
 from os import listdir
 
+DEFAULT_LANGUAGE = "en"
 # Question: Hey qpfiffer, why is this indented all weird?
 # Man I don't know leave me alone.
 BASE_CONTEXT = { "questions":
@@ -126,7 +127,8 @@ def build_doc_context(include_dir, default_context):
     key_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
     version_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'VERSION'][0]['raw_code']
     extracted_ks = key_raw_code.split(' ')[2].strip()
-    extracted_version = key_raw_code.split(' ')[2].strip()
+    extracted_version = version_raw_code.split(' ')[2].strip()
+    extracted_version = extracted_version.replace('"', '')
     default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
     default_context['EXTRACTED_VERSION'] = extracted_version
 

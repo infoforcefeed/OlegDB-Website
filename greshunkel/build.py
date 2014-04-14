@@ -9,11 +9,11 @@ BLOGPOST_FILE = "blog_post.html"
 BLOGPOST_TEMPLATE = TEMPLATE_DIR + BLOGPOST_FILE
 BUILD_DIR = "built/"
 
-def _render_file(file_yo, output_filename=None):
+def _render_file(file_yo, context, output_filename=None):
     if file_yo.get("children"):
         # We DoNt ReNdEr FiLeS wItH cHiLdReN
         for base_file in file_yo["children"]:
-            _render_file(base_file)
+            _render_file(base_file, context)
     else:
         desired_fname = file_yo['filename'] if output_filename is None else output_filename
         output = open(BUILD_DIR + desired_fname, "w+")
@@ -28,8 +28,10 @@ def _render_file(file_yo, output_filename=None):
             for line in parent_file:
                 to_write = line
                 if 'xXx' in line:
-                    if '=' in line:
-                        to_write = interpolate(line, file_yo)
+                    if '@' in line:
+                        to_write = interpolate(line.replace("@", ""), {}, context)
+                    elif '=' in line:
+                        to_write = interpolate(line, file_yo, context)
                     else:
                         # ChIlD BloCk oR SoMeThIng, Yo
                         beginning = line.split("xXx")[0]
@@ -43,7 +45,7 @@ def _render_file(file_yo, output_filename=None):
             for line in in_file:
                 to_write = line
                 if 'xXx' in line:
-                    to_write = interpolate(line, file_yo)
+                    to_write = interpolate(line, file_yo, context)
 
                 output.write(to_write)
 
@@ -101,6 +103,7 @@ def _render_loop(loop_obj, context):
             temp_loop_str = temp_loop_str + "".join(bro)
         if len(shattered_loops) != 1:
             # HACKIEST SHIT THAT EVER HACKED
+            # TODO: If it ain't broke, don't fix it
             context[shattered_loops[2]] = thing["params"]
             temp_loop_str = temp_loop_str + _render_loop(loop_obj["loop_subloop"], context)
             if shattered_loops[4] != "":
@@ -200,8 +203,11 @@ def parse_file(context, radical_file):
     return file_meta
 
 def main(context):
+    from greshunkel.context import DEFAULT_LANGUAGE
+    context['DEFAULT_LANGUAGE'] = DEFAULT_LANGUAGE
     all_templates = []
-    required_dirs = ['./built', './built/blog']
+    version = context['EXTRACTED_VERSION']
+    required_dirs = ['./built', './built/blog', './built/docs/' + version + "/" + DEFAULT_LANGUAGE]
     for dirn in required_dirs:
         if not path.exists(dirn):
             makedirs(dirn)
@@ -228,13 +234,13 @@ def main(context):
                     }
 
     for base_file in tree:
-        _render_file(tree[base_file])
+        _render_file(tree[base_file], context)
 
     for post in context['POSTS']:
         # UGLY HACK YOU DUMB SHIT
         context['dumb_meta'] = [post]
         post_meta = parse_file(context, BLOGPOST_FILE)
-        _render_file(post_meta, output_filename="blog/" + post['built_filename'])
+        _render_file(post_meta, context, output_filename="blog/" + post['built_filename'])
 
     # BeCaUsE WhY NoT
     return 0
