@@ -7,6 +7,7 @@ import re
 class Slimdown(object):
     def __init__(self):
         self.rules = [
+            (r'\n\*(.*)' ,  self.ul_list),
             (r'````([^`]*)````' ,  r'<pre><code>\1</code></pre>'),
             (r'`([^`]*)`' ,  r'<code>\1</code>'),
             (r'\[([^\[]+)\]\(([^\)]+)\)' ,  r'<a href=\2>\1</a>'),
@@ -15,7 +16,6 @@ class Slimdown(object):
             (r'(\*|_)(.*?)\1' ,  r'<em>\2</em>'),
             (r'\~\~(.*?)\~\~' ,  r'<del>\1</del>'),
             (r'\, \"(.*?)\"\, ' ,  r'<q>\1</q>'),
-            (r'\n\*(.*)' ,  self.ul_list),
             (r'\n[0-9]+\.(.*)' ,  self.ol_list),
             (r'\n(&gt;|\>)(.*)' ,  self.blockquote),
             (r'\n-{5,}/' ,  r"\n<hr />"),
@@ -34,12 +34,12 @@ class Slimdown(object):
         return "<p>{}</p>".format(stripped)
 
     def ul_list(self, match):
-        item = match.group(0)
-        return "\n<ul>\n\t<li>{}</li>\n</ul>".format(item.strip())
+        item = match.groups()[0]
+        return "\n<ul><li>{}</li></ul>".format(item.strip())
 
     def ol_list(self, match):
         item = match.group(0)
-        return "\n<ol>\n\t<li>{}</li>\n</ol>".format(item.strip())
+        return "\n<ol><li>{}</li></ol>".format(item.strip())
 
     def blockquote(self, match):
         item = match.group(0)
@@ -53,9 +53,9 @@ class Slimdown(object):
 
     def render(self, text):
         text = "\n{text}\n".format(text=text)
-        text = "".join(["<p>{}</p>".format(x.strip()) for x in text.split("\n\n")])
         for rule, output in self.rules:
             regex = re.compile(rule)
             text = regex.sub(output, text)
+        text = "".join(["<p>{}</p>".format(x.strip()) for x in text.split("\n\n")])
 
         return text.strip()
