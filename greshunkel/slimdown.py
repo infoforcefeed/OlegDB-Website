@@ -17,11 +17,9 @@ class Slimdown(object):
             (r'\~\~(.*?)\~\~' ,  r'<del>\1</del>'),
             (r'\, \"(.*?)\"\, ' ,  r'<q>\1</q>'),
             (r'\n[0-9]+\.(.*)' ,  self.ol_list),
-            (r'\n(&gt;|\>)(.*)' ,  self.blockquote),
             (r'\n-{5,}/' ,  r"\n<hr />"),
             (r'<\/ul>\s?<ul>' ,  ''),
             (r'<\/ol>\s?<ol>' ,  ''),
-            (r'<\/blockquote><blockquote>' ,  r"\n")
         ]
 
     def para(self, match):
@@ -40,10 +38,6 @@ class Slimdown(object):
     def ol_list(self, match):
         item = match.group(0)
         return "\n<ol><li>{}</li></ol>".format(item.strip())
-
-    def blockquote(self, match):
-        item = match.group(0)
-        return "\n<blockquote>{}</blockquote>".format(item.strip())
 
     def header(self, match):
         raise NotImplementedError()
