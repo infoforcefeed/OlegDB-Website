@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+  ____ ____  _____ ____  _   _ _   _ _   _ _  _______ _
+ / ___|  _ \| ____/ ___|| | | | | | | \ | | |/ / ____| |
+| |  _| |_) |  _| \___ \| |_| | | | |  \| | ' /|  _| | |
+| |_| |  _ <| |___ ___) |  _  | |_| | |\  | . \| |___| |___
+ \____|_| \_\_____|____/|_| |_|\___/|_| \_|_|\_\_____|_____|
+
+Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
+-->
+<html>
+    <head>
+        <title>OlegDB - 
+</title>
+        <meta charset="UTF-8">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name="description" content="Technical blog and propoganda for OlegDB">
+
+
+        <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
+        <link rel="stylesheet" media="all" href="/static/css/main.css" />
+        <link rel="stylesheet" href="/static/css/blog.css" />
+
+
+        <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
+    </head>
+    <body>
+        <header>
+            <div class="grid grid-pad">
+                <div id="logo_col" class="col-1-12">
+                    <div class="content">
+                        <img src="/static/img/oleg_logo.svg">
+                    </div>
+                </div>
+                <div class="col-5-12">
+                    <div class="content mobile_hide">
+                        <h1><a href="/">OlegDB</a></h1>
+                    </div>
+                </div>
+                <div id="right_side_nav" class="col-5-12">
+                    <div class="pull-right content">
+                        <ul>
+                            <li class="mobile_show"><b><a href="/">OlegDB</a></b></h1>
+                            <li><a href="/blog.html">Blog</a></li>
+                            <li><a href="/downloads.html">Downloads</a></li>
+                            <li><a href="/faq.html">FAQ</a></li>
+<li><a href="/docs/0.1.0/en/documentation.html">Docs</a></li>                            <li><a id="git_icon" href="https://github.com/infoforcefeed/OlegDB"></a></li>
+                        </ul>
+                    </div>
+                </div>
+        </header>
+        <div id="main_container">
+            <div class="grid grid-pad"><div class="col-1-1"><div class="content"><h2 class="post_title">Benchmarking with Wrk</h2><p><span class=" author_icon"></span><span class="author_name"> 2014-04-12 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0002_Benchmarking.html#disqus_thread">Comments</a></span></p><p>Today at Proleg Labs&trade; we're going to discuss the awesome bechmarking tool
+<a href=https://github.com/wg/wrk>wrk</a>. wrk is a badass little HTTP stress testing
+utility written by a <a href=http://glozer.net/>mysterious open-source do-gooders</a>.
+I'm gonna run through how we torture OlegDB with it to make sure everything is
+working in an acceptable fashion.</p><p>Building and installing wrk is outside the scope of this article, but it's not
+hard. You just need to do your standard <code>make && make install</code> dance and you'll
+do fine. Once you have your <code>wrk</code> executable handy, we can get started.</p><p>On my particular machine, I like to test with these settings:</p><p><pre><code>
+$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
+</code></pre></p><p>This requires a little explanation.</p><p><ul><li><code>-t8</code> is the number of threads to use. I've got eight cores, lets use eight threads.</li><li><code>-c400</code> is the number of connections to have open. 400 seems like a nice, round number.</li><li><code>-d30s</code> is the amount of time to stress test. Thirty seconds should be <a href=http://quoteinvestigator.com/2011/09/08/640k-enough/>enough for anyone</a>.</li></ul></p><p>and the last parameter is the URL we'll be hitting with the <code>wrk</code> jackhammer.
+Since we need to actually test Oleg and not some 404 page we'll need to put
+something into the database for <code>wrk</code> to fetch. Results will vary based on how
+much data you put in, but lets just test with this quote from <a href="http://en.wikipedia.org/wiki/Leviathan_(book)">
+Thomas Hobbes' Leviathan:</a></p><p><pre><code>
+Man is distinguished, not only by his reason, but by this singular passion from
+other animals, which is a lust of the mind, that by a perseverance of delight
+in the continued and indefatigable generation of knowledge, exceeds the short
+vehemence of any carnal pleasure.
+</code></pre></p><p>Say, thats neat Thomas Hobbes! Let's throw that into OlegDB, which I'll assume
+you have running on <code>localhost:8080</code>:</p><p><pre><code>
+$ curl -X POST -d '
+> Man is distinguished, not only by his reason, but by this singular passion from
+> other animals, which is a lust of the mind, that by a perseverance of delight
+> in the continued and indefatigable generation of knowledge, exceeds the short
+> vehemence of any carnal pleasure.' http://localhost:8080/test
+無駄
+</code></pre></p><p>Just to do a quick test that it actually inserted (Hey, who knows, right?) let's
+curl it back out:</p><p><pre><code>
+$ curl localhost:8080/test
+Man is distinguished, not only by his reason, but by this singular passion from
+other animals, which is a lust of the mind, that by a perseverance of delight
+in the continued and indefatigable generation of knowledge, exceeds the short
+vehemence of any carnal pleasure.
+</code></pre></p><p>Excellent, now lets fire up wrk, point it at that URL and see what happens:</p><p><pre><code>
+$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
+Running 30s test @ http://localhost:8080/test
+  8 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    18.05ms   93.64ms 866.52ms   96.72%
+    Req/Sec     4.71k     2.15k   16.44k    70.58%
+  1070154 requests in 30.00s, 420.48MB read
+  Socket errors: connect 0, read 0, write 0, timeout 27
+Requests/sec:  35675.16
+Transfer/sec:     14.02MB
+</code></pre></p><p>Hey, <code>35,600</code> Requests/second. Not bad. Not bad at all. For fun, let's see how
+<a href=http://fallabs.com/kyototycoon/>Kyoto Tycoon</a> performs with the same data and
+conditions:</p><p><pre><code>
+$ ./wrk -t8 -c400 -d30s http://localhost:1978/test
+Running 30s test @ http://localhost:1978/test
+  8 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.05ms    2.47ms 340.86ms   99.65%
+    Req/Sec    17.59k     2.75k   37.67k    77.99%
+  3991195 requests in 30.00s, 1.39GB read
+Requests/sec: 133041.46
+Transfer/sec:     47.58MB
+</code></pre></p><p>...well damn. I guess theres always room to improve.</p><p></p></div><div id="disqus_thread"></div><script type="text/javascript">var disqus_shortname = 'olegdbblog';(function() {var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);})();</script><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></div></div>
+
+        </div>
+        <div id="busted_pixel">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUA/wA0XsCoAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==">
+        </div>
+            <script type="text/javascript">
+    var disqus_shortname = 'olegdbblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+
+
+    </body>
+    <footer>
+        <div class="grid grid-pad">
+            <div class="col-1-2">
+                <div class="content">
+                    <ul>
+                        <li>&copy; Copyright 2014, <a href="http://qpfiffer.com/">Quinlan Pfiffer</a>, <a href="http://kyte.io/">Kyle Terry</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-1-2">
+                <div class="pull-right content">
+                    <ul>
+                        <li><a href="http://www.redbubble.com/people/qpfiffer/works/11380090-olegdb-graphics">Merch</a></li>
+                        <li><a href="/credits.html">Credits</a></li>
+                        <li>Contact: <a href="mailto:shithouse@goatse.cx">shithouse@goatse.cx</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-30510579-4']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+         ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+    </script>
+    
+</html>

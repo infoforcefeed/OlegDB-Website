@@ -8,6 +8,9 @@
 .blog_item {
     border-bottom: 1px solid #BBB;
 }
+.comment_count {
+    margin-left: 0.5em;
+}
 /*
 .author_icon {
     width: 32px;
