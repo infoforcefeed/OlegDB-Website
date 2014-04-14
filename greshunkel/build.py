@@ -16,6 +16,9 @@ def _render_file(file_yo, context, output_filename=None):
             _render_file(base_file, context)
     else:
         desired_fname = file_yo['filename'] if output_filename is None else output_filename
+        if (file_yo['filename'] == "documentation.html"):
+            from greshunkel.context import DEFAULT_LANGUAGE
+            desired_fname = './docs/' + context['EXTRACTED_VERSION'] + "/" + DEFAULT_LANGUAGE + "/" + file_yo['filename']
         output = open(BUILD_DIR + desired_fname, "w+")
         parent_file = None
 
