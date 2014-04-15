@@ -79,50 +79,53 @@ def build_blog_context(default_context):
     return default_context
 
 def build_doc_context(include_dir, default_context):
-    oleg_header = open("{}/oleg.h".format(include_dir))
-    docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
-            "RETURNS", "TYPEDEF"]
+    headers = ["oleg.h", "defs.h"]
+    headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
+    for header_file in headers:
+        oleg_header = open(header_file)
+        docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
+                "RETURNS", "TYPEDEF"]
 
-    reading_docs = False
-    raw_code = ""
-    doc_object = {}
-    for line in oleg_header:
-        docline = False
-        stripped = line.strip()
-        if stripped == '*/':
-            continue
+        reading_docs = False
+        raw_code = ""
+        doc_object = {}
+        for line in oleg_header:
+            docline = False
+            stripped = line.strip()
+            if stripped == '*/':
+                continue
 
-        # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
-        if reading_docs and stripped.startswith("/*"):
-            raise Exception("Yo I think you messed up your formatting. Read too far.")
-        if "xXx" in line and "*" in stripped[:2]:
-            (variable, value) = parse_variable(stripped)
+            # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
+            if reading_docs and stripped.startswith("/*"):
+                raise Exception("Yo I think you messed up your formatting. Read too far.")
+            if "xXx" in line and "*" in stripped[:2]:
+                (variable, value) = parse_variable(stripped)
 
-            docline = True
-            if not reading_docs:
-                doc_object["name"] = value
-                doc_object["type"] = variable
-                doc_object["params"] = []
-                reading_docs = True
-            else:
-                if variable in docstring_special:
-                    # SpEcIaL
-                    doc_object[variable] = value
+                docline = True
+                if not reading_docs:
+                    doc_object["name"] = value
+                    doc_object["type"] = variable
+                    doc_object["params"] = []
+                    reading_docs = True
                 else:
-                    doc_object["params"].append((variable, value))
-        if reading_docs and not docline and stripped != "":
-            raw_code = raw_code + line
-        if stripped == "" and reading_docs:
-            reading_docs = False
-            doc_object["raw_code"] = raw_code
-            if default_context.get(doc_object["type"], False):
-                default_context[doc_object["type"]].append(doc_object)
-            else:
-                default_context[doc_object["type"]] = [doc_object]
-            doc_object = {}
-            raw_code = ""
+                    if variable in docstring_special:
+                        # SpEcIaL
+                        doc_object[variable] = value
+                    else:
+                        doc_object["params"].append((variable, value))
+            if reading_docs and not docline and stripped != "":
+                raw_code = raw_code + line
+            if stripped == "" and reading_docs:
+                reading_docs = False
+                doc_object["raw_code"] = raw_code
+                if default_context.get(doc_object["type"], False):
+                    default_context[doc_object["type"]].append(doc_object)
+                else:
+                    default_context[doc_object["type"]] = [doc_object]
+                doc_object = {}
+                raw_code = ""
 
-    oleg_header.close()
+        oleg_header.close()
 
     key_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
     version_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'VERSION'][0]['raw_code']
