@@ -13,23 +13,26 @@ slogans = [
 function fade_change(element, text) {
     var op = 1;
     var timer = setInterval(function () {
-        if (op <= 0.1){
+        if (op <= 0.05){
             clearInterval(timer);
-            element.innerHTML = text;
+            element.innerHTML = "";
             element.style.opacity = 0;
-            fade_in(element);
+            fade_in(element, text);
         }
         element.style.opacity = op;
-        op -= op * 0.1;
+        op -= op * 0.2;
     }, 50);
 }
-function fade_in(element) {
+function fade_in(element, text) {
     var op = 0;
     var timer = setInterval(function () {
         if (op >= 1.0){
             clearInterval(timer);
             element.style.opacity = 1.0;
             window.setTimeout(change_text, delay);
+        }
+        if (op == 0) {
+            element.innerHTML = text;
         }
         element.style.opacity = op;
         op += 0.05;
