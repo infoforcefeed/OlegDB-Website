@@ -60,6 +60,11 @@ xXx CONTENT xXx
         </div>
         <div class="col-9-12">
             <div class="content">
+                <ul id="olegdb_versions">
+                    xXx LOOP sconce ALL_VERSIONS xXx
+                    <li><a href="/docs/xXx sconce$num xXx/en/documentation.html">xXx sconce$num xXx/</a></li>
+                    xXx BBL xXx
+                </ul>
                 <div class="doc_chunk">
                     <h2 class="perma" id="overview">General Overview <a href="#overview">&para;</a></h2>
                     <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>

@@ -75,7 +75,7 @@ def build_blog_context(default_context):
         new_post['built_filename'] = post.replace("markdown", "html")
         default_context['POSTS'].append(new_post)
         muh_file.close()
-    default_context['POSTS'] = default_context['POSTS']
+    default_context['POSTS'] = sorted(default_context['POSTS'], key=lambda x: x["date"], reverse=True)
     return default_context
 
 def build_doc_context(include_dir, default_context):
@@ -134,5 +134,6 @@ def build_doc_context(include_dir, default_context):
     extracted_version = extracted_version.replace('"', '')
     default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
     default_context['EXTRACTED_VERSION'] = extracted_version
+    default_context['ALL_VERSIONS'] = [{"num":x} for x in listdir("built/docs/")]
 
     return default_context

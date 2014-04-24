@@ -7,3 +7,10 @@
 p span {
     font-family: monospace;
 }
+#olegdb_versions {
+    list-style: none;
+}
+#olegdb_versions li {
+    display: inline-block;
+    margin-right: 2em;
+}
