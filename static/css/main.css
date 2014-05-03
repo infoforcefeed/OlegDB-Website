@@ -21,14 +21,16 @@ a:hover {
     color: #B14C6D;
 }
 #logo_col {
-    margin-right: 1em;
+}
+#olegdb_base_link, #right_side_nav {
+    margin-top: 1em;
 }
 header {
     padding-bottom: 1em;
 }
 header img {
     display: inline;
-    width: 6em;
+    width: 4em;
     margin-right: 2em;
 }
 header, footer {
