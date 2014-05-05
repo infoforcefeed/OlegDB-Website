@@ -1,6 +1,8 @@
 from greshunkel.build import POSTS_DIR
 from greshunkel.utils import parse_variable
 from greshunkel.slimdown import Slimdown
+
+import subprocess
 from os import listdir
 
 DEFAULT_LANGUAGE = "en"
@@ -78,62 +80,81 @@ def build_blog_context(default_context):
     default_context['POSTS'] = sorted(default_context['POSTS'], key=lambda x: x["date"], reverse=True)
     return default_context
 
-def build_doc_context(include_dir, default_context):
-    headers = ["oleg.h", "defs.h"]
-    headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
-    for header_file in headers:
-        oleg_header = open(header_file)
-        docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
-                "RETURNS", "TYPEDEF"]
+def build_doc_context(default_context):
+    include_dir = "./OlegDB/include/"
+    output = subprocess.check_output("cd OlegDB && git tag --list", shell=True)
+    default_context['docs'] = {}
+    versions = [output.strip()]
+    versions.append("master")
 
-        reading_docs = False
-        raw_code = ""
-        doc_object = {}
-        for line in oleg_header:
-            docline = False
-            stripped = line.strip()
-            if stripped == '*/':
+    for version in versions:
+        cmd = "cd OlegDB && git checkout {}".format(version)
+        subprocess.call(cmd, shell=True)
+        headers = ["oleg.h", "defs.h"]
+        headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
+        for header_file in headers:
+            try:
+                oleg_header = open(header_file)
+            except IOError:
                 continue
 
-            # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
-            if reading_docs and stripped.startswith("/*"):
-                raise Exception("Yo I think you messed up your formatting. Read too far.")
-            if "xXx" in line and "*" in stripped[:2]:
-                (variable, value) = parse_variable(stripped)
+            docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
+                    "RETURNS", "TYPEDEF"]
 
-                docline = True
-                if not reading_docs:
-                    doc_object["name"] = value
-                    doc_object["type"] = variable
-                    doc_object["params"] = []
-                    reading_docs = True
-                else:
-                    if variable in docstring_special:
-                        # SpEcIaL
-                        doc_object[variable] = value
+            reading_docs = False
+            raw_code = ""
+            doc_object = {}
+            version_context = {}
+
+            for line in oleg_header:
+                docline = False
+                stripped = line.strip()
+                if stripped == '*/':
+                    continue
+
+                # ThIs iS sOmE wEiRd FaLlThRouGh BuLlShIt
+                if reading_docs and stripped.startswith("/*"):
+                    raise Exception("Yo I think you messed up your formatting. Read too far.")
+                if "xXx" in line and "*" in stripped[:2]:
+                    (variable, value) = parse_variable(stripped)
+
+                    docline = True
+                    if not reading_docs:
+                        doc_object["name"] = value
+                        doc_object["type"] = variable
+                        doc_object["params"] = []
+                        reading_docs = True
                     else:
-                        doc_object["params"].append((variable, value))
-            if reading_docs and not docline and stripped != "":
-                raw_code = raw_code + line
-            if stripped == "" and reading_docs:
-                reading_docs = False
-                doc_object["raw_code"] = raw_code
-                if default_context.get(doc_object["type"], False):
-                    default_context[doc_object["type"]].append(doc_object)
-                else:
-                    default_context[doc_object["type"]] = [doc_object]
-                doc_object = {}
-                raw_code = ""
+                        if variable in docstring_special:
+                            # SpEcIaL
+                            doc_object[variable] = value
+                        else:
+                            doc_object["params"].append((variable, value))
+                if reading_docs and not docline and stripped != "":
+                    raw_code = raw_code + line
+                if stripped == "" and reading_docs:
+                    reading_docs = False
+                    doc_object["raw_code"] = raw_code
+                    if version_context.get(doc_object["type"], False):
+                        version_context[doc_object["type"]].append(doc_object)
+                    else:
+                        version_context[doc_object["type"]] = [doc_object]
+                    doc_object = {}
+                    raw_code = ""
 
-        oleg_header.close()
+            oleg_header.close()
 
-    key_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
-    version_raw_code = [x for x in default_context['DEFINE'] if x['name'] == 'VERSION'][0]['raw_code']
-    extracted_ks = key_raw_code.split(' ')[2].strip()
-    extracted_version = version_raw_code.split(' ')[2].strip()
-    extracted_version = extracted_version.replace('"', '')
-    default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
-    default_context['EXTRACTED_VERSION'] = extracted_version
-    default_context['ALL_VERSIONS'] = [{"num":x} for x in listdir("built/docs/")]
+        key_raw_code = [x for x in version_context['DEFINE'] if x['name'] == 'KEY_SIZE'][0]['raw_code']
+        version_raw_code = [x for x in version_context['DEFINE'] if x['name'] == 'VERSION'][0]['raw_code']
+        extracted_ks = key_raw_code.split(' ')[2].strip()
+        extracted_version = version_raw_code.split(' ')[2].strip()
+        extracted_version = extracted_version.replace('"', '')
+        if version == 'master':
+            default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
+            default_context['EXTRACTED_VERSION'] = extracted_version
+        default_context['docs'][extracted_version] = version_context
+
+    default_context['ALL_VERSIONS'] = versions
+    import ipdb; ipdb.set_trace()
 
     return default_context
