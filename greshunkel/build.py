@@ -9,6 +9,9 @@ BLOGPOST_FILE = "blog_post.html"
 BLOGPOST_TEMPLATE = TEMPLATE_DIR + BLOGPOST_FILE
 BUILD_DIR = "built/"
 
+DOCUMENTATION_FILE = "documentation.html"
+DOCUMENTATION_TEMPLATE = TEMPLATE_DIR + DOCUMENTATION_FILE
+
 def _render_file(file_yo, context, output_filename=None):
     if file_yo.get("children"):
         # We DoNt ReNdEr FiLeS wItH cHiLdReN
@@ -16,9 +19,6 @@ def _render_file(file_yo, context, output_filename=None):
             _render_file(base_file, context)
     else:
         desired_fname = file_yo['filename'] if output_filename is None else output_filename
-        if (file_yo['filename'] == "documentation.html"):
-            from greshunkel.context import DEFAULT_LANGUAGE
-            desired_fname = './docs/' + context['EXTRACTED_VERSION'] + "/" + DEFAULT_LANGUAGE + "/" + file_yo['filename']
         output = open(BUILD_DIR + desired_fname, "w+")
         parent_file = None
 
@@ -66,7 +66,10 @@ def _loop_context_interpolate(variable, loop_variable, current_item, i, context)
         # They are trying to index a list
         return context.get(variable[0], None)[int(variable[1])]
     elif variable[0] == loop_variable:
-        return current_item[variable[1]]
+        try:
+            return current_item[variable[1]]
+        except TypeError:
+            import ipdb; ipdb.set_trace()
     # All else fails try to use the dict variable
     return current_item[variable[1]]
 
@@ -209,15 +212,17 @@ def main(context):
     from greshunkel.context import DEFAULT_LANGUAGE
     context['DEFAULT_LANGUAGE'] = DEFAULT_LANGUAGE
     all_templates = []
-    version = context['EXTRACTED_VERSION']
-    required_dirs = ['./built', './built/blog', './built/docs/' + version + "/" + DEFAULT_LANGUAGE]
+    required_dirs = ['./built', './built/blog']
+    for version in context['ALL_VERSIONS']:
+        required_dirs.append('./built/docs/' + version + "/" + DEFAULT_LANGUAGE)
+
     for dirn in required_dirs:
         if not path.exists(dirn):
             makedirs(dirn)
 
     for radical_file in listdir(TEMPLATE_DIR):
-        # We don't want to render the blog_post template by itself.
-        if TEMPLATE_DIR + radical_file == BLOGPOST_TEMPLATE:
+        # We don't want to render the blog_post template by itself, or the documentation.
+        if TEMPLATE_DIR + radical_file in [BLOGPOST_TEMPLATE, DOCUMENTATION_TEMPLATE]:
             continue
         if not radical_file.endswith(".html"):
             continue
@@ -244,6 +249,19 @@ def main(context):
         context['dumb_meta'] = [post]
         post_meta = parse_file(context, BLOGPOST_FILE)
         _render_file(post_meta, context, output_filename="blog/" + post['built_filename'])
+
+    for vers,vers_context in context['docs'].iteritems():
+        from greshunkel.context import DEFAULT_LANGUAGE
+        # UGLY HACK YOU DUMB SHIT
+        for docinfo,docvalue in vers_context.iteritems():
+            context[docinfo] = docvalue
+        desired_fname = './docs/{vers}/{lang}/{filename}'.format(
+            vers=vers, lang=DEFAULT_LANGUAGE, filename=DOCUMENTATION_FILE)
+        post_meta = parse_file(context, DOCUMENTATION_FILE)
+        _render_file(post_meta, context, output_filename=desired_fname)
+        # Clear out the context so we don't get issues
+        for docinfo,docvalue in vers_context.iteritems():
+            context[docinfo] = ""
 
     # BeCaUsE WhY NoT
     return 0

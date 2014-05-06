@@ -84,18 +84,22 @@ def build_doc_context(default_context):
     include_dir = "./OlegDB/include/"
     output = subprocess.check_output("cd OlegDB && git tag --list", shell=True)
     default_context['docs'] = {}
+    default_context['ALL_VERSIONS'] = []
     versions = [output.strip()]
     versions.append("master")
 
     for version in versions:
-        cmd = "cd OlegDB && git checkout {}".format(version)
+        print "Checking out {}".format(version)
+        cmd = "cd OlegDB && git checkout {} &> /dev/null".format(version)
         subprocess.call(cmd, shell=True)
         headers = ["oleg.h", "defs.h"]
         headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
+        version_context = {}
         for header_file in headers:
             try:
                 oleg_header = open(header_file)
-            except IOError:
+            except IOError as e:
+                print e
                 continue
 
             docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",
@@ -104,7 +108,6 @@ def build_doc_context(default_context):
             reading_docs = False
             raw_code = ""
             doc_object = {}
-            version_context = {}
 
             for line in oleg_header:
                 docline = False
@@ -153,8 +156,6 @@ def build_doc_context(default_context):
             default_context['EXTRACTED_KEY_SIZE'] = extracted_ks
             default_context['EXTRACTED_VERSION'] = extracted_version
         default_context['docs'][extracted_version] = version_context
-
-    default_context['ALL_VERSIONS'] = versions
-    import ipdb; ipdb.set_trace()
+        default_context['ALL_VERSIONS'].append(extracted_version)
 
     return default_context
