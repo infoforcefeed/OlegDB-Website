@@ -10,8 +10,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
 -->
 <html>
     <head>
-        <title>OlegDB -     Blog
-
+        <title>OlegDB - OlegDB 0.1.1 'Cartwheeling Trespassers' released
 </title>
         <meta charset="UTF-8">
         <meta name=viewport content="width=device-width, initial-scale=1">
@@ -53,15 +52,26 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 </div>
         </header>
         <div id="main_container">
-            <div class="grid grid-pad"><div class="col-1-1"><div class="content blog_item"><h2 class="post_title"><a href="/blog/0003_OlegDB_0.1.1_Released.html">OlegDB 0.1.1 'Cartwheeling Trespassers' released</a></h2><p><span class=" author_icon"></span><span class="author_name"> 2014-05-05 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0003_OlegDB_0.1.1_Released.html#disqus_thread">Comments</a></span></p><p>Proleg Labs&trade; is happy to announce a new and improved OlegDB! Nicknamed
+            <div class="grid grid-pad"><div class="col-1-1"><div class="content"><h2 class="post_title">OlegDB 0.1.1 'Cartwheeling Trespassers' released</h2><p><span class=" author_icon"></span><span class="author_name"> 2014-05-05 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0003_OlegDB_0.1.1_Released.html#disqus_thread">Comments</a></span></p><p>Proleg Labs&trade; is happy to announce a new and improved OlegDB! Nicknamed
 <a href=https://github.com/infoforcefeed/OlegDB/releases/tag/v.0.1.1>Cartwheeling Trespassers</a>,
 this release packs in a whopping delta of 44 files
-changed, 869 insertions and 2864 deletions. Hot damn!</p><p>Bugfixes i&hellip;<p><a href="blog/0003_OlegDB_0.1.1_Released.html">Read the Full Post</a></p></div></div></div><div class="grid grid-pad"><div class="col-1-1"><div class="content blog_item"><h2 class="post_title"><a href="/blog/0002_Benchmarking.html">Benchmarking with Wrk</a></h2><p><span class=" author_icon"></span><span class="author_name"> 2014-04-12 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0002_Benchmarking.html#disqus_thread">Comments</a></span></p><p>Today at Proleg Labs&trade; we're going to discuss the awesome bechmarking tool
-<a href=https://github.com/wg/wrk>wrk</a>. wrk is a badass little HTTP stress testing
-utility written by a <a href=http://glozer.net/>mysterious open-source do-gooders</a>.
-I'm gonna run through how we torture OlegDB &hellip;<p><a href="blog/0002_Benchmarking.html">Read the Full Post</a></p></div></div></div><div class="grid grid-pad"><div class="col-1-1"><div class="content blog_item"><h2 class="post_title"><a href="/blog/0001_Initial_post.html">The Mayo-Feeler, by Oleg Technologies&trade;</a></h2><p><span class=" author_icon"></span><span class="author_name"> 2014-04-05 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0001_Initial_post.html#disqus_thread">Comments</a></span></p><p><iframe width="853" height="480"
-src="//www.youtube-nocookie.com/embed/gNLTW2MvYbc?rel=0" frameborder="0"
-allowfullscreen></iframe></p><p></p>&hellip;<p><a href="blog/0001_Initial_post.html">Read the Full Post</a></p></div></div></div>
+changed, 869 insertions and 2864 deletions. Hot damn!</p><p>Bugfixes in this release include the
+<a href=https://github.com/infoforcefeed/OlegDB/issues/43>longstanding</a>
+segfault-on-deletion-but-only-sometimes bug, lots of <a href=https://github.com/infoforcefeed/OlegDB/pulls?direction=desc&page=1&sort=created&state=closed>memory leak</a>
+fixes and a much more rigorous attention to
+<a href=https://scan.coverity.com/projects/1414>static</a>
+<a href=https://padrepio.in/richelieu/infoforcefeed/OlegDB/>analysis</a>. Also of note
+are some compilation fixes for BSD, so hopefully we'll see Oleg running on
+more platforms.</p><p>As for features, we've recently added <a href=https://code.google.com/p/lz4/>LZ4
+compression</a> which works really well on some
+datasets but not on others. It's fast though and it saves a lot of memory.
+We've also added some weird looking data structures called <a href=http://en.wikipedia.org/wiki/Splay_tree>splay trees</a>.
+Splay trees will eventually allow use to get cursor-style iteration and 
+prefix-matching when <code>0.2.0</code> rolls around.</p><p>Prefix-matching isn't quite ready via the Erlang frontend, but you can get your
+hands wet with <a href=/docs/0.1.1/en/documentation.html#ol_prefix_match>liboleg's prefix matching</a>
+if you're into that sort of thing.</p><p>And finally, thanks to those who contributed, <a href=https://faulty.equipment/>Alessandro
+Gatti</a> and <a href=https://github.com/colby>Colby Olson</a>.</p><p>Look forward to <code>0.2.0</code> sometime later in May. Probably. Otherwise, yell at me
+on <a href=https://twitter.com/WAallLy>twitter.</a></p><p>Warning, pretty loud:</p><p><video src="/static/img/advert.webm" controls></video></p><p></p></div><div id="disqus_thread"></div><script type="text/javascript">var disqus_shortname = 'olegdbblog';(function() {var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);})();</script><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></div></div>
 
         </div>
         <div id="busted_pixel">
@@ -69,7 +79,6 @@ allowfullscreen></iframe></p><p></p>&hellip;<p><a href="blog/0001_Initial_post.h
         </div>
             <script type="text/javascript">
     var disqus_shortname = 'olegdbblog';
-    /* * * DON'T EDIT BELOW THIS LINE * * */
     (function () {
         var s = document.createElement('script'); s.async = true;
         s.type = 'text/javascript';
