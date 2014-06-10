@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--
+  ____ ____  _____ ____  _   _ _   _ _   _ _  _______ _
+ / ___|  _ \| ____/ ___|| | | | | | | \ | | |/ / ____| |
+| |  _| |_) |  _| \___ \| |_| | | | |  \| | ' /|  _| | |
+| |_| |  _ <| |___ ___) |  _  | |_| | |\  | . \| |___| |___
+ \____|_| \_\_____|____/|_| |_|\___/|_| \_|_|\_\_____|_____|
+
+Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
+-->
+<html>
+    <head>
+        <title>OlegDB -     Documentation
+
+</title>
+        <meta charset="UTF-8">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        
+        <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
+        <link rel="stylesheet" media="all" href="/static/css/main.css" />
+        <link rel="stylesheet" href="/static/css/documentation.css" />
+
+
+        <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
+    </head>
+    <body>
+        <header>
+            <div class="grid grid-pad">
+                <div id="logo_col" class="col-1-12">
+                    <div class="content">
+                        <img src="/static/img/olegdb_logo.svg">
+                    </div>
+                </div>
+                <div id="olegdb_base_link" class="col-4-12">
+                    <div class="content mobile_hide">
+                        <h1><a href="/">OlegDB</a></h1>
+                    </div>
+                </div>
+                <div id="right_side_nav" class="col-6-12">
+                    <div class="pull-right content">
+                        <ul>
+                            <li class="mobile_show"><b><a href="/">OlegDB</a></b></h1>
+                            <li><a href="/blog.html">Blog</a></li>
+                            <li><a href="/downloads.html">Downloads</a></li>
+                            <li><a href="/faq.html">FAQ</a></li>
+<li><a href="/docs/0.1.2/en/documentation.html">Docs</a></li>                            <li><a href="/community.html">Community</a></li>
+                            <li><a id="git_icon" href="https://github.com/infoforcefeed/OlegDB"></a></li>
+                        </ul>
+                    </div>
+                </div>
+        </header>
+        <div id="main_container">
+                <div class="grid grid-pad">
+        <div class="col-3-12">
+            <div class="content">
+                <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
+                <h1>Overview</h1>
+                <ul>
+                    <li>
+                        <a href="#overview">General Overview</a>
+                        <ul>
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#getting_started">Getting Started</a></li>
+                            <li><a href="#wtf">What the hell is up with your responses?</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <h1>liboleg</h1>
+                <ul>
+                    <li>
+                        <a href="#macros">Macros</a>
+                        <ul>
+<li><a href="#VERSION">VERSION</a></li><li><a href="#KEY_SIZE">KEY_SIZE</a></li><li><a href="#HASH_MALLOC">HASH_MALLOC</a></li><li><a href="#PATH_LENGTH">PATH_LENGTH</a></li><li><a href="#DB_NAME_SIZE">DB_NAME_SIZE</a></li><li><a href="#DEVILS_SEED">DEVILS_SEED</a></li><li><a href="#VALUES_FILENAME">VALUES_FILENAME</a></li>                        </ul>
+                    </li>
+                    <li>
+                        <a href="#typedefs">Type Definitions</a>
+                        <ul>
+<li><a href="#ol_val_array">ol_val_array</a></li>                        </ul>
+                    </li>
+                    <li>
+                        <a href="#enums">Enums</a>
+                        <ul>
+<li><a href="#ol_feature_flags">ol_feature_flags</a></li><li><a href="#ol_state_flags">ol_state_flags</a></li>                        </ul>
+                    </li>
+                    <li>
+                        <a href="#structures">Structures</a>
+                        <ul>
+<li><a href="#ol_bucket">ol_bucket</a></li><li><a href="#ol_meta">ol_meta</a></li><li><a href="#ol_database">ol_database</a></li>                        </ul>
+                    </li>
+                    <li>
+                        <a href="#functions">Functions</a>
+                        <ul>
+<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_close_save">ol_close_save</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ds">ol_unjar_ds</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li><li><a href="#ol_prefix_match">ol_prefix_match</a></li><li><a href="#ol_exists">ol_exists</a></li>                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-9-12">
+            <div class="content">
+                <ul id="olegdb_versions">
+<li><a href="/docs/0.1.0/en/documentation.html">0.1.0/</a></li><li><a href="/docs/0.1.1/en/documentation.html">0.1.1/</a></li><li><a href="/docs/0.1.2/en/documentation.html">0.1.2/</a></li>                </ul>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="overview">General Overview <a href="#overview">&para;</a></h2>
+                    <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
+
+                    <h3 class="perma" id="installation">Installation <a href="#installation">&para;</a></h3>
+                    <p>Installing OlegDB is pretty simple, you only need a POSIX compliant system, make, gcc/clang (thats all we've tested) and Erlang. You'll also need the <a href="downloads.html">source code for Oleg.</a></p>
+                    <p>Once you have your fanciful medley of computer science tools, you're ready to dive into a lengthy and complex process of program compilation. Sound foreboding? Have no fear, people have been doing this for <a href="http://en.wikipedia.org/wiki/Make_(software)">at least a quarter of a century.</a></p>
+                    <p>I'm going to assume you've extracted the source tarball into a folder called <code>~/src/olegdb</code> and that you haven't <code>cd</code>'d into it yet. Lets smash some electrons together:</p>
+                    <pre><code>$ cd ~/src/olegdb
+$ make
+$ sudo make install
+</code></pre>
+                    <p>If you really wanted to, you could specify a different installation directory. The default is <code>/usr/local</code>. You can do this by setting <code>PREFIX</code></p>
+                    <pre><code>$ sudo make PREFIX=/usr/ install</code></pre>
+                    <p>Actually running OlegDB and getting it do stuff after this point is trivial, if your installation prefix is in your PATH you should just be able to run something like the following:</p>
+                    <pre><code>$ olegdb &lt;data_directory&gt;</code></pre>
+                    <p>...where <code>&lt;data_directory&gt;</code> is the place you want Oleg to store persistent data information. Make it <code>/dev/null</code> if you want, I don't care. You can also specify IP/port information from the commandline:<p>
+                    <pre><code>$ olegdb /tmp 1978 #Starts OlegDB listening on port 1978
+$ olegdb /tmp 0.0.0.0 1337 #Starts OlegDB listening on the 0.0.0.0 IP, with port 1337
+$ olegdb /tmp data.shithouse.tv 666 #Hostnames work too</code></pre>
+
+                    <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
+                    <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
+                    <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
+                    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red</code></pre>
+                    <p>Retrieving data is just as simple:</p>
+                    <pre><code>$ curl http://localhost:8080/turtles/red</code></pre>
+                    <p>Deleting keys can be done by using DELETE:</p>
+                    <pre><code>$ curl -X DELETE http://localhost:8080/turtles/red</code></pre>
+                    <p>You can also tell Oleg what the Content-Type is:</p>
+                    <pre><code>$ curl -X POST -H "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/red</code></pre>
+                    <p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the <b>X-OlegDB-use-by</b> header to a <b>UTC</b> POSIX timestamp .
+                    <pre><code>
+$ curl -X POST \
+-H "X-OlegDB-use-by: $(date +%s)" \
+-H "Content-Type: application/json" \
+-d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
+&gt; POST /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; X-OlegDB-use-by: 1394323192
+&gt; Content-Type: application/json
+&gt; Content-Length: 27
+&gt; 
+* upload completely sent off: 27out of 27 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: text/plain
+&lt; Connection: close
+&lt; Content-Length: 7
+&lt;
+無駄
+
+$ curl -v http://localhost:8080/turtles/Johnny
+&gt; GET /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt;
+These aren't your ghosts.
+</code></pre>
+                    <p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We used the bash command <code>`date +%s`</code> which returns a timestamp. Then, immediately trying to access the key again results in a 404, because the key expired.</p>
+                    <p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p>
+                    <pre><code>
+$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
+&gt; HEAD /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.35.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+* Server OlegDB/fresh_cuts_n_jams is not blacklisted
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 0
+&lt; Content-Type: application/json
+&lt; Expires: 1395368972
+&lt;
+</code></pre>
+
+                    <h3 class="perma" id="wtf">What the hell is up with your responses? <a href="#wtf">&para;</a></h3>
+                    <p>We have fun with our HTTP responses. Really all you need is the HTTP status code to see if something worked or not. 404 means not found, 200 means the operation completed successfully, 500 if something bad happened, etc.</p>
+                </div>
+                <h1>liboleg</h1>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
+<h3 class="perma" id="VERSION">VERSION <a href="#VERSION">&para;</a></h3><pre><code>#define VERSION "0.1.2"
+</code></pre><p>The current version of the OlegDB.</p><h3 class="perma" id="KEY_SIZE">KEY_SIZE <a href="#KEY_SIZE">&para;</a></h3><pre><code>#define KEY_SIZE 250
+</code></pre><p>The hardcoded upperbound for key lengths.</p><h3 class="perma" id="HASH_MALLOC">HASH_MALLOC <a href="#HASH_MALLOC">&para;</a></h3><pre><code>#define HASH_MALLOC 65536
+</code></pre><p>The size, in bytes, to allocate when initially creating the database. ol_bucket pointers are stored here.</p><h3 class="perma" id="PATH_LENGTH">PATH_LENGTH <a href="#PATH_LENGTH">&para;</a></h3><pre><code>#define PATH_LENGTH 256
+</code></pre><p>The maximum length of a database's path.</p><h3 class="perma" id="DB_NAME_SIZE">DB_NAME_SIZE <a href="#DB_NAME_SIZE">&para;</a></h3><pre><code>#define DB_NAME_SIZE 64
+</code></pre><p>Database maximum name length.</p><h3 class="perma" id="DEVILS_SEED">DEVILS_SEED <a href="#DEVILS_SEED">&para;</a></h3><pre><code>#define DEVILS_SEED 666
+</code></pre><p>The seed to feed into the murmur3 algorithm.</p><h3 class="perma" id="VALUES_FILENAME">VALUES_FILENAME <a href="#VALUES_FILENAME">&para;</a></h3><pre><code>#define VALUES_FILENAME "val"
+</code></pre><p>The file extension used for the values file on disk.</p>                </div>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
+<h3 class="perma" id="ol_val_array">ol_val_array <a href="#ol_val_array">&para;</a></h3><pre><code>typedef char ** ol_val_array;
+</code></pre><p>This is shorthand for a pointer to an array of values, typically the same kind of values stored in an <a href="#ol_bucket">ol_bucket</a>->data_ptr object.</p>                </div>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="enums">Enums <a href="#enums">&para;</a></h2>
+<h3 class="perma" id="ol_feature_flags">ol_feature_flags <a href="#ol_feature_flags">&para;</a></h3><pre><code>typedef enum {
+    OL_F_APPENDONLY     = 1 << 0,
+    OL_F_SEMIVOL        = 1 << 1,
+    OL_F_REGDUMPS       = 1 << 2,
+    OL_F_SPLAYTREE      = 1 << 3,
+    OL_F_LZ4            = 1 << 4
+} ol_feature_flags;
+</code></pre><p>Feature flags tell the database what it should be doing.</p><p><span class="bold">OL_F_APPENDONLY:</span> Enable the append only log. This is a write-only logfile for simple persistence.</p><p><span class="bold">OL_F_SEMIVOL:</span> <strong>Not Implemented</strong> Tell servers that it's okay to fsync every once in a while</p><p><span class="bold">OL_F_REGDUMPS:</span> <strong>Not Implemented</strong> Tell servers to snapshot the data using ol_save() regularly</p><p><span class="bold">OL_F_SPLAYTREE:</span> Whether or not to enable to splay tree in the server. This can have a performance impact.</p><p><span class="bold">OL_F_LZ4:</span> Enable LZ4 compression.</p><h3 class="perma" id="ol_state_flags">ol_state_flags <a href="#ol_state_flags">&para;</a></h3><pre><code>typedef enum {
+    OL_S_STARTUP        = 0,
+    OL_S_AOKAY          = 1
+} ol_state_flags;
+</code></pre><p>State flags tell the database what it should be doing.</p><p><span class="bold">OL_S_STARTUP:</span> Startup state. The DB is starting, duh.</p><p><span class="bold">OL_S_AOKAY:</span> The normal operating state, the database is a-okay</p>                </div>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="structures">Structures <a href="#structures">&para;</a></h2>
+<h3 class="perma" id="ol_bucket">ol_bucket <a href="#ol_bucket">&para;</a></h3><pre><code>typedef struct ol_bucket {
+    char                key[KEY_SIZE]; /* The key used to reference the data */
+    size_t              klen;
+    char                *content_type;
+    size_t              ctype_size;
+    size_t              data_offset;
+    size_t              data_size;
+    size_t              original_size;
+    uint32_t            hash;
+    struct ol_bucket    *next; /* The next ol_bucket in this chain, if any */
+    struct tm           *expiration;
+    ol_splay_tree_node  *node;
+} ol_bucket;
+</code></pre><p>This is the object stored in the database's hashtable. Contains references to value, key, etc.</p><p><span class="bold">key[KEY_SIZE]:</span> The key used for this bucket.</p><p><span class="bold">klen:</span> Length of the key.</p><p><span class="bold">*content_type:</span> The content-type of this object. If using the server, this defaults to "application/octet-stream".</p><p><span class="bold">ctype_size:</span> Length of the string representing content-type.</p><p><span class="bold">data_offset:</span> Location of this key's value (data) in the values file on disk.</p><p><span class="bold">data_size:</span> Length of the value (data) in bytes. This is the size of the data stored in memory.</p><p><span class="bold">original_size:</span> Length of the value (data) in bytes. This is the original length of the data we receieved, non-compressed.</p><p><span class="bold">hash:</span> Hashed value of this key.</p><p><span class="bold">next:</span> Collisions are resolved via linked list. This contains the pointer to the next object in the chain, or NULL.</p><p><span class="bold">expiration:</span> The POSIX timestamp when this key will expire.</p><p><span class="bold">*node:</span> A pointer to this objects node in the splay tree.</p><h3 class="perma" id="ol_meta">ol_meta <a href="#ol_meta">&para;</a></h3><pre><code>typedef struct ol_meta {
+    time_t      created;
+    int         key_collisions;
+} ol_meta;
+</code></pre><p>Structure used to record meta-information about the database.</p><p><span class="bold">created:</span> When the database was created.</p><p><span class="bold">key_collisions:</span> The number of keys that have collided over the lifetime of this database.</p><h3 class="perma" id="ol_database">ol_database <a href="#ol_database">&para;</a></h3><pre><code>typedef struct ol_database {
+    void      (*get_db_file_name)(struct ol_database *db,const char *p,char*);
+    void      (*enable)(int, int*);
+    void      (*disable)(int, int*);
+    bool      (*is_enabled)(int, int*);
+    char      name[DB_NAME_SIZE];
+    char      path[PATH_LENGTH];
+    char      *aol_file;
+    FILE      *aolfd;
+    int       feature_set;
+    short int state;
+    int       rcrd_cnt;
+    size_t    cur_ht_size;
+    ol_bucket **hashes;
+    void      *values;
+    size_t    val_size;
+    ol_splay_tree *tree;
+    ol_meta   *meta;
+} ol_database;
+</code></pre><p>The object representing a database. This is used in almost every ol_* function to store state and your data.</p><p><span class="bold">get_db_file_name:</span> A function pointer that returns the path to the location of the db file to reduce code duplication. Used for writing and reading of dump files.</p><p><span class="bold">enable:</span> Helper function to enable a feature for the database instance passed in. See <a href="#ol_feature_flags">ol_feature_flags</a></p><p><span class="bold">disable:</span> Helper function to disable a database feature. See <a href="#ol_feature_flags">ol_feature_flags</a></p><p><span class="bold">is_enabled:</span> Helper function that checks weather or not a feature flag is enabled.</p><p><span class="bold">name:</span> The name of the database.</p><p><span class="bold">path[PATH_LENGTH]:</span> Path to the database's working directory.</p><p><span class="bold">aol_file:</span> Path and filename of the append only log.</p><p><span class="bold">aolfd:</span> Pointer of FILE type to append only log.</p><p><span class="bold">feature_set:</span> Bitmask holding enabled/disabled status of various features. See ol_feature_flags.</p><p><span class="bold">state:</span> Current state of the database. See ol_state_flags.</p><p><span class="bold">rcrd_cnt:</span> Number of records in the database.</p><p><span class="bold">key_collisions:</span> Number of key collisions this database has had since initialization.</p><p><span class="bold">created:</span> Timestamp of when the database was initialized.</p><p><span class="bold">cur_ht_size:</span> The current amount, in bytes, of space allocated for storing <a href="#ol_bucket">ol_bucket</a> objects.</p><p><span class="bold">**hashes:</span> The actual hashtable. Stores <a href="#ol_bucket">ol_bucket</a> instances.</p><p><span class="bold">*values:</span> This is where values for hashes are stored. This is a pointer to an mmap()'d region of memory.</p><p><span class="bold">val_size:</span> The size of the sum total of records in the db, in bytes. It is <strong>not</strong> the size of the file on disk.</p><p><span class="bold">*tree:</span> A pointer to the splay tree holding the ordered list of keys.</p><p><span class="bold">*meta:</span> A pointer to a struct holding extra meta information. See <a href="#ol_meta">oleg_meta</a> for more information.</p>                </div>
+                <div class="doc_chunk">
+                    <h2 class="perma" id="functions">Functions <a href="#functions">&para;</a></h2>
+<h3 class="perma" id="ol_open">ol_open <a href="#ol_open">&para;</a></h3><pre><code>ol_database *ol_open(char *path, char *name, int features);
+</code></pre><p>Opens a database for use.</p><p><span class="bold">*path:</span> The directory where the database will be stored.</p><p><span class="bold">*name:</span> The name of the database. This is used to create the dumpfile, and keep track of the database.</p><p><span class="bold">features:</span> Features to enable when the database is initialized. You can logically OR multiple features together.</p><p><span class="bold">Returns:</span> A new database object.</p><h3 class="perma" id="ol_close">ol_close <a href="#ol_close">&para;</a></h3><pre><code>int ol_close(ol_database *database);
+</code></pre><p>Closes a database cleanly and frees memory.</p><p><span class="bold">*database:</span> The database to close.</p><p><span class="bold">Returns:</span> 0 on success, 1 if not everything could be freed.</p><h3 class="perma" id="ol_close_save">ol_close_save <a href="#ol_close_save">&para;</a></h3><pre><code>int ol_close_save(ol_database *database);
+</code></pre><p>Dumps and closes a database cleanly, frees memory and makes sure everything is written.</p><p><span class="bold">*database:</span> The database to close.</p><p><span class="bold">Returns:</span> 0 on success, 1 if not everything could be freed.</p><h3 class="perma" id="ol_unjar">ol_unjar <a href="#ol_unjar">&para;</a></h3><pre><code>int ol_unjar(ol_database *db, const char *key, size_t klen, unsigned char **data);
+</code></pre><p>This is OlegDB's canonical 'get' function. Unjar a value from the mayo (database). <strong>data must be freed after calling this function!</strong> Calls <a href="#ol_unjar_ds">ol_unjar_ds</a> with a dsize of NULL.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">data:</span> This parameter will be filled out with the data found in the DB. Passing NULL will check if a key exists.</p><p><span class="bold">Returns:</span> 0 on success, 1 on failure or if the key was not found.</p><h3 class="perma" id="ol_unjar_ds">ol_unjar_ds <a href="#ol_unjar_ds">&para;</a></h3><pre><code>int ol_unjar_ds(ol_database *db, const char *key, size_t klen, unsigned char **data, size_t *dsize);
+</code></pre><p>This function retrieves a value from the database. <strong>data must be freed after calling this function!</strong> It also writes the size of the data to <code>dsize</code>.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key to use.</p><p><span class="bold">data:</span> This parameter will be filled out with the data found in the DB. Passing NULL will check if a key exists.</p><p><span class="bold">*dsize:</span> Optional parameter that will be filled out with the size of the data, if NULL is not passed in.</p><p><span class="bold">Returns:</span> 0 on success, 1 on failure or if the key was not found.</p><h3 class="perma" id="ol_jar">ol_jar <a href="#ol_jar">&para;</a></h3><pre><code>int ol_jar(ol_database *db, const char *key, size_t klen, unsigned char *value, size_t vsize);
+</code></pre><p>This is OlegDB's canonical 'set' function. Put a value into the mayo (the database). It's easy to piss in a bucket, it's not easy to piss in 19 jars. Uses default content type.</p><p><span class="bold">*db:</span> Database to set the value to.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">*value:</span> The value to insert.</p><p><span class="bold">vsize:</span> The size of the value in bytes.</p><p><span class="bold">Returns:</span> 0 on success.</p><h3 class="perma" id="ol_jar_ct">ol_jar_ct <a href="#ol_jar_ct">&para;</a></h3><pre><code>int ol_jar_ct(ol_database *db, const char *key, size_t klen, unsigned char *value, size_t vsize,
+        const char *content_type, const size_t content_type_size);
+</code></pre><p>Wrapped by <a href="#ol_jar">ol_jar</a>, this function will set a value in the database. It differs only in that it allows you to specify a content type to store in addition to the value.</p><p><span class="bold">*db:</span> Database to set the value to.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">*value:</span> The value to insert.</p><p><span class="bold">vsize:</span> The size of the value in bytes.</p><p><span class="bold">*content_type:</span> The content type to store, or really anything. Store your middle name if you want to.</p><p><span class="bold">content_type_size:</span> The length of the content_type string.</p><p><span class="bold">Returns:</span> 0 on sucess.</p><h3 class="perma" id="ol_content_type">ol_content_type <a href="#ol_content_type">&para;</a></h3><pre><code>char *ol_content_type(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Retrieves the content type for a given key from the database.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> Stored content type, or NULL if it was not found.</p><h3 class="perma" id="ol_expiration">ol_expiration <a href="#ol_expiration">&para;</a></h3><pre><code>struct tm *ol_expiration_time(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Retrieves the expiration time for a given key from the database.</p><p><span class="bold">*db:</span> Database to set the value to.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> Stored <code>struct tm *</code> representing the time that this key will expire, or NULL if not found.</p><h3 class="perma" id="ol_scoop">ol_scoop <a href="#ol_scoop">&para;</a></h3><pre><code>int ol_scoop(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Removes an object from the database. Get that crap out of the mayo jar.</p><p><span class="bold">*db:</span> Database to remove the value from.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 on success, and 1 or 2 if the object could not be deleted.</p><h3 class="perma" id="ol_uptime">ol_uptime <a href="#ol_uptime">&para;</a></h3><pre><code>int ol_uptime(ol_database *db);
+</code></pre><p>Gets the time, in seconds, that a database has been up.</p><p><span class="bold">*db:</span> Database to retrieve value from.</p><p><span class="bold">Returns:</span> Uptime in seconds since database initialization.</p><h3 class="perma" id="ol_spoil">ol_spoil <a href="#ol_spoil">&para;</a></h3><pre><code>int ol_spoil(ol_database *db, const char *key, size_t klen, struct tm *expiration_date);
+</code></pre><p>Sets the expiration value of a key. Will fail if no <a href="#ol_bucket">ol_bucket</a> under the chosen key exists.</p><p><span class="bold">*db:</span> Database to set the value to.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">expiration_date:</span> The <b>UTC</b> time to set the expiration to.</p><p><span class="bold">Returns:</span> 0 upon success, 1 if otherwise.</p><h3 class="perma" id="ol_ht_bucket_max">ol_ht_bucket_max <a href="#ol_ht_bucket_max">&para;</a></h3><pre><code>int ol_ht_bucket_max(size_t ht_size);
+</code></pre><p>Does some <code>sizeof</code> witchery to return the maximum current size of the database. This is mostly an internal function, exposed to reduce code duplication.</p><p><span class="bold">*ht_size:</span> The size you want to divide by <code>sizeof(ol_bucket)</code>.</p><p><span class="bold">Returns:</span> The maximum possible bucket slots for db.</p><h3 class="perma" id="ol_prefix_match">ol_prefix_match <a href="#ol_prefix_match">&para;</a></h3><pre><code>int ol_prefix_match(ol_database *db, const char *prefix, size_t plen, ol_val_array *data);
+</code></pre><p>Returns values of keys that match a given prefix.</p><p><span class="bold">*db:</span> Database to retrieve values from.</p><p><span class="bold">*prefix:</span> The prefix to attempt matches on.</p><p><span class="bold">plen:</span> The length of the prefix.</p><p><span class="bold">*data:</span> A pointer to an <code>ol_val_array</code> object where the list of values will be stored. <strong>Both the list and it's items must be freed after use.</strong></p><p><span class="bold">Returns:</span> -1 on failure and a positive integer representing the number of matched prefices in the database.</p><h3 class="perma" id="ol_exists">ol_exists <a href="#ol_exists">&para;</a></h3><pre><code>int ol_exists(ol_database *db, const char *key, size_t klen);
+</code></pre><p>Returns whether the given key exists on the database</p><p><span class="bold">*db:</span> Database the key should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 if the key exists, 1 otherwise.</p>                </div>
+            </div>
+        </div>
+    </div>
+
+
+        </div>
+        <div id="busted_pixel">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUA/wA0XsCoAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==">
+        </div>
+        
+    </body>
+    <footer>
+        <div class="grid grid-pad">
+            <div class="col-1-2">
+                <div class="content">
+                    <ul>
+                        <li>&copy; Copyright 2014, <a href="http://qpfiffer.com/">Quinlan Pfiffer</a>, <a href="http://kyte.io/">Kyle Terry</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-1-2">
+                <div class="pull-right content">
+                    <ul>
+                        <li><a href="http://www.redbubble.com/people/qpfiffer/works/11380090-olegdb-graphics">Merch</a></li>
+                        <li><a href="/credits.html">Credits</a></li>
+                        <li>Contact: <a href="mailto:shithouse@goatse.cx">shithouse@goatse.cx</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-30510579-4']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+         ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+    </script>
+    
+</html>
