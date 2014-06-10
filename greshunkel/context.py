@@ -85,13 +85,13 @@ def build_doc_context(default_context):
     output = subprocess.check_output("cd OlegDB && git tag --list", shell=True)
     default_context['docs'] = {}
     default_context['ALL_VERSIONS'] = []
-    versions = [output.strip()]
+    versions = sorted(output.strip().split("\n"))
     versions.append("master")
 
     for version in versions:
         print "Checking out {}".format(version)
         cmd = "cd OlegDB && git checkout {} &> /dev/null".format(version)
-        subprocess.call(cmd, shell=True)
+        subprocess.check_output(cmd, shell=True)
         headers = ["oleg.h", "defs.h"]
         headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
         version_context = {}
