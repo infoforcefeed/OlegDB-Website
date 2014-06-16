@@ -12,7 +12,7 @@ html {
 }
 a {
     text-decoration: none;
-    color: #510922;
+    color: #3570C3;
 }
 header h1 a {
     vertical-align: middle;
@@ -27,6 +27,9 @@ a:hover {
 }
 header {
     padding-bottom: 1em;
+}
+header a, footer a {
+    color: #510922;
 }
 header img {
     display: inline;
