@@ -2,8 +2,8 @@ from greshunkel.build import POSTS_DIR
 from greshunkel.utils import parse_variable
 from greshunkel.slimdown import Slimdown
 
-import subprocess
 from os import listdir, walk
+import subprocess, re
 
 INCLUDE_DIR = "./OlegDB/include/"
 DOCUMENTATION_DIR = "./OlegDB/docs/"
@@ -89,31 +89,45 @@ def try_to_build_documentation_tree(default_context):
     # It's the mic wrecker, Inspector, bad man
     # Wu-Tang Clan, 7th Chamber.
     def _build_tree(directory):
+        only_name = directory.split("/")[-1]
         to_return = {
             "children": [],
-            "name": directory,
+            "name": only_name,
             "body": "",
             "nav": ""
         }
 
         for _, dirs, files in walk(directory):
             for dir_name in dirs:
-                to_return.append(_build_tree(dir_name))
+                to_return["children"].append(_build_tree(directory + "/" + dir_name))
 
             for file_name in files:
-                if not file_name.endswith(".md"):
+                if not file_name.endswith(".markdown"):
                     continue
-                opened = open(file_name)
+                subsection_name = re.compile(r'[a-zA-Z][a-zA-Z_]*')
+                thing = subsection_name.search(file_name)
+                slug = thing.group().lower()
+                name = thing.group().replace("_", " ")
+                rendered_section_name = \
+                    '<h2 class="perma" id="{slug}">{name} <a href="#{slug}">&para;</a></h2>'.format(
+                        slug=slug, name=name)
+
+                opened = open(directory + "/" + file_name)
                 all_text = opened.read()
 
                 slimmin = Slimdown()
-                to_return["body"].append(slimmin.render(all_text))
-                all_text.close()
-        to_return["body"] = '<div class="doc_chunk">' + to_return["body"] + "</div>"
+                to_return["body"] = ''.join([to_return["body"], rendered_section_name, slimmin.render(all_text)])
+                to_return["nav"] = ''.join([to_return["nav"], '<li><a href="#{slug}">{name}</a></li>'.format(slug=slug, name=name)])
+                opened.close()
+        to_return["body"] = ''.join(['<div class="doc_chunk">', to_return["body"], "</div>"])
+        master_nav = '<a href="#{slug}">{name}</a>'.format(slug=only_name.lower().replace(" ", "_"), name=only_name)
+        to_return["nav"] = "<li>{master_nav}<ul>{nav}</ul></li>".format(master_nav=master_nav, nav=to_return["nav"])
+
+        return to_return
 
     for _, dirs, _ in walk(DOCUMENTATION_DIR):
         for x in dirs:
-            root.append(_build_tree(x))
+            root.append(_build_tree(DOCUMENTATION_DIR + x))
 
     return root
 
@@ -126,8 +140,15 @@ def build_doc_context(default_context):
 
     # Prepare a default documentation for versions pre 0.1.2
     default_documentation_html = open("./templates/documentation_default.html")
-    default_context['DEFAULT_DOCUMENTATION'] = default_documentation_html.read()
+    default_documentation_nav_html = open("./templates/documentation_default_nav.html")
+    DEFAULT_DOCUMENTATION = to_return = [{
+        "children": [],
+        "name": "Overview",
+        "body": default_documentation_html.read(),
+        "nav": default_documentation_nav_html.read()
+    }]
     default_documentation_html.close()
+    default_documentation_nav_html.close()
 
     for version in versions:
         print "Checking out {}".format(version)
@@ -198,6 +219,10 @@ def build_doc_context(default_context):
             default_context['EXTRACTED_VERSION'] = extracted_version
         default_context['docs'][extracted_version] = version_context
         default_context['ALL_VERSIONS'].append(extracted_version)
-        try_to_build_documentation_tree(default_context)
+        handwritten = try_to_build_documentation_tree(default_context)
+        if len(handwritten) != 0:
+            default_context["docs"][extracted_version]["DEFAULT_DOCUMENTATION"] = handwritten
+        else:
+            default_context["docs"][extracted_version]["DEFAULT_DOCUMENTATION"] = DEFAULT_DOCUMENTATION
 
     return default_context
