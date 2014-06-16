@@ -87,6 +87,11 @@ def build_doc_context(default_context):
     default_context['ALL_VERSIONS'] = []
     versions = sorted(output.strip().split("\n"))
     versions.append("master")
+    # Prepare a default documentation for versions pre 0.1.2
+
+    default_documentation_html = open("./templates/documentation_default.html")
+    default_context['DEFAULT_DOCUMENTATION'] = default_documentation_html.read()
+    default_documentation_html.close()
 
     for version in versions:
         print "Checking out {}".format(version)
