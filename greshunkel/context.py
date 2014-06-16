@@ -3,8 +3,10 @@ from greshunkel.utils import parse_variable
 from greshunkel.slimdown import Slimdown
 
 import subprocess
-from os import listdir
+from os import listdir, walk
 
+INCLUDE_DIR = "./OlegDB/include/"
+DOCUMENTATION_DIR = "./OlegDB/docs/"
 DEFAULT_LANGUAGE = "en"
 # Question: Hey qpfiffer, why is this indented all weird?
 # Man I don't know leave me alone.
@@ -80,15 +82,49 @@ def build_blog_context(default_context):
     default_context['POSTS'] = sorted(default_context['POSTS'], key=lambda x: x["date"], reverse=True)
     return default_context
 
+def try_to_build_documentation_tree(default_context):
+    root = []
+
+    # Murderous material, made by a madman
+    # It's the mic wrecker, Inspector, bad man
+    # Wu-Tang Clan, 7th Chamber.
+    def _build_tree(directory):
+        to_return = {
+            "children": [],
+            "name": directory,
+            "body": "",
+            "nav": ""
+        }
+
+        for _, dirs, files in walk(directory):
+            for dir_name in dirs:
+                to_return.append(_build_tree(dir_name))
+
+            for file_name in files:
+                if not file_name.endswith(".md"):
+                    continue
+                opened = open(file_name)
+                all_text = opened.read()
+
+                slimmin = Slimdown()
+                to_return["body"].append(slimmin.render(all_text))
+                all_text.close()
+        to_return["body"] = '<div class="doc_chunk">' + to_return["body"] + "</div>"
+
+    for _, dirs, _ in walk(DOCUMENTATION_DIR):
+        for x in dirs:
+            root.append(_build_tree(x))
+
+    return root
+
 def build_doc_context(default_context):
-    include_dir = "./OlegDB/include/"
     output = subprocess.check_output("cd OlegDB && git tag --list", shell=True)
     default_context['docs'] = {}
     default_context['ALL_VERSIONS'] = []
     versions = sorted(output.strip().split("\n"))
     versions.append("master")
-    # Prepare a default documentation for versions pre 0.1.2
 
+    # Prepare a default documentation for versions pre 0.1.2
     default_documentation_html = open("./templates/documentation_default.html")
     default_context['DEFAULT_DOCUMENTATION'] = default_documentation_html.read()
     default_documentation_html.close()
@@ -98,7 +134,7 @@ def build_doc_context(default_context):
         cmd = "cd OlegDB && git checkout {} &> /dev/null".format(version)
         subprocess.check_output(cmd, shell=True)
         headers = ["oleg.h", "defs.h"]
-        headers = map(lambda x: "{}/{}".format(include_dir, x), headers)
+        headers = map(lambda x: "{}/{}".format(INCLUDE_DIR, x), headers)
         version_context = {}
         for header_file in headers:
             try:
@@ -162,5 +198,6 @@ def build_doc_context(default_context):
             default_context['EXTRACTED_VERSION'] = extracted_version
         default_context['docs'][extracted_version] = version_context
         default_context['ALL_VERSIONS'].append(extracted_version)
+        try_to_build_documentation_tree(default_context)
 
     return default_context
