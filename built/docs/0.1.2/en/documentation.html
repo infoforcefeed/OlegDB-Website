@@ -56,7 +56,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
             <div class="content">
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <ul>
-<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#lz4_compression">LZ4 Compression</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#hash_table">Hash Table</a></li></ul></li>                </ul>
+<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#lz4_compression">LZ4 Compression</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#hash_table">Hash Table</a></li></ul></li>                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -82,7 +82,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                     <li>
                         <a href="#functions">Functions</a>
                         <ul>
-<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ds">ol_unjar_ds</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li><li><a href="#ol_prefix_match">ol_prefix_match</a></li><li><a href="#ol_exists">ol_exists</a></li>                        </ul>
+<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ds">ol_unjar_ds</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li><li><a href="#ol_prefix_match">ol_prefix_match</a></li><li><a href="#ol_exists">ol_exists</a></li><li><a href="#ol_get_bucket">ol_get_bucket</a></li>                        </ul>
                     </li>
                 </ul>
             </div>
@@ -132,60 +132,174 @@ $ curl http://localhost:8080/turtles/red
 </code></pre></p><p>Deleting keys can be done by using DELETE:</p><p><pre><code>
 $ curl -X DELETE http://localhost:8080/turtles/red
 </code></pre></p><p>You can also tell Oleg what the <code>Content-Type</code> of that key's value is:</p><p><pre><code>
-$ curl -X POST -H "Content-Type: text/html" -d '<p>Raphael</p>' http://localhost:8080/turtles/red
+$ curl -X POST -H "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/red
 </code></pre></p><p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the
 <code>X-OlegDB-use-by</code> header to a *UTC* POSIX timestamp .</p><p><pre><code>
 $ curl -X POST \
 -H "X-OlegDB-use-by: $(date +%s)" \
 -H "Content-Type: application/json" \
 -d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
-> POST /turtles/Johnny HTTP/1.1
-> User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
-> Host: localhost:8080
-> Accept: */*
-> X-OlegDB-use-by: 1394323192
-> Content-Type: application/json
-> Content-Length: 27
-> 
-<ul><li>upload completely sent off: 27out of 27 bytes</li></ul>
-< HTTP/1.1 200 OK
-< Server: OlegDB/fresh_cuts_n_jams
-< Content-Type: text/plain
-< Connection: close
-< Content-Length: 7
-<
+&gt; POST /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; X-OlegDB-use-by: 1394323192
+&gt; Content-Type: application/json
+&gt; Content-Length: 27
+&gt;
+\* upload completely sent off: 27out of 27 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: text/plain
+&lt; Connection: close
+&lt; Content-Length: 7
+&lt;
 無駄
 </code></pre></p><p>And then when we try to get it back out again:</p><p><pre><code>
 $ curl -v http://localhost:8080/turtles/Johnny
-> GET /turtles/Johnny HTTP/1.1
-> User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
-> Host: localhost:8080
-> Accept: */*
->
-< HTTP/1.1 404 Not Found
-< Status: 404 Not Found
-< Server: OlegDB/fresh_cuts_n_jams
-< Content-Length: 26
-< Connection: close
-< Content-Type: text/plain
-<
+&gt; GET /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt;
 These aren't your ghosts.
 </code></pre></p><p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We
 used the bash command <code>date +%s</code> which returns a timestamp. Then, immediately
 trying to access the key again results in a 404, because the key expired.</p><p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p><p><pre><code>
 $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
-> HEAD /turtles/Johnny HTTP/1.1
-> User-Agent: curl/7.35.0
-> Host: localhost:8080
-> Accept: */*
->
-< HTTP/1.1 200 OK
-<ul><li>Server OlegDB/fresh_cuts_n_jams is not blacklisted</li></ul>
-< Server: OlegDB/fresh_cuts_n_jams
-< Content-Length: 0
-< Content-Type: application/json
-< Expires: 1395368972
-<
+&gt; HEAD /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.35.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+\* Server OlegDB/fresh_cuts_n_jams is not blacklisted
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 0
+&lt; Content-Type: application/json
+&lt; Expires: 1395368972
+&lt;
+</code></pre></p><p></p><h2 class="perma" id="cursor_iteration">Cursor Iteration <a href="#cursor_iteration">&para;</a></h2><p>In <code>0.1.2</code>, we added the ability to iterate through keys inserted into the
+database via the frontend. It's a pretty simple interface and follows the rest
+of the current idioms.</p><p>Each cursor operand is of the form <code>/database/key/operand</code>. In some
+operands (<code>_last</code> and <code>_first</code>) the <code>key</code> option is ignored. Using them is
+trivial.</p><p>Using any of the operands will return both the value of the key you requested
+(<code>_next</code> will return the next value, <code>_prev</code> will return the previous value, etc.)
+and the HTTP header <code>X-OlegDB-Key</code> followed by the key paired to the value you
+just retrieved. For example, say we have two keys in the database, <code>aaa</code> and
+<code>bbb</code>. To begin with, I can request the first key in the database:</p><p><pre><code>
+$ curl -v localhost:8080/oleg//_first
+&gt; GET /oleg//_first HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: application/x-www-form-urlencoded
+&lt; Content-Length: 22
+&lt; Connection: close
+&lt; X-OlegDB-Key: aaa
+&lt; 
+I am the value of aaa.
+</code></pre></p><p>As you can see, the key <code>aaa</code> is the first one in the tree of ordered keys. If
+you're paying attention, you've also noticed that I've omitted the parameter
+between the <code>database</code> specifier and the cursor operand <code>_first</code>. This is
+because the <code>key</code> is not used in this command. It will, however, be used in
+the next:</p><p><pre><code>
+$ curl -v localhost:8080/oleg/aaa/_next
+&gt; GET /oleg/aaa/_next HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: application/x-www-form-urlencoded
+&lt; Content-Length: 22
+&lt; Connection: close
+&lt; X-OlegDB-Key: bbb
+&lt; 
+I am the value of bbb.
+</code></pre></p><p>Logically, the key <code>bbb</code> follows the key <code>aaa</code>. Nice. In our request, we asked
+Oleg for the key after (<code>_next</code>) the key <code>aaa</code>. The value of the next key was
+returned, and we can see the header <code>X-OlegDB-Key</code> is set to the key that
+corresponds to that value. Lets see what happens if we try to get the next key,
+knowing that we only have two keys (<code>aaa</code> and <code>bbb</code>) in our database:</p><p><pre><code>
+$ curl -v localhost:8080/oleg/bbb/_next
+&gt; GET /oleg/bbb/_next HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt; 
+These aren't your ghosts.
+</code></pre></p><p>We get a 404 statuscode and a message to match. This informs us that we cannot
+iterate any farther and that we have reached the end of the list.</p><p>In addition to these to commands, you can use <code>_last</code> to find the last key in
+the database and <code>_prev</code> to iterate backwards. The usage of these commands is
+identical to those above:</p><p><pre><code>
+$ curl -v localhost:8080/oleg//_last
+&gt; GET /oleg//_last HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: application/x-www-form-urlencoded
+&lt; Content-Length: 22
+&lt; Connection: close
+&lt; X-OlegDB-Key: bbb
+&lt; 
+I am the value of bbb.
+$ curl -v localhost:8080/oleg/bbb/_prev
+&gt; GET /oleg/bbb/_prev HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: application/x-www-form-urlencoded
+&lt; Content-Length: 22
+&lt; Connection: close
+&lt; X-OlegDB-Key: aaa
+&lt; 
+I am the value of aaa.
+$ curl -v localhost:8080/oleg/aaa/_prev
+<ul><li>About to connect() to localhost port 8080 (#0)</li><li>Trying 127.0.0.1... connected</li></ul>
+&gt; GET /oleg/aaa/_prev HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt; 
+These aren't your ghosts.
 </code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
 for keeping values on disk in a smaller size while maintaining a low-impact on
 insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
@@ -254,12 +368,11 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
     size_t              data_offset;
     size_t              data_size;
     size_t              original_size;
-    uint32_t            hash;
     struct ol_bucket    *next; /* The next ol_bucket in this chain, if any */
     struct tm           *expiration;
     ol_splay_tree_node  *node;
 } ol_bucket;
-</code></pre><p>This is the object stored in the database's hashtable. Contains references to value, key, etc.</p><p><span class="bold">key[KEY_SIZE]:</span> The key used for this bucket.</p><p><span class="bold">klen:</span> Length of the key.</p><p><span class="bold">*content_type:</span> The content-type of this object. If using the server, this defaults to "application/octet-stream".</p><p><span class="bold">ctype_size:</span> Length of the string representing content-type.</p><p><span class="bold">data_offset:</span> Location of this key's value (data) in the values file on disk.</p><p><span class="bold">data_size:</span> Length of the value (data) in bytes. This is the size of the data stored in memory.</p><p><span class="bold">original_size:</span> Length of the value (data) in bytes. This is the original length of the data we receieved, non-compressed.</p><p><span class="bold">hash:</span> Hashed value of this key.</p><p><span class="bold">next:</span> Collisions are resolved via linked list. This contains the pointer to the next object in the chain, or NULL.</p><p><span class="bold">expiration:</span> The POSIX timestamp when this key will expire.</p><p><span class="bold">*node:</span> A pointer to this objects node in the splay tree.</p><h3 class="perma" id="ol_meta">ol_meta <a href="#ol_meta">&para;</a></h3><pre><code>typedef struct ol_meta {
+</code></pre><p>This is the object stored in the database's hashtable. Contains references to value, key, etc.</p><p><span class="bold">key[KEY_SIZE]:</span> The key used for this bucket.</p><p><span class="bold">klen:</span> Length of the key.</p><p><span class="bold">*content_type:</span> The content-type of this object. If using the server, this defaults to "application/octet-stream".</p><p><span class="bold">ctype_size:</span> Length of the string representing content-type.</p><p><span class="bold">data_offset:</span> Location of this key's value (data) in the values file on disk.</p><p><span class="bold">data_size:</span> Length of the value (data) in bytes. This is the size of the data stored in memory.</p><p><span class="bold">original_size:</span> Length of the value (data) in bytes. This is the original length of the data we receieved, non-compressed.</p><p><span class="bold">next:</span> Collisions are resolved via linked list. This contains the pointer to the next object in the chain, or NULL.</p><p><span class="bold">expiration:</span> The POSIX timestamp when this key will expire.</p><p><span class="bold">*node:</span> A pointer to this objects node in the splay tree.</p><h3 class="perma" id="ol_meta">ol_meta <a href="#ol_meta">&para;</a></h3><pre><code>typedef struct ol_meta {
     time_t      created;
     int         key_collisions;
 } ol_meta;
@@ -300,7 +413,9 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
 </code></pre><p>Sets the expiration value of a key. Will fail if no <a href="#ol_bucket">ol_bucket</a> under the chosen key exists.</p><p><span class="bold">*db:</span> Database to set the value to.</p><p><span class="bold">*key:</span> The key to use.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">expiration_date:</span> The <b>UTC</b> time to set the expiration to.</p><p><span class="bold">Returns:</span> 0 upon success, 1 if otherwise.</p><h3 class="perma" id="ol_ht_bucket_max">ol_ht_bucket_max <a href="#ol_ht_bucket_max">&para;</a></h3><pre><code>int ol_ht_bucket_max(size_t ht_size);
 </code></pre><p>Does some <code>sizeof</code> witchery to return the maximum current size of the database. This is mostly an internal function, exposed to reduce code duplication.</p><p><span class="bold">*ht_size:</span> The size you want to divide by <code>sizeof(ol_bucket)</code>.</p><p><span class="bold">Returns:</span> The maximum possible bucket slots for db.</p><h3 class="perma" id="ol_prefix_match">ol_prefix_match <a href="#ol_prefix_match">&para;</a></h3><pre><code>int ol_prefix_match(ol_database *db, const char *prefix, size_t plen, ol_val_array *data);
 </code></pre><p>Returns values of keys that match a given prefix.</p><p><span class="bold">*db:</span> Database to retrieve values from.</p><p><span class="bold">*prefix:</span> The prefix to attempt matches on.</p><p><span class="bold">plen:</span> The length of the prefix.</p><p><span class="bold">*data:</span> A pointer to an <code>ol_val_array</code> object where the list of values will be stored. <strong>Both the list and it's items must be freed after use.</strong></p><p><span class="bold">Returns:</span> -1 on failure and a positive integer representing the number of matched prefices in the database.</p><h3 class="perma" id="ol_exists">ol_exists <a href="#ol_exists">&para;</a></h3><pre><code>int ol_exists(ol_database *db, const char *key, size_t klen);
-</code></pre><p>Returns whether the given key exists on the database</p><p><span class="bold">*db:</span> Database the key should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 if the key exists, 1 otherwise.</p>            </div>
+</code></pre><p>Returns whether the given key exists on the database</p><p><span class="bold">*db:</span> Database the key should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 if the key exists, 1 otherwise.</p><h3 class="perma" id="ol_get_bucket">ol_get_bucket <a href="#ol_get_bucket">&para;</a></h3><pre><code>ol_bucket *ol_get_bucket(const ol_database *db, const char *key, const size_t klen,
+                         char (*_key)[KEY_SIZE], size_t *_klen);
+</code></pre><p>Utility function to retrieve an <a href="#ol_bucket">ol_bucket</a> object from the database for a given key.</p><p><span class="bold">*db:</span> Database the bucket should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">**_key:</span> The truncated key will be filled in at this address.</p><p><span class="bold">*_klen:</span> The length of the truncated key.</p><p><span class="bold">Returns:</span> The bucket if it exists, otherwise NULL.</p>            </div>
         </div>
     </div>
 
