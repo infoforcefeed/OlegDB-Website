@@ -188,7 +188,7 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
 &lt;
 </code></pre></p><p></p><h2 class="perma" id="cursor_iteration">Cursor Iteration <a href="#cursor_iteration">&para;</a></h2><p>In <code>0.1.2</code>, we added the ability to iterate through keys inserted into the
 database via the frontend. It's a pretty simple interface and follows the rest
-of the current idioms.</p><p>Each cursor operand is of the form <code>/database/key/operand</code>. In some
+of the current URL idioms.</p><p>Each cursor operand is of the form <code>/database/key/operand</code>. In some
 operands (<code>_last</code> and <code>_first</code>) the <code>key</code> option is ignored. Using them is
 trivial.</p><p>Using any of the operands will return both the value of the key you requested
 (<code>_next</code> will return the next value, <code>_prev</code> will return the previous value, etc.)
@@ -201,14 +201,14 @@ $ curl -v localhost:8080/oleg//_first
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 200 OK
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Type: application/x-www-form-urlencoded
 &lt; Content-Length: 22
 &lt; Connection: close
 &lt; X-OlegDB-Key: aaa
-&lt; 
+&lt;
 I am the value of aaa.
 </code></pre></p><p>As you can see, the key <code>aaa</code> is the first one in the tree of ordered keys. If
 you're paying attention, you've also noticed that I've omitted the parameter
@@ -221,14 +221,14 @@ $ curl -v localhost:8080/oleg/aaa/_next
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 200 OK
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Type: application/x-www-form-urlencoded
 &lt; Content-Length: 22
 &lt; Connection: close
 &lt; X-OlegDB-Key: bbb
-&lt; 
+&lt;
 I am the value of bbb.
 </code></pre></p><p>Logically, the key <code>bbb</code> follows the key <code>aaa</code>. Nice. In our request, we asked
 Oleg for the key after (<code>_next</code>) the key <code>aaa</code>. The value of the next key was
@@ -241,14 +241,14 @@ $ curl -v localhost:8080/oleg/bbb/_next
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 404 Not Found
 &lt; Status: 404 Not Found
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Length: 26
 &lt; Connection: close
 &lt; Content-Type: text/plain
-&lt; 
+&lt;
 These aren't your ghosts.
 </code></pre></p><p>We get a 404 statuscode and a message to match. This informs us that we cannot
 iterate any farther and that we have reached the end of the list.</p><p>In addition to these to commands, you can use <code>_last</code> to find the last key in
@@ -260,14 +260,14 @@ $ curl -v localhost:8080/oleg//_last
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 200 OK
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Type: application/x-www-form-urlencoded
 &lt; Content-Length: 22
 &lt; Connection: close
 &lt; X-OlegDB-Key: bbb
-&lt; 
+&lt;
 I am the value of bbb.
 $ curl -v localhost:8080/oleg/bbb/_prev
 &gt; GET /oleg/bbb/_prev HTTP/1.1
@@ -275,30 +275,29 @@ $ curl -v localhost:8080/oleg/bbb/_prev
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 200 OK
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Type: application/x-www-form-urlencoded
 &lt; Content-Length: 22
 &lt; Connection: close
 &lt; X-OlegDB-Key: aaa
-&lt; 
+&lt;
 I am the value of aaa.
 $ curl -v localhost:8080/oleg/aaa/_prev
-<ul><li>About to connect() to localhost port 8080 (#0)</li><li>Trying 127.0.0.1... connected</li></ul>
 &gt; GET /oleg/aaa/_prev HTTP/1.1
 &gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
 &gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
 &gt; Host: localhost:8080
 &gt; Accept: */*
-&gt; 
+&gt;
 &lt; HTTP/1.1 404 Not Found
 &lt; Status: 404 Not Found
 &lt; Server: OlegDB/fresh_cuts_n_jams
 &lt; Content-Length: 26
 &lt; Connection: close
 &lt; Content-Type: text/plain
-&lt; 
+&lt;
 These aren't your ghosts.
 </code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
 for keeping values on disk in a smaller size while maintaining a low-impact on
