@@ -104,7 +104,7 @@ def try_to_build_documentation_tree(default_context):
             for file_name in files:
                 if not file_name.endswith(".markdown"):
                     continue
-                subsection_name = re.compile(r'[a-zA-Z][a-zA-Z_]*')
+                subsection_name = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*')
                 thing = subsection_name.search(file_name)
                 slug = thing.group().lower()
                 name = thing.group().replace("_", " ")
@@ -119,7 +119,14 @@ def try_to_build_documentation_tree(default_context):
                 to_return["body"] = ''.join([to_return["body"], rendered_section_name, slimmin.render(all_text)])
                 to_return["nav"] = ''.join([to_return["nav"], '<li><a href="#{slug}">{name}</a></li>'.format(slug=slug, name=name)])
                 opened.close()
-        to_return["body"] = ''.join(['<div class="doc_chunk">', to_return["body"], "</div>"])
+
+        # Build the thing for the main section
+        slug = only_name.lower().replace(" ", "_")
+        name = only_name.replace("_", " ")
+        rendered_section_name = \
+            '<h2 class="perma" id="{slug}">{name} <a href="#{slug}">&para;</a></h2>'.format(
+                slug=slug, name=name)
+        to_return["body"] = ''.join(['<div class="doc_chunk">', rendered_section_name, to_return["body"], "</div>"])
         master_nav = '<a href="#{slug}">{name}</a>'.format(slug=only_name.lower().replace(" ", "_"), name=only_name)
         to_return["nav"] = "<li>{master_nav}<ul>{nav}</ul></li>".format(master_nav=master_nav, nav=to_return["nav"])
 
