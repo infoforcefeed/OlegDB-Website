@@ -16,9 +16,7 @@ since I rewrote the database to use `mmap()` the second one hasn't really been a
 issue, but on-disk compression is still something nice to have. Given how easy
 LZ4 was to add to the project and how [fast it is](https://code.google.com/p/lz4/)
 this is basically a win-win.
-
 ### Implementation
-
 So, to get started I wrote a naive memory checking script in bash that you can
 look at [here.](https://github.com/infoforcefeed/OlegDB/blob/master/integrity_test/mem_usage.sh)
 The gist is that it uses Linux's [smap](http://www.mjmwired.net/kernel/Documentation/filesystems/proc.txt)
@@ -40,9 +38,7 @@ be complete the test box is spec'd thus:
 
 * FX-8350 Processor
 * 8GB of DDR3 at 1600MHz
-
 ### Results
-
 First, let's look at memory usage over time without LZ4 compression:
 
 <div id="normal_output" style="min-width: 300px; height: 300px; margin: 1em"><img src="/static/img/0004_no_lz4.png" /></div>
@@ -65,9 +61,7 @@ We get a much noisier line of memory usage, but a lowered range. This is kind of
 what I expect out of a compression algorithm: Small allocations in memory (or
 hopefully none) with better longterm results. We don't even broach 400kB here.
 Our baseline is slightly higher though, which is interesting.
-
 ### Conclusions
-
 This test is mostly a birds-eye view of memory usage and should be taken with a
 grain of salt. If I were to do this again I'd definitely use better memory
 checking to maybe check what pages are allocated per process rather than just mapped.
@@ -79,4 +73,4 @@ should enable LZ4 compression. For funsies here are the two graphs together:
 
 <script type="text/javascript" src="/static/js/standalone-framework.js"></script>
 <script type="text/javascript" src="/static/js/highcharts.js"></script>
-<script type="text/javascript" src="/static/js/0004_charts.js"</script>
+<script type="text/javascript" src="/static/js/0004_charts.js"></script>
