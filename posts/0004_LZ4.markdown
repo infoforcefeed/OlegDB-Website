@@ -4,8 +4,6 @@ author:Quinlan Pfiffer
 date: 2014-06-16
 ---
 
-### Abstract
-
 Way back in `0.1.1` we added the ability to compress your data using LZ4. Since
 I haven't written in a while and we'd never really measured the performance
 aspects of using LZ4, I figured now was as good a time as any. Segfaults are

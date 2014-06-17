@@ -53,7 +53,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
         </header>
         <div id="main_container">
             <div class="blog_container">
-<div class="grid grid-pad"><div class="col-1-1"><div class="content"><h2 class="post_title">Sloppily Measuring the Effects of LZ4 Compression</h2><p><span class="author_name"> 2014-06-16 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0004_LZ4.html#disqus_thread">Comments</a></span></p><p>### Abstract</p><p>Way back in <code>0.1.1</code> we added the ability to compress your data using LZ4. Since
+<div class="grid grid-pad"><div class="col-1-1"><div class="content"><h2 class="post_title">Sloppily Measuring the Effects of LZ4 Compression</h2><p><span class="author_name"> 2014-06-16 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0004_LZ4.html#disqus_thread">Comments</a></span></p><p>Way back in <code>0.1.1</code> we added the ability to compress your data using LZ4. Since
 I haven't written in a while and we'd never really measured the performance
 aspects of using LZ4, I figured now was as good a time as any. Segfaults are
 low, moral is high and <a href=https://scan.coverity.com/>coverity</a> isn't yelling at
@@ -62,7 +62,8 @@ it reduces the memory required to store items both on-disk and in-memory. Ever
 since I rewrote the database to use <code>mmap()</code> the second one hasn't really been an
 issue, but on-disk compression is still something nice to have. Given how easy
 LZ4 was to add to the project and how <a href=https://code.google.com/p/lz4/>fast it is</a>
-this is basically a win-win.</p><p>### Implementation</p><p>So, to get started I wrote a naive memory checking script in bash that you can
+this is basically a win-win.
+<h3>Implementation</h3></p><p>So, to get started I wrote a naive memory checking script in bash that you can
 look at <a href=https://github.com/infoforcefeed/OlegDB/blob/master/integrity_test/mem_usage.sh>here.</a>
 The gist is that it uses Linux's <a href=http://www.mjmwired.net/kernel/Documentation/filesystems/proc.txt>smap</a>
 subsystem that resides in <code>/proc</code> to grab memory usage of a process. I say naive
@@ -73,7 +74,8 @@ on 8 threads and let it go. <code>fill_fast()</code> creates random 16-byte stri
 them with random 100-byte values.</p><p>I ran two tests: One with <code>OL_F_LZ4</code> enabled and one without. To speed up the
 filling of the databases a little bit I also disabled <code>OL_F_AOL_FFLUSH</code>. This
 avoids <code>fflush()</code>ing the AOL file to disk and puts it's trust into <code>fsync()</code>.</p><p>Since this isn't a benchmark I'm not worried about time or anything, but just to
-be complete the test box is spec'd thus:</p><p><ul><li>FX-8350 Processor</li><li>8GB of DDR3 at 1600MHz</li></ul></p><p>### Results</p><p>First, let's look at memory usage over time without LZ4 compression:</p><p><div id="normal_output" style="min-width: 300px; height: 300px; margin: 1em"><img src="/static/img/0004_no_lz4.png" /></div></p><p>From the baseline you can tell that we start out usage at about 251,000kB and
+be complete the test box is spec'd thus:</p><p><ul><li>FX-8350 Processor</li><li>8GB of DDR3 at 1600MHz</li></ul>
+<h3>Results</h3></p><p>First, let's look at memory usage over time without LZ4 compression:</p><p><div id="normal_output" style="min-width: 300px; height: 300px; margin: 1em"><img src="/static/img/0004_no_lz4.png" /></div></p><p>From the baseline you can tell that we start out usage at about 251,000kB and
 quickly hit our hash-table limit and rehash. This triggers a rough doubling in
 memory usage, which is what we expect. Towards the end of the test with 100,000
 keys you can see we hit 520,000kB and stay there. Keep in mind that this is
@@ -84,7 +86,8 @@ usage compared to the last known usage amount. This results in some unique
 properties when we look at the results of the test with LZ4 compression enabled:</p><p><div id="lz4_output" style="min-width: 300px; height: 300px; margin: 1em"><img src="/static/img/0004_lz4.png" /></div></p><p>We get a much noisier line of memory usage, but a lowered range. This is kind of
 what I expect out of a compression algorithm: Small allocations in memory (or
 hopefully none) with better longterm results. We don't even broach 400kB here.
-Our baseline is slightly higher though, which is interesting.</p><p>### Conclusions</p><p>This test is mostly a birds-eye view of memory usage and should be taken with a
+Our baseline is slightly higher though, which is interesting.
+<h3>Conclusions</h3></p><p>This test is mostly a birds-eye view of memory usage and should be taken with a
 grain of salt. If I were to do this again I'd definitely use better memory
 checking to maybe check what pages are allocated per process rather than just mapped.</p><p>Mostly though the results are positive and I think if you're using Oleg you
 should enable LZ4 compression. For funsies here are the two graphs together:</p><p><div id="both_output" style="min-width: 300px; height: 300px; margin: 1em"><img src="/static/img/0004_both.png" /></div></p><p><script type="text/javascript" src="/static/js/standalone-framework.js"></script>

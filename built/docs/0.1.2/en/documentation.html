@@ -58,7 +58,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <h1>OlegDB</h1>
                 <ul>
-<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#lz4_compression">LZ4 Compression</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#hash_table">Hash Table</a></li></ul></li>                </ul>
+<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li></ul></li>                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -301,10 +301,13 @@ $ curl -v localhost:8080/oleg/aaa/_prev
 &lt; Content-Type: text/plain
 &lt;
 These aren't your ghosts.
-</code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
-for keeping values on disk in a smaller size while maintaining a low-impact on
-insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
-detail.</p><p></p><h2 class="perma" id="splay_trees">Splay Trees <a href="#splay_trees">&para;</a></h2><p>In addition to the hash table, OlegDB also keeps track of currently inserted
+</code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
+are <code>O(1)</code>. Since we use linked lists to handle collisions <a href=http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists>see here</a> 
+the worst-case scenario for operations is <code>O(n)</code>. This usually doesn't happen.</p><p>Rehashing happens when we run out of space. To handle this, we currently
+allocate a new block of memory, rehash all keys and move everything over. This
+is a blocking operation. If you know you're going to have a lot of keys and want
+to avoid this, you can tweak the <a href=#HASH_MALLOC>HASH_MALLOC</a> parameter before compilation.
+This controls the default amount of space that OlegDB will allocate.</p><p></p><h2 class="perma" id="splay_trees">Splay Trees <a href="#splay_trees">&para;</a></h2><p>In addition to the hash table, OlegDB also keeps track of currently inserted
 nodes via a <a href=https://en.wikipedia.org/wiki/Splay_tree>splay tree.</a> Going over
 the intricacies of splay trees is a little outside the scope of this
 documentation, but we do use it for several things and for several reasons.</p><p>In their simplified form, splay trees are just a specialized form of a
@@ -324,13 +327,10 @@ pre-ordered fashion will show the user when the keys were inserted.</p><p>Beside
 Since binary trees are inherently sorted, we can iterate through one much faster
 than we could a list.</p><p>Splay trees can be turned on/off by changing how you open a database. See
 <a href=#ol_feature_flags>ol_feature_flags</a> for a complete list of toggleable
-parameters.</p><p></p><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
-are <code>O(1)</code>. Since we use linked lists to handle collisions <a href=http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists>see here</a> 
-the worst-case scenario for operations is <code>O(n)</code>. This usually doesn't happen.</p><p>Rehashing happens when we run out of space. To handle this, we currently
-allocate a new block of memory, rehash all keys and move everything over. This
-is a blocking operation. If you know you're going to have a lot of keys and want
-to avoid this, you can tweak the <a href=#HASH_MALLOC>HASH_MALLOC</a> parameter before compilation.
-This controls the default amount of space that OlegDB will allocate.</p><p></p></div>            <h1>liboleg</h1>
+parameters.</p><p></p><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
+for keeping values on disk in a smaller size while maintaining a low-impact on
+insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
+detail.</p><p></p></div>            <h1>liboleg</h1>
 
             <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>

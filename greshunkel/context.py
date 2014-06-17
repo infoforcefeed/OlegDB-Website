@@ -101,7 +101,7 @@ def try_to_build_documentation_tree(default_context):
             for dir_name in dirs:
                 to_return["children"].append(_build_tree(directory + "/" + dir_name))
 
-            for file_name in files:
+            for file_name in sorted(files):
                 if not file_name.endswith(".markdown"):
                     continue
                 subsection_name = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*')

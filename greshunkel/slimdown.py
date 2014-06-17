@@ -11,7 +11,7 @@ class Slimdown(object):
             (r'````([^`]*)````' ,  r'<pre><code>\1</code></pre>'),
             (r'`([^`]*)`' ,  r'<code>\1</code>'),
             (r'\[([^\[]+)\]\(([^\)]+)\)' ,  r'<a href=\2>\1</a>'),
-            (r'^(#+)(.*)',  self.header),
+            (r'\n(#+)(.*)',  self.header),
             (r'(\*\*|__)(.*?)\1' ,  r'<strong>\2</strong>'),
             #(r'(\*|_)(.*?)\1' ,  r'<em>\2</em>'),
             (r'\~\~(.*?)\~\~' ,  r'<del>\1</del>'),
