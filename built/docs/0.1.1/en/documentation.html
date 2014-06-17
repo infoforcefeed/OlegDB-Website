@@ -20,6 +20,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
         <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
         <link rel="stylesheet" media="all" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/documentation.css" />
+<link rel="stylesheet" href="/static/css/prism.css"/>
 
 
         <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
@@ -94,7 +95,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 </ul>
             </div>
         </div>
-        <div class="col-9-12">
+        <div class="language-bash col-9-12">
             <div class="content">
                 <ul id="olegdb_versions">
 <li><a href="/docs/0.1.0/en/documentation.html">0.1.0/</a></li><li><a href="/docs/0.1.1/en/documentation.html">0.1.1/</a></li><li><a href="/docs/0.1.2/en/documentation.html">0.1.2/</a></li>                </ul>
@@ -191,7 +192,7 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
 </div>
             <h1>liboleg</h1>
 
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
 <h3 class="perma" id="VERSION">VERSION <a href="#VERSION">&para;</a></h3><pre><code>#define VERSION "0.1.1"
 </code></pre><p>The current version of the OlegDB.</p><h3 class="perma" id="KEY_SIZE">KEY_SIZE <a href="#KEY_SIZE">&para;</a></h3><pre><code>#define KEY_SIZE 250
@@ -200,11 +201,11 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
 </code></pre><p>The maximum length of a database's path.</p><h3 class="perma" id="DB_NAME_SIZE">DB_NAME_SIZE <a href="#DB_NAME_SIZE">&para;</a></h3><pre><code>#define DB_NAME_SIZE 64
 </code></pre><p>Database maximum name length.</p><h3 class="perma" id="DEVILS_SEED">DEVILS_SEED <a href="#DEVILS_SEED">&para;</a></h3><pre><code>#define DEVILS_SEED 666
 </code></pre><p>The seed to feed into the murmur3 algorithm.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
 <h3 class="perma" id="ol_val_array">ol_val_array <a href="#ol_val_array">&para;</a></h3><pre><code>typedef char ** ol_val_array;
 </code></pre><p>This is shorthand for a pointer to an array of values, typically the same kind of values stored in an <a href="#ol_bucket">ol_bucket</a>->data_ptr object.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="enums">Enums <a href="#enums">&para;</a></h2>
 <h3 class="perma" id="ol_feature_flags">ol_feature_flags <a href="#ol_feature_flags">&para;</a></h3><pre><code>typedef enum {
     OL_F_APPENDONLY     = 1 << 0,
@@ -218,7 +219,7 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
     OL_S_AOKAY          = 1
 } ol_state_flags;
 </code></pre><p>State flags tell the database what it should be doing.</p><p><span class="bold">OL_S_STARTUP:</span> Startup state. The DB is starting, duh.</p><p><span class="bold">OL_S_AOKAY:</span> The normal operating state, the database is a-okay</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="structures">Structures <a href="#structures">&para;</a></h2>
 <h3 class="perma" id="ol_bucket">ol_bucket <a href="#ol_bucket">&para;</a></h3><pre><code>typedef struct ol_bucket {
     char                key[KEY_SIZE]; /* The key used to reference the data */
@@ -256,7 +257,7 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
     time_t uptime;
 } ol_meta;
 </code></pre><p>Structure used to record meta-information about the database.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="functions">Functions <a href="#functions">&para;</a></h2>
 <h3 class="perma" id="ol_open">ol_open <a href="#ol_open">&para;</a></h3><pre><code>ol_database *ol_open(char *path, char *name, int features);
 </code></pre><p>Opens a database for use.</p><p><span class="bold">*path:</span> The directory where the database will be stored.</p><p><span class="bold">*name:</span> The name of the database. This is used to create the dumpfile, and keep track of the database.</p><p><span class="bold">features:</span> Features to enable when the database is initialized. You can logically OR multiple features together.</p><p><span class="bold">Returns:</span> A new database object.</p><h3 class="perma" id="ol_close">ol_close <a href="#ol_close">&para;</a></h3><pre><code>int ol_close(ol_database *database);
@@ -315,5 +316,7 @@ $ curl -v -X HEAD http://localhost:8080/turtles/Johnny
          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
          })();
     </script>
-    
+    <script type="text/javascript" src="/static/js/prism.js"></script>
+
+
 </html>

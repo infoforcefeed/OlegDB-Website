@@ -4,6 +4,7 @@ xXx TITLE xXx
 xXx TTYL xXx
 xXx SCRIPTS xXx
 <link rel="stylesheet" href="/static/css/documentation.css" />
+<link rel="stylesheet" href="/static/css/prism.css"/>
 xXx TTYL xXx
 xXx CONTENT xXx
     <div class="grid grid-pad">
@@ -61,7 +62,7 @@ xXx CONTENT xXx
                 </ul>
             </div>
         </div>
-        <div class="col-9-12">
+        <div class="language-bash col-9-12">
             <div class="content">
                 <ul id="olegdb_versions">
                     xXx LOOP sconce ALL_VERSIONS xXx
@@ -74,7 +75,7 @@ xXx CONTENT xXx
             xXx BBL xXx
             <h1>liboleg</h1>
 
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
                 xXx LOOP macro DEFINE xXx
                 <h3 class="perma" id="xXx macro$name xXx">xXx macro$name xXx <a href="#xXx macro$name xXx">&para;</a></h3>
@@ -82,7 +83,7 @@ xXx CONTENT xXx
                 <p>xXx macro$DESCRIPTION xXx</p>
                 xXx BBL xXx
             </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
                 xXx LOOP type TYPEDEF xXx
                 <h3 class="perma" id="xXx type$name xXx">xXx type$name xXx <a href="#xXx type$name xXx">&para;</a></h3>
@@ -93,7 +94,7 @@ xXx CONTENT xXx
                     xXx BBL xXx
                 xXx BBL xXx
             </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="enums">Enums <a href="#enums">&para;</a></h2>
                 xXx LOOP enum ENUM xXx
                 <h3 class="perma" id="xXx enum$name xXx">xXx enum$name xXx <a href="#xXx enum$name xXx">&para;</a></h3>
@@ -104,7 +105,7 @@ xXx CONTENT xXx
                     xXx BBL xXx
                 xXx BBL xXx
             </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="structures">Structures <a href="#structures">&para;</a></h2>
                 xXx LOOP struct STRUCT xXx
                 <h3 class="perma" id="xXx struct$name xXx">xXx struct$name xXx <a href="#xXx struct$name xXx">&para;</a></h3>
@@ -115,7 +116,7 @@ xXx CONTENT xXx
                     xXx BBL xXx
                 xXx BBL xXx
             </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="functions">Functions <a href="#functions">&para;</a></h2>
                 xXx LOOP function FUNCTION xXx
                 <h3 class="perma" id="xXx function$name xXx">xXx function$name xXx <a href="#xXx function$name xXx">&para;</a></h3>
@@ -129,4 +130,7 @@ xXx CONTENT xXx
             </div>
         </div>
     </div>
+xXx TTYL xXx
+xXx END_SCRIPTS xXx
+<script type="text/javascript" src="/static/js/prism.js"></script>
 xXx TTYL xXx

@@ -20,6 +20,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
         <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
         <link rel="stylesheet" media="all" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/documentation.css" />
+<link rel="stylesheet" href="/static/css/prism.css"/>
 
 
         <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
@@ -57,7 +58,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <h1>OlegDB</h1>
                 <ul>
-<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#lz4_compression">LZ4 Compression</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#hash_table">Hash Table</a></li></ul></li>                </ul>
+<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li></ul></li>                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -88,7 +89,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 </ul>
             </div>
         </div>
-        <div class="col-9-12">
+        <div class="language-bash col-9-12">
             <div class="content">
                 <ul id="olegdb_versions">
 <li><a href="/docs/0.1.0/en/documentation.html">0.1.0/</a></li><li><a href="/docs/0.1.1/en/documentation.html">0.1.1/</a></li><li><a href="/docs/0.1.2/en/documentation.html">0.1.2/</a></li>                </ul>
@@ -300,10 +301,13 @@ $ curl -v localhost:8080/oleg/aaa/_prev
 &lt; Content-Type: text/plain
 &lt;
 These aren't your ghosts.
-</code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
-for keeping values on disk in a smaller size while maintaining a low-impact on
-insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
-detail.</p><p></p><h2 class="perma" id="splay_trees">Splay Trees <a href="#splay_trees">&para;</a></h2><p>In addition to the hash table, OlegDB also keeps track of currently inserted
+</code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
+are <code>O(1)</code>. Since we use linked lists to handle collisions <a href=http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists>see here</a> 
+the worst-case scenario for operations is <code>O(n)</code>. This usually doesn't happen.</p><p>Rehashing happens when we run out of space. To handle this, we currently
+allocate a new block of memory, rehash all keys and move everything over. This
+is a blocking operation. If you know you're going to have a lot of keys and want
+to avoid this, you can tweak the <a href=#HASH_MALLOC>HASH_MALLOC</a> parameter before compilation.
+This controls the default amount of space that OlegDB will allocate.</p><p></p><h2 class="perma" id="splay_trees">Splay Trees <a href="#splay_trees">&para;</a></h2><p>In addition to the hash table, OlegDB also keeps track of currently inserted
 nodes via a <a href=https://en.wikipedia.org/wiki/Splay_tree>splay tree.</a> Going over
 the intricacies of splay trees is a little outside the scope of this
 documentation, but we do use it for several things and for several reasons.</p><p>In their simplified form, splay trees are just a specialized form of a
@@ -323,15 +327,12 @@ pre-ordered fashion will show the user when the keys were inserted.</p><p>Beside
 Since binary trees are inherently sorted, we can iterate through one much faster
 than we could a list.</p><p>Splay trees can be turned on/off by changing how you open a database. See
 <a href=#ol_feature_flags>ol_feature_flags</a> for a complete list of toggleable
-parameters.</p><p></p><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
-are <code>O(1)</code>. Since we use linked lists to handle collisions <a href=http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists>see here</a> 
-the worst-case scenario for operations is <code>O(n)</code>. This usually doesn't happen.</p><p>Rehashing happens when we run out of space. To handle this, we currently
-allocate a new block of memory, rehash all keys and move everything over. This
-is a blocking operation. If you know you're going to have a lot of keys and want
-to avoid this, you can tweak the <a href=#HASH_MALLOC>HASH_MALLOC</a> parameter before compilation.
-This controls the default amount of space that OlegDB will allocate.</p><p></p></div>            <h1>liboleg</h1>
+parameters.</p><p></p><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
+for keeping values on disk in a smaller size while maintaining a low-impact on
+insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
+detail.</p><p></p></div>            <h1>liboleg</h1>
 
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
 <h3 class="perma" id="VERSION">VERSION <a href="#VERSION">&para;</a></h3><pre><code>#define VERSION "0.1.2"
 </code></pre><p>The current version of the OlegDB.</p><h3 class="perma" id="KEY_SIZE">KEY_SIZE <a href="#KEY_SIZE">&para;</a></h3><pre><code>#define KEY_SIZE 250
@@ -341,11 +342,11 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
 </code></pre><p>Database maximum name length.</p><h3 class="perma" id="DEVILS_SEED">DEVILS_SEED <a href="#DEVILS_SEED">&para;</a></h3><pre><code>#define DEVILS_SEED 666
 </code></pre><p>The seed to feed into the murmur3 algorithm.</p><h3 class="perma" id="VALUES_FILENAME">VALUES_FILENAME <a href="#VALUES_FILENAME">&para;</a></h3><pre><code>#define VALUES_FILENAME "val"
 </code></pre><p>The file extension used for the values file on disk.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
 <h3 class="perma" id="ol_val_array">ol_val_array <a href="#ol_val_array">&para;</a></h3><pre><code>typedef char ** ol_val_array;
 </code></pre><p>This is shorthand for a pointer to an array of values, typically the same kind of values stored in an <a href="#ol_bucket">ol_bucket</a>->data_ptr object.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="enums">Enums <a href="#enums">&para;</a></h2>
 <h3 class="perma" id="ol_feature_flags">ol_feature_flags <a href="#ol_feature_flags">&para;</a></h3><pre><code>typedef enum {
     OL_F_APPENDONLY     = 1 << 0,
@@ -358,7 +359,7 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
     OL_S_AOKAY          = 1
 } ol_state_flags;
 </code></pre><p>State flags tell the database what it should be doing.</p><p><span class="bold">OL_S_STARTUP:</span> Startup state. The DB is starting, duh.</p><p><span class="bold">OL_S_AOKAY:</span> The normal operating state, the database is a-okay</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="structures">Structures <a href="#structures">&para;</a></h2>
 <h3 class="perma" id="ol_bucket">ol_bucket <a href="#ol_bucket">&para;</a></h3><pre><code>typedef struct ol_bucket {
     char                key[KEY_SIZE]; /* The key used to reference the data */
@@ -396,7 +397,7 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
     ol_meta   *meta;
 } ol_database;
 </code></pre><p>The object representing a database. This is used in almost every ol_* function to store state and your data.</p><p><span class="bold">get_db_file_name:</span> A function pointer that returns the path to the location of the db file to reduce code duplication. Used for writing and reading of dump files.</p><p><span class="bold">enable:</span> Helper function to enable a feature for the database instance passed in. See <a href="#ol_feature_flags">ol_feature_flags</a></p><p><span class="bold">disable:</span> Helper function to disable a database feature. See <a href="#ol_feature_flags">ol_feature_flags</a></p><p><span class="bold">is_enabled:</span> Helper function that checks weather or not a feature flag is enabled.</p><p><span class="bold">name:</span> The name of the database.</p><p><span class="bold">path[PATH_LENGTH]:</span> Path to the database's working directory.</p><p><span class="bold">aol_file:</span> Path and filename of the append only log.</p><p><span class="bold">aolfd:</span> Pointer of FILE type to append only log.</p><p><span class="bold">feature_set:</span> Bitmask holding enabled/disabled status of various features. See ol_feature_flags.</p><p><span class="bold">state:</span> Current state of the database. See ol_state_flags.</p><p><span class="bold">rcrd_cnt:</span> Number of records in the database.</p><p><span class="bold">key_collisions:</span> Number of key collisions this database has had since initialization.</p><p><span class="bold">created:</span> Timestamp of when the database was initialized.</p><p><span class="bold">cur_ht_size:</span> The current amount, in bytes, of space allocated for storing <a href="#ol_bucket">ol_bucket</a> objects.</p><p><span class="bold">**hashes:</span> The actual hashtable. Stores <a href="#ol_bucket">ol_bucket</a> instances.</p><p><span class="bold">*values:</span> This is where values for hashes are stored. This is a pointer to an mmap()'d region of memory.</p><p><span class="bold">val_size:</span> The size of the sum total of records in the db, in bytes. It is <strong>not</strong> the size of the file on disk.</p><p><span class="bold">*tree:</span> A pointer to the splay tree holding the ordered list of keys.</p><p><span class="bold">*meta:</span> A pointer to a struct holding extra meta information. See <a href="#ol_meta">oleg_meta</a> for more information.</p>            </div>
-            <div class="doc_chunk">
+            <div class="language-c doc_chunk">
                 <h2 class="perma" id="functions">Functions <a href="#functions">&para;</a></h2>
 <h3 class="perma" id="ol_open">ol_open <a href="#ol_open">&para;</a></h3><pre><code>ol_database *ol_open(char *path, char *name, int features);
 </code></pre><p>Opens a database for use.</p><p><span class="bold">*path:</span> The directory where the database will be stored.</p><p><span class="bold">*name:</span> The name of the database. This is used to create the dumpfile, and keep track of the database.</p><p><span class="bold">features:</span> Features to enable when the database is initialized. You can logically OR multiple features together.</p><p><span class="bold">Returns:</span> A new database object.</p><h3 class="perma" id="ol_close">ol_close <a href="#ol_close">&para;</a></h3><pre><code>int ol_close(ol_database *database);
@@ -456,5 +457,7 @@ This controls the default amount of space that OlegDB will allocate.</p><p></p><
          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
          })();
     </script>
-    
+    <script type="text/javascript" src="/static/js/prism.js"></script>
+
+
 </html>

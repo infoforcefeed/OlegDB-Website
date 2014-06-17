@@ -85,9 +85,11 @@ footer ul {
 }
 pre code {
     display:block;
+    /*
     padding:5px;
     background-color:#DDD;
     border:solid 1px #AAA
+    */
 }
 .perma a {
     display: none;
