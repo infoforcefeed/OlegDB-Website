@@ -11,7 +11,7 @@ class Slimdown(object):
             (r'````([^`]*)````' ,  r'<pre><code>\1</code></pre>'),
             (r'`([^`]*)`' ,  r'<code>\1</code>'),
             (r'\[([^\[]+)\]\(([^\)]+)\)' ,  r'<a href=\2>\1</a>'),
-            #(r'(#+)(.*)',  self.header),
+            (r'^(#+)(.*)',  self.header),
             (r'(\*\*|__)(.*?)\1' ,  r'<strong>\2</strong>'),
             #(r'(\*|_)(.*?)\1' ,  r'<em>\2</em>'),
             (r'\~\~(.*?)\~\~' ,  r'<del>\1</del>'),
@@ -40,10 +40,10 @@ class Slimdown(object):
         return "\n<ol><li>{}</li></ol>".format(item.strip())
 
     def header(self, match):
-        raise NotImplementedError()
-        tmp, chars, header = match
-        level = len(chars)
-        return '<h{level}>{header}</h{level}>'.format(level=level, header=header.strip())
+        item = match.groups()
+        level = len(item[0])
+        return '<h{level}>{header}</h{level}>'.format(level=level,
+                header=item[1].strip())
 
     def render(self, text):
         text = "\n{text}\n".format(text=text)

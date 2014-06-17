@@ -22,7 +22,7 @@ As for features, we've recently added [LZ4
 compression](https://code.google.com/p/lz4/) which works really well on some
 datasets but not on others. It's fast though and it saves a lot of memory.
 We've also added some weird looking data structures called [splay trees](http://en.wikipedia.org/wiki/Splay_tree).
-Splay trees will eventually allow use to get cursor-style iteration and 
+Splay trees will eventually allow use to get cursor-style iteration and
 prefix-matching when `0.2.0` rolls around.
 
 Prefix-matching isn't quite ready via the Erlang frontend, but you can get your

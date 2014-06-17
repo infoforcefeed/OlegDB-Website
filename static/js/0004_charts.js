@@ -1,8 +1,6 @@
 var normal_chart, lz4_chart;
-lz4_json = null;
-normal_json = null;
 
-function lz4_setup() {
+function lz4_setup(normal_json) {
     var lz4_output = document.getElementById("lz4_output");
     var lz4_json = null;
     var lz4_request = new XMLHttpRequest();
@@ -35,7 +33,7 @@ function lz4_setup() {
                     data: lz4_json
                 }]
             });
-            both_setup();
+            both_setup(normal_json, lz4_json);
         }
     }
     lz4_request.send();
@@ -72,15 +70,21 @@ function normal_setup() {
                     data: normal_json
                 }]
             });
-            both_setup();
+            lz4_setup(normal_json);
         }
     }
     normal_request.send();
 }
 
-function both_setup() {
-    if (lz4_json == null || normal_json == null)
-        return;
+function both_setup(normal_json, lz4_json) {
+    nj_0 = normal_json[0][0];
+    lz4_0 = lz4_json[0][0];
+    normal_json = normal_json.map(function(x) {
+        return [x[0] - nj_0, x[1]];
+    });
+    lz4_json = lz4_json.map(function(x) {
+        return [x[0] - lz4_0, x[1]];
+    });
 
     var both_chart = new Highcharts.Chart({
         chart: {
@@ -98,10 +102,10 @@ function both_setup() {
             type: 'datetime'
         },
         series: [{
-            name: "Memory Usage (kB)",
+            name: "Memory Usage (No LZ4)",
             data: normal_json
         }, {
-            name: "Memory Usage (kB)",
+            name: "Memory Usage (LZ4)",
             color: "#EC757C",
             data: lz4_json
         }]
@@ -109,6 +113,5 @@ function both_setup() {
 }
 
 window.onload = function() {
-    lz4_setup();
     normal_setup();
 }
