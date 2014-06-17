@@ -1,7 +1,6 @@
 ---
 title:Benchmarking with Wrk
 author:Quinlan Pfiffer
-icon_class:
 date: 2014-04-12
 ---
 

@@ -9,13 +9,13 @@ xXx SCRIPTS xXx
 <link rel="stylesheet" href="/static/css/blog.css" />
 xXx TTYL xXx
 xXx CONTENT xXx
+<div class="blog_container">
     xXx LOOP blog_meta POSTS xXx
     <div class="grid grid-pad">
         <div class="col-1-1">
             <div class="content blog_item">
                 <h2 class="post_title"><a href="/xXx blog_meta$link xXx">xXx blog_meta$title xXx</a></h2>
                 <p>
-                    <span class="xXx blog_meta$icon_class xXx author_icon"></span>
                     <span class="author_name">xXx blog_meta$date xXx by xXx blog_meta$author xXx</span>
                     <span class="comment_count"><a href="/xXx blog_meta$link xXx#disqus_thread">Comments</a></span>
                 </p>
@@ -27,6 +27,7 @@ xXx CONTENT xXx
         </div>
     </div>
     xXx BBL xXx
+</div>
 xXx TTYL xXx
 xXx END_BODY xXx
     <script type="text/javascript">

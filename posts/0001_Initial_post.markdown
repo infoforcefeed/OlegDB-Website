@@ -1,7 +1,6 @@
 ---
 title:The Mayo-Feeler, by Oleg Technologies&trade;
 author:Quinlan Pfiffer
-icon_class:
 date: 2014-04-05
 ---
 

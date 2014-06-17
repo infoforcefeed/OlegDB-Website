@@ -1,7 +1,6 @@
 ---
 title:OlegDB 0.1.1 'Cartwheeling Trespassers' released
 author:Quinlan Pfiffer
-icon_class:
 date: 2014-05-05
 ---
 

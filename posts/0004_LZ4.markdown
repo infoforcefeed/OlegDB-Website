@@ -1,0 +1,40 @@
+---
+title:Measuring the Effects of LZ4 Compression
+author:Quinlan Pfiffer
+date: 2014-06-16
+---
+
+Way back in `0.1.1` we added the ability to compress your data using LZ4. Since
+I haven't written in a while and we'd never really measured the performance
+aspects of using LZ4, I figured now was as good a time as any. Segfaults are
+low, moral is high and [coverity](https://scan.coverity.com/) isn't yelling at us.
+
+We use LZ4 compression for a couple of reasons, mainly that it's fast and that
+it reduces the memory required to store items both on-disk and in-memory. Ever
+since I rewrote the databse to use `mmap()` the second one hasn't really been an
+issue, but on-disk compression is still something nice to have. Given how easy
+LZ4 was to add to the project and how [fast it is](https://code.google.com/p/lz4/)
+this is basically a win-win.
+
+So, to get started I wrote a naive memory checking script in bash that you can
+look at [here.](https://github.com/infoforcefeed/OlegDB/blob/master/integrity_test/mem_usage.sh)
+The gist is that it uses Linux's [smap](http://www.mjmwired.net/kernel/Documentation/filesystems/proc.txt)
+subsystem that resides in `/proc` to grab memory usage of a process. I say naive
+because the only thing I grabbed during the test was the total size used by the
+Erlang process. For my purposes this was more than enough.
+
+So, with this script running as fast as it could logging memory usage and a
+millisecond Unix timestamp, I ran `fill_fast()` in [torture.py](https://github.com/infoforcefeed/OlegDB/blob/master/integrity_test/torture.py#L6)
+from our medley of weird testing scripts on 8 threads and let it go.
+
+I ran two tests: One with `OL_F_LZ4` enabled and one without. To speed up the
+filling of the databases a little bit I also disabled `OL_F_AOL_FFLUSH`. This
+only makes sure the AOL file is `fsync()`'d to disk.
+
+First, let's look at memory usage over time without LZ4 compression:
+
+<div id="normal_output" style="min-width: 300px; height: 300px; margin: 1em"></div>
+<div id="lz4_output" style="min-width: 300px; height: 300px; margin: 1em"></div>
+<script type="text/javascript" src="/static/js/standalone-framework.js"></script>
+<script type="text/javascript" src="/static/js/highcharts.js"></script>
+<script type="text/javascript" src="/static/js/0004_charts.js"</script>

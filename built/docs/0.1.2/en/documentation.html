@@ -117,8 +117,8 @@ $ sudo make PREFIX=/usr/ install
 </code></pre></p><p>Actually running OlegDB and getting it do stuff after this point is trivial, if
 your installation prefix is in your <code>PATH</code> variable  you should just be able to run
 something like the following:</p><p><pre><code>
-$ olegdb <data_directory>
-</code></pre></p><p>...where <code><data_directory></code> is the place you want OlegDB to store persistent data. 
+$ olegdb [data_directory]
+</code></pre></p><p>...where <code>[data_directory]</code> is the place you want OlegDB to store persistent data.
 Make it <code>/dev/null</code> if you want, I don't care. You can also specify
 IP/port information from the commandline:</p><p><pre><code>
 $ olegdb /tmp 1978 #Starts OlegDB listening on port 1978
@@ -426,7 +426,6 @@ detail.</p><p></p></div>            <h1>liboleg</h1>
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUA/wA0XsCoAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==">
         </div>
         
-    </body>
     <footer>
         <div class="grid grid-pad">
             <div class="col-1-2">
@@ -447,6 +446,7 @@ detail.</p><p></p></div>            <h1>liboleg</h1>
             </div>
         </div>
     </footer>
+    </body>
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-30510579-4']);
