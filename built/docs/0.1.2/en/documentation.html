@@ -59,7 +59,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <h1>OlegDB</h1>
                 <ul>
-<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li></ul></li>                </ul>
+<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li><li><a href="#prefix_matching">Prefix Matching</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li></ul></li>                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -302,7 +302,30 @@ $ curl -v localhost:8080/oleg/aaa/_prev
 &lt; Content-Type: text/plain
 &lt;
 These aren't your ghosts.
-</code></pre></p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
+</code></pre></p><p></p><h2 class="perma" id="prefix_matching">Prefix Matching <a href="#prefix_matching">&para;</a></h2><p>In addition to <a href=#cursor_iteration>cursor iteration</a> <code>0.1.2</code> added the ability
+to return the values of keys that match a given prefix. Use of this feature
+follows the same URL layout as it's predeccesors, mainly via the use of the
+<code>_match</code> qualifier.</p><p>For example, say I have three keys in the database, <code>test_a</code>, <code>test_b</code> and
+<code>test_c</code>. I can easily find the values of all of these keys in one operation by
+using the <code>_match</code> operand. To demonstrate:</p><p><pre><code>
+$ curl -v localhost:8080/oleg/test/_match
+&gt; GET /oleg/test/_match HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1
+&gt; zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: application/json
+&lt; Content-Length: 25
+&lt; Connection: close
+&lt; X-OlegDB-Num-Matches: 3
+&lt;
+["test3","test2","test1"]
+</code></pre></p><p>This returns a JSON-encoded list of all of your values. Also of note is the
+<code>X-OlegDB-Num-Matches</code> header which specifies the number of keys that matched
+the given prefix.</p><p>If no matches are present, a 404 is returned.</p><p></p></div><div class="doc_chunk"><h2 class="perma" id="technical_internals">Technical Internals <a href="#technical_internals">&para;</a></h2><h2 class="perma" id="hash_table">Hash Table <a href="#hash_table">&para;</a></h2><p>At it's core, OlegDB is just a hashtable. On a good day, this means operations
 are <code>O(1)</code>. Since we use linked lists to handle collisions <a href=http://en.wikipedia.org/wiki/Hash_table#Separate_chaining_with_linked_lists>see here</a> 
 the worst-case scenario for operations is <code>O(n)</code>. This usually doesn't happen.</p><p>Rehashing happens when we run out of space. To handle this, we currently
 allocate a new block of memory, rehash all keys and move everything over. This
