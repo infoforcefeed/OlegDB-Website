@@ -65,7 +65,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                     <li>
                         <a href="#macros">Macros</a>
                         <ul>
-<li><a href="#VERSION">VERSION</a></li><li><a href="#KEY_SIZE">KEY_SIZE</a></li><li><a href="#HASH_MALLOC">HASH_MALLOC</a></li><li><a href="#PATH_LENGTH">PATH_LENGTH</a></li><li><a href="#DB_NAME_SIZE">DB_NAME_SIZE</a></li><li><a href="#DEVILS_SEED">DEVILS_SEED</a></li><li><a href="#VALUES_FILENAME">VALUES_FILENAME</a></li>                        </ul>
+<li><a href="#VERSION">VERSION</a></li><li><a href="#KEY_SIZE">KEY_SIZE</a></li><li><a href="#HASH_MALLOC">HASH_MALLOC</a></li><li><a href="#PATH_LENGTH">PATH_LENGTH</a></li><li><a href="#DB_NAME_SIZE">DB_NAME_SIZE</a></li><li><a href="#DEVILS_SEED">DEVILS_SEED</a></li><li><a href="#VALUES_FILENAME">VALUES_FILENAME</a></li><li><a href="#VALUES_DEFAULT_SIZE">VALUES_DEFAULT_SIZE</a></li><li><a href="#AOL_FILENAME_ALLOC">AOL_FILENAME_ALLOC</a></li><li><a href="#AOL_FILENAME">AOL_FILENAME</a></li>                        </ul>
                     </li>
                     <li>
                         <a href="#typedefs">Type Definitions</a>
@@ -85,7 +85,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                     <li>
                         <a href="#functions">Functions</a>
                         <ul>
-<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ds">ol_unjar_ds</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li><li><a href="#ol_prefix_match">ol_prefix_match</a></li><li><a href="#ol_exists">ol_exists</a></li><li><a href="#ol_get_bucket">ol_get_bucket</a></li>                        </ul>
+<li><a href="#ol_open">ol_open</a></li><li><a href="#ol_close">ol_close</a></li><li><a href="#ol_unjar">ol_unjar</a></li><li><a href="#ol_unjar_ds">ol_unjar_ds</a></li><li><a href="#ol_jar">ol_jar</a></li><li><a href="#ol_jar_ct">ol_jar_ct</a></li><li><a href="#ol_content_type">ol_content_type</a></li><li><a href="#ol_expiration">ol_expiration</a></li><li><a href="#ol_scoop">ol_scoop</a></li><li><a href="#ol_uptime">ol_uptime</a></li><li><a href="#ol_spoil">ol_spoil</a></li><li><a href="#ol_ht_bucket_max">ol_ht_bucket_max</a></li><li><a href="#ol_prefix_match">ol_prefix_match</a></li><li><a href="#ol_exists">ol_exists</a></li><li><a href="#ol_get_bucket">ol_get_bucket</a></li><li><a href="#ol_squish">ol_squish</a></li>                        </ul>
                     </li>
                 </ul>
             </div>
@@ -342,7 +342,10 @@ detail.</p><p></p></div>            <h1>liboleg</h1>
 </code></pre><p>The maximum length of a database's path.</p><h3 class="perma" id="DB_NAME_SIZE">DB_NAME_SIZE <a href="#DB_NAME_SIZE">&para;</a></h3><pre><code>#define DB_NAME_SIZE 64
 </code></pre><p>Database maximum name length.</p><h3 class="perma" id="DEVILS_SEED">DEVILS_SEED <a href="#DEVILS_SEED">&para;</a></h3><pre><code>#define DEVILS_SEED 666
 </code></pre><p>The seed to feed into the murmur3 algorithm.</p><h3 class="perma" id="VALUES_FILENAME">VALUES_FILENAME <a href="#VALUES_FILENAME">&para;</a></h3><pre><code>#define VALUES_FILENAME "val"
-</code></pre><p>The file extension used for the values file on disk.</p>            </div>
+</code></pre><p>The file extension used for the values file on disk.</p><h3 class="perma" id="VALUES_DEFAULT_SIZE">VALUES_DEFAULT_SIZE <a href="#VALUES_DEFAULT_SIZE">&para;</a></h3><pre><code>#define VALUES_DEFAULT_SIZE 4194304
+</code></pre><p>The default size of the values file on disk. 4 MB by default.</p><h3 class="perma" id="AOL_FILENAME_ALLOC">AOL_FILENAME_ALLOC <a href="#AOL_FILENAME_ALLOC">&para;</a></h3><pre><code>#define AOL_FILENAME_ALLOC 512
+</code></pre><p>The number of bytes we allocate for the filename of the AOL file.</p><h3 class="perma" id="AOL_FILENAME">AOL_FILENAME <a href="#AOL_FILENAME">&para;</a></h3><pre><code>#define AOL_FILENAME "aol"
+</code></pre><p>The file extension used for the AOL file.</p>            </div>
             <div class="language-c doc_chunk">
                 <h2 class="perma" id="typedefs">Type Definitions <a href="#typedefs">&para;</a></h2>
 <h3 class="perma" id="ol_val_array">ol_val_array <a href="#ol_val_array">&para;</a></h3><pre><code>typedef char ** ol_val_array;
@@ -417,7 +420,8 @@ detail.</p><p></p></div>            <h1>liboleg</h1>
 </code></pre><p>Returns values of keys that match a given prefix.</p><p><span class="bold">*db:</span> Database to retrieve values from.</p><p><span class="bold">*prefix:</span> The prefix to attempt matches on.</p><p><span class="bold">plen:</span> The length of the prefix.</p><p><span class="bold">*data:</span> A pointer to an <code>ol_val_array</code> object where the list of values will be stored. <strong>Both the list and it's items must be freed after use.</strong></p><p><span class="bold">Returns:</span> -1 on failure and a positive integer representing the number of matched prefices in the database.</p><h3 class="perma" id="ol_exists">ol_exists <a href="#ol_exists">&para;</a></h3><pre><code>int ol_exists(ol_database *db, const char *key, size_t klen);
 </code></pre><p>Returns whether the given key exists on the database</p><p><span class="bold">*db:</span> Database the key should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">Returns:</span> 0 if the key exists, 1 otherwise.</p><h3 class="perma" id="ol_get_bucket">ol_get_bucket <a href="#ol_get_bucket">&para;</a></h3><pre><code>ol_bucket *ol_get_bucket(const ol_database *db, const char *key, const size_t klen,
                          char (*_key)[KEY_SIZE], size_t *_klen);
-</code></pre><p>Utility function to retrieve an <a href="#ol_bucket">ol_bucket</a> object from the database for a given key.</p><p><span class="bold">*db:</span> Database the bucket should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">**_key:</span> The truncated key will be filled in at this address.</p><p><span class="bold">*_klen:</span> The length of the truncated key.</p><p><span class="bold">Returns:</span> The bucket if it exists, otherwise NULL.</p>            </div>
+</code></pre><p>Utility function to retrieve an <a href="#ol_bucket">ol_bucket</a> object from the database for a given key.</p><p><span class="bold">*db:</span> Database the bucket should be in.</p><p><span class="bold">*key:</span> The key to check.</p><p><span class="bold">klen:</span> The length of the key.</p><p><span class="bold">**_key:</span> The truncated key will be filled in at this address.</p><p><span class="bold">*_klen:</span> The length of the truncated key.</p><p><span class="bold">Returns:</span> The bucket if it exists, otherwise NULL.</p><h3 class="perma" id="ol_squish">ol_squish <a href="#ol_squish">&para;</a></h3><pre><code>int ol_squish(ol_database *db);
+</code></pre><p>Compacts both the aol file (if enabled) and the values file. This is a blocking operation.</p><p><span class="bold">*db:</span> The database to compact.</p><p><span class="bold">Returns:</span> 1 if successful, 0 if otherwise.</p>            </div>
         </div>
     </div>
 
