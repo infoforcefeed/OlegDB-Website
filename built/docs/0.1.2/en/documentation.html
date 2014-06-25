@@ -59,7 +59,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <h1>OlegDB</h1>
                 <ul>
-<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li><li><a href="#prefix_matching">Prefix Matching</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li></ul></li>                </ul>
+<li><a href="#overview">Overview</a><ul><li><a href="#what_is_olegdb">What is OlegDB</a></li><li><a href="#installation">Installation</a></li><li><a href="#getting_started">Getting Started</a></li><li><a href="#cursor_iteration">Cursor Iteration</a></li><li><a href="#prefix_matching">Prefix Matching</a></li></ul></li><li><a href="#technical_internals">Technical Internals</a><ul><li><a href="#hash_table">Hash Table</a></li><li><a href="#splay_trees">Splay Trees</a></li><li><a href="#lz4_compression">LZ4 Compression</a></li><li><a href="#aol_file">AOL File</a></li><li><a href="#values_file">Values File</a></li></ul></li>                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -354,7 +354,15 @@ than we could a list.</p><p>Splay trees can be turned on/off by changing how you
 parameters.</p><p></p><h2 class="perma" id="lz4_compression">LZ4 Compression <a href="#lz4_compression">&para;</a></h2><p>OlegDB uses the super-fast <a href=https://code.google.com/p/lz4/>LZ4 compression algorithm</a>
 for keeping values on disk in a smaller size while maintaining a low-impact on
 insertion/deletion.</p><p>This is a toggleable feature. See <a href=#ol_feature_flags>ol_feature_flags</a> for more
-detail.</p><p></p></div>            <h1>liboleg</h1>
+detail.</p><p></p><h2 class="perma" id="aol_file">AOL File <a href="#aol_file">&para;</a></h2><p>The <strong>A</strong>ppend <strong>O</strong>nly <strong>L</strong>og file is how Oleg keeps track of state outside of
+it's values files. Everytime a change occurs to OlegDB, that command is written
+to the AOL file. This is what allows OlegDB to be persistent.</p><p>Every now and then the AOL file needs to be <a href=#ol_squish>squished (compacted)</a>
+to remove old and expired data. The AOL file is designed to be human readable
+(mostly) so you can tell at a glance whats going on with your database.</p><p></p><h2 class="perma" id="values_file">Values File <a href="#values_file">&para;</a></h2><p>The values file augments the <a href=#AOL_file>AOL file</a> in persisting state to the
+disk. The values file is basically all of your data, more or less aligned in
+<a href=#VALUES_DEFAULT_SIZE>four megabyte blocks</a>.</p><p>Starting in <code>0.1.2</code>, this is how we store data on disk. Previously all values
+were stored in the AOL file. Instead, the values file is <code>mmap()</code>'d into RAM
+on database startup, allowing you to hold datasets bigger than memory.</p><p></p></div>            <h1>liboleg</h1>
 
             <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>
@@ -405,10 +413,10 @@ detail.</p><p></p></div>            <h1>liboleg</h1>
     int         key_collisions;
 } ol_meta;
 </code></pre><p>Structure used to record meta-information about the database.</p><p><span class="bold">created:</span> When the database was created.</p><p><span class="bold">key_collisions:</span> The number of keys that have collided over the lifetime of this database.</p><h3 class="perma" id="ol_database">ol_database <a href="#ol_database">&para;</a></h3><pre><code>typedef struct ol_database {
-    void      (*get_db_file_name)(struct ol_database *db,const char *p,char*);
+    void      (*get_db_file_name)(const struct ol_database *db,const char *p,char*);
     void      (*enable)(int, int*);
     void      (*disable)(int, int*);
-    bool      (*is_enabled)(int, int*);
+    bool      (*is_enabled)(const int, const int*);
     char      name[DB_NAME_SIZE];
     char      path[PATH_LENGTH];
     char      *aol_file;
