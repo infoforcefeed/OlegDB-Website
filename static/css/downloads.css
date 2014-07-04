@@ -17,3 +17,6 @@ pre {
     background-color: #DDD;
     padding: 3px;
 }
+.older_release {
+    border-top: 1px solid #CCC;
+}

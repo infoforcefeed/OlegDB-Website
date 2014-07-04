@@ -40,7 +40,35 @@ BASE_CONTEXT = { "questions":
             </ul>
             """
             ],
+        "ALL_DOWNLOADS": [
+                { "codename": "Perilous Pomegranate",
+                  "version": "v.0.1.3",
+                  "release_date": "2014/07/04",
+                  "md5": "a421e6c9e2d51f7485e647456d3e91f3",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.3.tar.gz",
+                },
+                { "codename": "Mayo Indoctrination",
+                  "version": "v.0.1.2",
+                  "release_date": "2014/06/25",
+                  "md5": "2571e637cd7275b3a97c0636715a66fd",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.2.tar.gz",
+                },
+                { "codename": "Cartwheeling Trespassers",
+                  "version": "v.0.1.1",
+                  "release_date": "2014/05/05",
+                  "md5": "cd9632d69f718aa5cb16f60d72ddf251",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.1.tar.gz",
+                },
+                { "codename": "Affirmitive Affirmation",
+                  "version": "v.0.1.0",
+                  "release_date": "2014/03/31",
+                  "md5": "adcf56a2be2bceb6fa10657b35dab2a9",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.0.tar.gz",
+                },
+            ],
         }
+# Fuck doing anything intelligent in the templating framework:
+BASE_CONTEXT["FIRST_DOWNLOAD"] = [BASE_CONTEXT["ALL_DOWNLOADS"][0]]
 
 def build_blog_context(default_context):
     default_context['POSTS'] = []

@@ -25,10 +25,13 @@ xXx CONTENT xXx
                 <div class="downloadable">
                     <h2>Cutting Edge</h2>
                     <p>&quot;Stable.&quot;</p>
+                <!-- This is a dumb hack because I don't want to make greshunkel good. -->
+                xXx LOOP thing FIRST_DOWNLOAD xXx
                     <img src="/static/img/lazy.svg" title="&quot;Stable&quot;">
-                    <p><a href="https://github.com/infoforcefeed/OlegDB/archive/v.0.1.2.tar.gz">v0.1.2: Mayo Indoctrination</a></p>
+                    <p><a href="xXx thing$tar_link xXx">xXx thing$version xXx: xXx thing$codename xXx</a></p>
                 </div>
-                <pre>MD5 2571e637cd7275b3a97c0636715a66fd</pre>
+                <pre>MD5 xXx thing$md5 xXx</pre>
+                xXx BBL xXx
             </div>
         </div>
         <div class="col-1-3">
@@ -43,4 +46,35 @@ xXx CONTENT xXx
             </div>
         </div>
     </div>
+    <div class="grid grid-pad">
+        <div class="col-1-1">
+            <div class="content">
+                <h2>Older Releases</h2>
+            </div>
+        </div>
+    </div>
+    xXx LOOP download ALL_DOWNLOADS xXx
+    <div class="grid grid-pad">
+        <div class="older_release col-1-4">
+            <div class="content">
+                <p>xXx download$codename xXx</p>
+            </div>
+        </div>
+        <div class="older_release col-1-4">
+            <div class="content">
+                <p>xXx downloads$release_date xXx</p>
+            </div>
+        </div>
+        <div class="older_release col-1-6">
+            <div class="content">
+                <p><a href="xXx downloads$tar_link xXx">xXx downloads$version xXx.tar.gz</a></p>
+            </div>
+        </div>
+        <div class="older_release col-1-3">
+            <div class="content">
+                <pre>MD5 xXx downloads$md5 xXx</pre>
+            </div>
+        </div>
+    </div>
+    xXx BBL xXx
 xXx TTYL xXx
