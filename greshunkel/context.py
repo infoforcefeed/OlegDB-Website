@@ -41,6 +41,12 @@ BASE_CONTEXT = { "questions":
             """
             ],
         "ALL_DOWNLOADS": [
+                { "codename": "Proven LAMP-Stack Event",
+                  "version": "v.0.1.4",
+                  "release_date": "2014/09/09",
+                  "md5": "12b0b1d65730c1a29fbb5a8d3ec72b99",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.4.tar.gz",
+                },
                 { "codename": "Perilous Pomegranate",
                   "version": "v.0.1.3",
                   "release_date": "2014/07/04",
