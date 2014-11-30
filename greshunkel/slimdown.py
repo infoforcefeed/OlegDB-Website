@@ -8,7 +8,7 @@ class Slimdown(object):
     def __init__(self):
         self.rules = [
             (r'\n\*(.*)' ,  self.ul_list),
-            (r'````([^`]*)````' ,  r'<pre><code>\1</code></pre>'),
+            (r'````?([^\n]*\n)([^`]*)````?' ,  r'<pre class="language-\1"><code>\2</code></pre>'),
             (r'`([^`]*)`' ,  r'<code>\1</code>'),
             (r'\[([^\[]+)\]\(([^\)]+)\)' ,  r'<a href=\2>\1</a>'),
             (r'\n(#+)(.*)',  self.header),

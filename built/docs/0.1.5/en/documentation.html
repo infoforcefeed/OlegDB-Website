@@ -90,7 +90,7 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 </ul>
             </div>
         </div>
-        <div class="language-bash col-9-12">
+        <div class="col-9-12">
             <div class="content">
                 <ul id="olegdb_versions">
 <li><a href="/docs/0.1.0/en/documentation.html">0.1.0/</a></li><li><a href="/docs/0.1.1/en/documentation.html">0.1.1/</a></li><li><a href="/docs/0.1.2/en/documentation.html">0.1.2/</a></li><li><a href="/docs/0.1.3/en/documentation.html">0.1.3/</a></li><li><a href="/docs/0.1.4/en/documentation.html">0.1.4/</a></li><li><a href="/docs/0.1.5/en/documentation.html">0.1.5/</a></li>                </ul>
@@ -98,39 +98,40 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
 <div class="doc_chunk"><h2 class="perma" id="overview">Overview <a href="#overview">&para;</a></h2><h2 class="perma" id="what_is_olegdb">What is OlegDB <a href="#what_is_olegdb">&para;</a></h2><p>OlegDB is a concurrent, pretty fast K/V hashtable with an Go frontend.
 It uses the Murmur3 hashing algorithm to hash and index keys. We chose
 Go for the server because it is easy to rapidly create an HTTP frontend that is
-performant and has all the tools in core to prevent race conditions.</p><p>In addition to this, liboleg is a C library that powers everything. liboleg exports
-a relatively simplistic API for use in other applications. We build the main
+performant and has all the tools in core to prevent race conditions.</p><p>In addition to this, <code>liboleg</code> is the C library that powers everything. <code>liboleg</code> exports
+a relatively simple API for use in other applications. We build the main
 database off of this library.</p><p></p><h2 class="perma" id="installation">Installation <a href="#installation">&para;</a></h2><p>Installing OlegDB is pretty simple, you only need a POSIX compliant system,
-make, gcc/clang (thats all we test) and Go. You'll also need the source
+<code>make</code>, <code>gcc</code>/<code>clang</code> (thats all we test) and Go. You'll also need the source
 code for OlegDB.</p><p>Once you have your fanciful medley of computer science tools, you're ready to
 dive into a lengthy and complex process of program compilation. Sound
 foreboding? Have no fear, people have been doing this for at least a quarter of
 a century.</p><p>I'm going to assume you've extracted the source tarball into a folder called
-<code>~/src/olegdb</code> and that you haven't cd'd into it yet. Lets smash some electrons
-together:</p><p><code></code><code>bash
-$ cd ~/src/olegdb
+<code>~/src/olegdb</code> and that you haven't <code>cd</code>'d into it yet. Lets smash some electrons
+together:</p><p><pre class="language-bash
+"><code>$ cd ~/src/olegdb
 $ make
 $ sudo make install
-</code><code></code></p><p>If you really wanted to, you could specify a different installation directory.
+</code></pre></p><p>If you really wanted to, you could specify a different installation directory.
 The default is <code>/usr/local</code>. You can do this by setting the <code>PREFIX</code> variable
-before compilation:</p><p><code></code><code>bash
-$ sudo make PREFIX=/usr/ install
-</code><code></code></p><p>Actually running OlegDB and getting it do stuff after this point is trivial, if
+before compilation:</p><p><pre class="language-bash
+"><code>$ sudo make PREFIX=/usr/ install
+</code></pre></p><p>Actually running OlegDB and getting it do stuff after this point is trivial, if
 your installation prefix is in your <code>PATH</code> variable  you should just be able to run
-something like the following:</p><p><code></code><code>bash
-$ olegdb -config /path/to/json/config
-</code><code></code></p><p></p><h2 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h2><p>Communicating with OlegDB is done via a pretty simple REST interface.
-You POST to create/update records, GET to retrieve them, DELETE to delete,
-and HEAD to get back some information about them. Probably.</p><p>For example, to store the value Raphael into the named database turtles under
-the key red you could use something like the following:</p><p><pre><code>
-$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red
-</code></pre></p><p>Retrieving data is just as simple:</p><p><pre><code>
-$ curl http://localhost:8080/turtles/red
-</code></pre></p><p>Deleting keys can be done by using DELETE:</p><p><pre><code>
-$ curl -X DELETE http://localhost:8080/turtles/red
-</code></pre></p><p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the
-<code>X-OlegDB-use-by</code> header to a *UTC* POSIX timestamp .</p><p><pre><code>
-$ curl -X POST \
+something like the following:</p><p><pre class="language-bash
+"><code>$ olegdb -config /path/to/json/config
+</code></pre></p><p>OlegDB ships with a default configuration file, <code>olegdb.conf.sample</code> which will
+get you up and running.</p><p></p><h2 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h2><p>Communicating with OlegDB is done via a pretty simple <code>REST</code> interface.
+You <code>POST</code> to create/update records, <code>GET</code> to retrieve them, <code>DELETE</code> to delete,
+and <code>HEAD</code> to get back some information about them. Probably.</p><p>For example, to store the value <code>Raphael</code> into the database named <code>turtles</code> under
+the key <code>red</code> you could use something like the following:</p><p><pre class="language-
+"><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red
+</code></pre></p><p>Retrieving data is just as simple:</p><p><pre class="language-
+"><code>$ curl http://localhost:8080/turtles/red
+</code></pre></p><p>Deleting keys can be done by using DELETE:</p><p><pre class="language-
+"><code>$ curl -X DELETE http://localhost:8080/turtles/red
+</code></pre></p><p>OlegDB supports lazy key expiration. You can specify an expiration date by setting
+the <code>X-OlegDB-use-by</code> header to a <strong>UTC</strong> POSIX timestamp.</p><p><pre class="language-
+"><code>$ curl -X POST \
 -H "X-OlegDB-use-by: $(date +%s)" \
 -d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
 &gt; POST /turtles/Johnny HTTP/1.1
@@ -149,8 +150,8 @@ $ curl -X POST \
 &lt; Content-Length: 7
 &lt;
 無駄
-</code></pre></p><p>And then when we try to get it back out again:</p><p><pre><code>
-$ curl -v http://localhost:8080/turtles/Johnny
+</code></pre></p><p>And then when we try to get it back out again:</p><p><pre class="language-
+"><code>$ curl -v http://localhost:8080/turtles/Johnny
 &gt; GET /turtles/Johnny HTTP/1.1
 &gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
 &gt; Host: localhost:8080
@@ -165,9 +166,9 @@ $ curl -v http://localhost:8080/turtles/Johnny
 &lt;
 These aren't your ghosts.
 </code></pre></p><p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We
-used the bash command <code>date +%s</code> which returns a timestamp. Then, immediately
-trying to access the key again results in a 404, because the key expired.</p><p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p><p><pre><code>
-$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
+used the bash command date +%s which returns a timestamp. Then, immediately
+trying to access the key again results in a 404, because the key expired.</p><p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p><p><pre class="language-
+"><code>$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
 &gt; HEAD /turtles/Johnny HTTP/1.1
 &gt; User-Agent: curl/7.35.0
 &gt; Host: localhost:8080
@@ -188,8 +189,8 @@ trivial.</p><p>Using any of the operands will return both the value of the key y
 (<code>_next</code> will return the next value, <code>_prev</code> will return the previous value, etc.)
 and the HTTP header <code>X-Olegdb-Key</code> followed by the key paired to the value you
 just retrieved. For example, say we have two keys in the database, <code>aaa</code> and
-<code>bbb</code>. To begin with, I can request the first key in the database:</p><p><pre><code>
-$ curl -i localhost:8080/oleg/_first
+<code>bbb</code>. To begin with, I can request the first key in the database:</p><p><pre class="language-
+"><code>$ curl -i localhost:8080/oleg/_first
 HTTP/1.1 200 OK
 X-Olegdb-Key: aaa
 Date: Sun, 28 Sep 2014 07:23:39 GMT
@@ -199,8 +200,8 @@ Content-Type: text/plain; charset=utf-8</p><p>I am the value of aaa
 you're paying attention, you've also noticed that I've omitted the parameter
 between the <code>database</code> specifier and the cursor operand <code>_first</code>. This is
 because the <code>key</code> is not used in this command. It will, however, be used in
-the next:</p><p><pre><code>
-$ curl -i localhost:8080/oleg/aaa/_next
+the next:</p><p><pre class="language-
+"><code>$ curl -i localhost:8080/oleg/aaa/_next
 HTTP/1.1 200 OK
 X-Olegdb-Key: bbb
 Date: Sun, 28 Sep 2014 07:24:16 GMT
@@ -210,8 +211,8 @@ Content-Type: text/plain; charset=utf-8</p><p>I am the value of bbb
 Oleg for the key after (<code>_next</code>) the key <code>aaa</code>. The value of the next key was
 returned, and we can see the header <code>X-OlegDB-Key</code> is set to the key that
 corresponds to that value. Lets see what happens if we try to get the next key,
-knowing that we only have two keys (<code>aaa</code> and <code>bbb</code>) in our database:</p><p><pre><code>
-$ curl -i localhost:8080/oleg/bbb/_next
+knowing that we only have two keys (<code>aaa</code> and <code>bbb</code>) in our database:</p><p><pre class="language-
+"><code>$ curl -i localhost:8080/oleg/bbb/_next
 HTTP/1.1 404 Not Found
 Content-Type: text/plain; charset=utf-8
 Date: Sun, 28 Sep 2014 07:24:26 GMT
@@ -219,8 +220,8 @@ Content-Length: 17</p><p>No records found
 </code></pre></p><p>We get a 404 statuscode and a message to match. This informs us that we cannot
 iterate any farther and that we have reached the end of the list.</p><p>In addition to these to commands, you can use <code>_last</code> to find the last key in
 the database and <code>_prev</code> to iterate backwards. The usage of these commands is
-identical to those above:</p><p><pre><code>
-$ curl -i localhost:8080/oleg/_last
+identical to those above:</p><p><pre class="language-
+"><code>$ curl -i localhost:8080/oleg/_last
 HTTP/1.1 200 OK
 X-Olegdb-Key: bbb
 Date: Sun, 28 Sep 2014 07:24:50 GMT
@@ -240,8 +241,8 @@ to return the keys that match a given prefix. Use of this feature follows the
 same URL layout as it's predeccesors, mainly via the use of the
 <code>_match</code> qualifier.</p><p>For example, say I have three keys in the database, <code>test_a</code>, <code>test_b</code> and
 <code>test_c</code>. I can easily find these keys in one operation by using the <code>_match</code>
-operand. To demonstrate:</p><p><pre><code>
-$ curl -i localhost:8080/oleg/test/_match
+operand. To demonstrate:</p><p><pre class="language-
+"><code>$ curl -i localhost:8080/oleg/test/_match
 HTTP/1.1 200 OK
 Date: Sun, 28 Sep 2014 07:26:35 GMT
 Content-Length: 20

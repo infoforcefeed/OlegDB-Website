@@ -61,34 +61,34 @@ utility written by a <a href=http://glozer.net/>mysterious open-source do-gooder
 I'm gonna run through how we torture OlegDB with it to make sure everything is
 working in an acceptable fashion.</p><p>Building and installing wrk is outside the scope of this article, but it's not
 hard. You just need to do your standard <code>make && make install</code> dance and you'll
-do fine. Once you have your <code>wrk</code> executable handy, we can get started.</p><p>On my particular machine, I like to test with these settings:</p><p><pre><code>
-$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
+do fine. Once you have your <code>wrk</code> executable handy, we can get started.</p><p>On my particular machine, I like to test with these settings:</p><p><pre class="language-
+"><code>$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
 </code></pre></p><p>This requires a little explanation.</p><p><ul><li><code>-t8</code> is the number of threads to use. I've got eight cores, lets use eight threads.</li><li><code>-c400</code> is the number of connections to have open. 400 seems like a nice, round number.</li><li><code>-d30s</code> is the amount of time to stress test. Thirty seconds should be <a href=http://quoteinvestigator.com/2011/09/08/640k-enough/>enough for anyone</a>.</li></ul></p><p>and the last parameter is the URL we'll be hitting with the <code>wrk</code> jackhammer.
 Since we need to actually test Oleg and not some 404 page we'll need to put
 something into the database for <code>wrk</code> to fetch. Results will vary based on how
 much data you put in, but lets just test with this quote from <a href="http://en.wikipedia.org/wiki/Leviathan_(book)">
-Thomas Hobbes' Leviathan:</a></p><p><pre><code>
-Man is distinguished, not only by his reason, but by this singular passion from
+Thomas Hobbes' Leviathan:</a></p><p><pre class="language-
+"><code>Man is distinguished, not only by his reason, but by this singular passion from
 other animals, which is a lust of the mind, that by a perseverance of delight
 in the continued and indefatigable generation of knowledge, exceeds the short
 vehemence of any carnal pleasure.
 </code></pre></p><p>Say, thats neat Thomas Hobbes! Let's throw that into OlegDB, which I'll assume
-you have running on <code>localhost:8080</code>:</p><p><pre><code>
-$ curl -X POST -d '
+you have running on <code>localhost:8080</code>:</p><p><pre class="language-
+"><code>$ curl -X POST -d '
 > Man is distinguished, not only by his reason, but by this singular passion from
 > other animals, which is a lust of the mind, that by a perseverance of delight
 > in the continued and indefatigable generation of knowledge, exceeds the short
 > vehemence of any carnal pleasure.' http://localhost:8080/test
 無駄
 </code></pre></p><p>Just to do a quick test that it actually inserted (Hey, who knows, right?) let's
-curl it back out:</p><p><pre><code>
-$ curl localhost:8080/test
+curl it back out:</p><p><pre class="language-
+"><code>$ curl localhost:8080/test
 Man is distinguished, not only by his reason, but by this singular passion from
 other animals, which is a lust of the mind, that by a perseverance of delight
 in the continued and indefatigable generation of knowledge, exceeds the short
 vehemence of any carnal pleasure.
-</code></pre></p><p>Excellent, now lets fire up wrk, point it at that URL and see what happens:</p><p><pre><code>
-$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
+</code></pre></p><p>Excellent, now lets fire up wrk, point it at that URL and see what happens:</p><p><pre class="language-
+"><code>$ ./wrk -t8 -c400 -d30s http://localhost:8080/test
 Running 30s test @ http://localhost:8080/test
   8 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
@@ -100,8 +100,8 @@ Requests/sec:  35675.16
 Transfer/sec:     14.02MB
 </code></pre></p><p>Hey, <code>35,600</code> Requests/second. Not bad. Not bad at all. For fun, let's see how
 <a href=http://fallabs.com/kyototycoon/>Kyoto Tycoon</a> performs with the same data and
-conditions:</p><p><pre><code>
-$ ./wrk -t8 -c400 -d30s http://localhost:1978/test
+conditions:</p><p><pre class="language-
+"><code>$ ./wrk -t8 -c400 -d30s http://localhost:1978/test
 Running 30s test @ http://localhost:1978/test
   8 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
