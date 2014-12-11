@@ -28,17 +28,12 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
     <body>
         <header>
             <div class="grid grid-pad">
-                <div id="logo_col" class="col-1-12">
-                    <div class="content">
-                        <img src="/static/img/olegdb_logo_compact.svg">
-                    </div>
-                </div>
                 <div id="olegdb_base_link" class="col-4-12">
                     <div class="content mobile_hide">
                         <h1><a href="/">OlegDB</a></h1>
                     </div>
                 </div>
-                <div id="right_side_nav" class="col-6-12">
+                <div id="right_side_nav" class="col-8-12">
                     <div class="pull-right content">
                         <ul>
                             <li class="mobile_show"><b><a href="/">OlegDB</a></b>
@@ -59,7 +54,13 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <p>Please send comments, corrections and angry letters to <a href="mailto:shithouse@goatse.cx">Quinlan Pfiffer.</a></p>
                 <h1>OlegDB</h1>
                 <ul>
-<li><a href="#overview">Overview</a><ul></ul></li>                </ul>
+<a href="#overview">General Overview</a>
+<ul>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#getting_started">Getting Started</a></li>
+    <li><a href="#wtf">What the hell is up with your responses?</a></li>
+</ul>
+                </ul>
                 <h1>liboleg</h1>
                 <ul>
                     <li>
@@ -95,7 +96,97 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
                 <ul id="olegdb_versions">
 <li><a href="/docs/0.1.0/en/documentation.html">0.1.0/</a></li><li><a href="/docs/0.1.1/en/documentation.html">0.1.1/</a></li><li><a href="/docs/0.1.2/en/documentation.html">0.1.2/</a></li><li><a href="/docs/0.1.3/en/documentation.html">0.1.3/</a></li><li><a href="/docs/0.1.4/en/documentation.html">0.1.4/</a></li><li><a href="/docs/0.1.5/en/documentation.html">0.1.5/</a></li>                </ul>
             </div>
-<div class="doc_chunk"><h2 class="perma" id="overview">Overview <a href="#overview">&para;</a></h2></div>            <h1>liboleg</h1>
+<div class="doc_chunk">
+    <h2 class="perma" id="overview">General Overview <a href="#overview">&para;</a></h2>
+    <p>OlegDB is a concurrent, pretty fast K/V hash-table with an Erlang frontend. It uses the <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmur3</a> hashing algorithm to hash and index keys. We chose Erlang for the server because it's functional, uses the actor model and the pattern matching is ridiculous.</p>
+
+    <h3 class="perma" id="installation">Installation <a href="#installation">&para;</a></h3>
+    <p>Installing OlegDB is pretty simple, you only need a POSIX compliant system, make, gcc/clang (thats all we've tested) and Erlang. You'll also need the <a href="downloads.html">source code for Oleg.</a></p>
+    <p>Once you have your fanciful medley of computer science tools, you're ready to dive into a lengthy and complex process of program compilation. Sound foreboding? Have no fear, people have been doing this for <a href="http://en.wikipedia.org/wiki/Make_(software)">at least a quarter of a century.</a></p>
+    <p>I'm going to assume you've extracted the source tarball into a folder called <code>~/src/olegdb</code> and that you haven't <code>cd</code>'d into it yet. Lets smash some electrons together:</p>
+    <pre><code>$ cd ~/src/olegdb
+$ make
+$ sudo make install
+</code></pre>
+    <p>If you really wanted to, you could specify a different installation directory. The default is <code>/usr/local</code>. You can do this by setting <code>PREFIX</code></p>
+    <pre><code>$ sudo make PREFIX=/usr/ install</code></pre>
+    <p>Actually running OlegDB and getting it do stuff after this point is trivial, if your installation prefix is in your PATH you should just be able to run something like the following:</p>
+    <pre><code>$ olegdb &lt;data_directory&gt;</code></pre>
+    <p>...where <code>&lt;data_directory&gt;</code> is the place you want Oleg to store persistent data information. Make it <code>/dev/null</code> if you want, I don't care. You can also specify IP/port information from the commandline:<p>
+    <pre><code>$ olegdb /tmp 1978 #Starts OlegDB listening on port 1978
+$ olegdb /tmp 0.0.0.0 1337 #Starts OlegDB listening on the 0.0.0.0 IP, with port 1337
+$ olegdb /tmp data.shithouse.tv 666 #Hostnames work too</code></pre>
+
+    <h3 class="perma" id="getting_started">Getting Started <a href="#getting_started">&para;</a></h3>
+    <p>Communicating with OlegDB is done via a pretty simple REST interface. You POST to create/update records, GET to retrieve them, DELETE to delete, and HEAD to get back some information about them. Probably.</p>
+    <p>For example, to store the value <span>Raphael</span> into the named database <span>turtles</span> under the key <span>red</span> you could use something like the following:</p>
+    <pre><code>$ curl -X POST -d 'Raphael' http://localhost:8080/turtles/red</code></pre>
+    <p>Retrieving data is just as simple:</p>
+    <pre><code>$ curl http://localhost:8080/turtles/red</code></pre>
+    <p>Deleting keys can be done by using DELETE:</p>
+    <pre><code>$ curl -X DELETE http://localhost:8080/turtles/red</code></pre>
+    <p>You can also tell Oleg what the Content-Type is:</p>
+    <pre><code>$ curl -X POST -H "Content-Type: text/html" -d '&lt;p&gt;Raphael&lt;/p&gt;' http://localhost:8080/turtles/red</code></pre>
+    <p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the <b>X-OlegDB-use-by</b> header to a <b>UTC</b> POSIX timestamp .
+    <pre><code>
+$ curl -X POST \
+-H "X-OlegDB-use-by: $(date +%s)" \
+-H "Content-Type: application/json" \
+-d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
+&gt; POST /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt; X-OlegDB-use-by: 1394323192
+&gt; Content-Type: application/json
+&gt; Content-Length: 27
+&gt; 
+* upload completely sent off: 27out of 27 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Type: text/plain
+&lt; Connection: close
+&lt; Content-Length: 7
+&lt;
+無駄
+
+$ curl -v http://localhost:8080/turtles/Johnny
+&gt; GET /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 404 Not Found
+&lt; Status: 404 Not Found
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 26
+&lt; Connection: close
+&lt; Content-Type: text/plain
+&lt;
+These aren't your ghosts.
+</code></pre>
+    <p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We used the bash command <code>`date +%s`</code> which returns a timestamp. Then, immediately trying to access the key again results in a 404, because the key expired.</p>
+    <p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p>
+    <pre><code>
+$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
+&gt; HEAD /turtles/Johnny HTTP/1.1
+&gt; User-Agent: curl/7.35.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+* Server OlegDB/fresh_cuts_n_jams is not blacklisted
+&lt; Server: OlegDB/fresh_cuts_n_jams
+&lt; Content-Length: 0
+&lt; Content-Type: application/json
+&lt; Expires: 1395368972
+&lt;
+</code></pre>
+
+    <h3 class="perma" id="wtf">What the hell is up with your responses? <a href="#wtf">&para;</a></h3>
+    <p>We have fun with our HTTP responses. Really all you need is the HTTP status code to see if something worked or not. 404 means not found, 200 means the operation completed successfully, 500 if something bad happened, etc.</p>
+</div>
+            <h1>liboleg</h1>
 
             <div class="language-c doc_chunk">
                 <h2 class="perma" id="macros">Macros <a href="#macros">&para;</a></h2>

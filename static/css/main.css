@@ -1,8 +1,6 @@
 /* Global */
 html {
-    color: #444;
-    font-family: 'Lato', sans-serif;
-    background-color: #F5EADC;
+    font-family: sans-serif;
 }
 .mobile_show {
     display: none;
@@ -11,14 +9,13 @@ html {
     background-color: #FFF;
 }
 a {
-    text-decoration: none;
-    color: #3570C3;
+    color: #3498db;
 }
 header h1 a {
     vertical-align: middle;
 }
 a:hover {
-    color: #B14C6D;
+    color: #217DBB;
 }
 #logo_col {
 }
@@ -28,16 +25,10 @@ a:hover {
 header {
     padding-bottom: 1em;
 }
-header a, footer a {
-    color: #510922;
-}
 header img {
     display: inline;
     width: 4em;
     margin-right: 2em;
-}
-header, footer {
-    background-color: #F5EADC;
 }
 header ul, footer ul {
     list-style: none;

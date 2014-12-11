@@ -1,3 +1,7 @@
+.index_oleg_logo {
+    margin: 0 auto;
+    display: block;
+}
 .oleg_logo {
     margin: 0 auto;
     width: 16em;
@@ -18,21 +22,15 @@
     text-align: right;
 }
 #fading {
-    color: #F09E3C;
-    /* background-color: #F5EADC; */
+    background-color: #F6F6F6;
     min-height: 256px;
     height: 600px;
     position: relative;
-    background: url("/static/img/bg.jpg");
-    background-size: cover;
     padding-top: 100px;
+    padding-bottom: 2em;
 }
-/*#fading div.grid {
-    position: absolute;
-    left: 10%;
-    top: 30%;
-}*/
 #fading h2, #fading h1 {
+    vertical-align: middle;
     font-weight: normal;
     display: inline;
 }

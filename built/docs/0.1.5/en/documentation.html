@@ -28,17 +28,12 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
     <body>
         <header>
             <div class="grid grid-pad">
-                <div id="logo_col" class="col-1-12">
-                    <div class="content">
-                        <img src="/static/img/olegdb_logo_compact.svg">
-                    </div>
-                </div>
                 <div id="olegdb_base_link" class="col-4-12">
                     <div class="content mobile_hide">
                         <h1><a href="/">OlegDB</a></h1>
                     </div>
                 </div>
-                <div id="right_side_nav" class="col-6-12">
+                <div id="right_side_nav" class="col-8-12">
                     <div class="pull-right content">
                         <ul>
                             <li class="mobile_show"><b><a href="/">OlegDB</a></b>
@@ -129,8 +124,8 @@ the key <code>red</code> you could use something like the following:</p><p><pre 
 "><code>$ curl http://localhost:8080/turtles/red
 </code></pre></p><p>Deleting keys can be done by using DELETE:</p><p><pre class="language-
 "><code>$ curl -X DELETE http://localhost:8080/turtles/red
-</code></pre></p><p>OlegDB supports lazy key expiration. You can specify an expiration date by setting
-the <code>X-OlegDB-use-by</code> header to a <strong>UTC</strong> POSIX timestamp.</p><p><pre class="language-
+</code></pre></p><p>OlegDB supports lazy key expiration. You can specify an expiration date by setting the
+<code>X-OlegDB-use-by</code> header to a *UTC* POSIX timestamp.</p><p><pre class="language-
 "><code>$ curl -X POST \
 -H "X-OlegDB-use-by: $(date +%s)" \
 -d '{turtle: "Johnny", age: 34}' http://localhost:8080/turtles/Johnny
@@ -166,7 +161,7 @@ the <code>X-OlegDB-use-by</code> header to a <strong>UTC</strong> POSIX timestam
 &lt;
 These aren't your ghosts.
 </code></pre></p><p>As you can hopefully tell, the POST succeeds and a 200 OK is returned. We
-used the bash command date +%s which returns a timestamp. Then, immediately
+used the bash command <code>date +%s</code> which returns a timestamp. Then, immediately
 trying to access the key again results in a 404, because the key expired.</p><p>If you want to retrieve the expiration date of a key, you can do so by sending HEAD:</p><p><pre class="language-
 "><code>$ curl -v -X HEAD http://localhost:8080/turtles/Johnny
 &gt; HEAD /turtles/Johnny HTTP/1.1
