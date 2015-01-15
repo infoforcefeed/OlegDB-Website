@@ -19,6 +19,7 @@ BASE_CONTEXT = { "questions":
             , "Are you guys CS 100 students?"
             , "What sets OlegDB apart from Leading NoSQL Data Solution X&trade;?"
             , "What other projects do you like?"
+            , "When I upload a large file via curl, it comes back different. What gives?"
             ],
             "answers":
             [ "No. We use this everyday for all of our projects."
@@ -39,6 +40,7 @@ BASE_CONTEXT = { "questions":
                 <li><a href="https://github.com/shuttler/nessDB">NessDB</a></li>
             </ul>
             """
+            , "Don't use curl to upload files into Oleg. Use something else. See <a href=\"https://github.com/infoforcefeed/OlegDB/issues/26\">here.</a>"
             ],
         "ALL_DOWNLOADS": [
                 { "codename": "Proven LAMP-Stack Event",
