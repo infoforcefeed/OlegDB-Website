@@ -43,6 +43,12 @@ BASE_CONTEXT = { "questions":
             , "Don't use curl to upload files into Oleg. Use something else. See <a href=\"https://github.com/infoforcefeed/OlegDB/issues/26\">here.</a>"
             ],
         "ALL_DOWNLOADS": [
+                { "codename": "Spider Marketplace",
+                  "version": "v.0.1.5",
+                  "release_date": "2015/01/25",
+                  "md5": "d1312d845f0d3eab5ff559f029ab49a3",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.5.tar.gz",
+                },
                 { "codename": "Proven LAMP-Stack Event",
                   "version": "v.0.1.4",
                   "release_date": "2014/09/09",

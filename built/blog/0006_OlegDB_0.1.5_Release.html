@@ -10,16 +10,20 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
 -->
 <html>
     <head>
-        <title>OlegDB -     About
-
+        <title>OlegDB - OlegDB 0.1.5 "Spider Marketplace" Released
 </title>
         <meta charset="UTF-8">
         <meta name=viewport content="width=device-width, initial-scale=1">
-        
+        <meta name="description" content="Technical blog and propoganda for OlegDB">
+
+
         <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
         <link rel="stylesheet" media="all" href="/static/css/main.css" />
-        
+        <link rel="stylesheet" href="/static/css/blog.css" />
+<link rel="stylesheet" href="/static/css/prism.css"/>
+
+
         <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
     </head>
     <body>
@@ -50,14 +54,47 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
             </div> <!-- Grid -->
         </header>
         <div id="main_container">
-                <p></p>
+            <div class="blog_container">
+<div class="grid grid-pad"><div class="col-1-1"><div class="language-bash content"><h2 class="post_title">OlegDB 0.1.5 "Spider Marketplace" Released</h2><p><span class="author_name">2015-01-25 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0006_OlegDB_0.1.5_Release.html#disqus_thread">Comments</a></span></p><p>With an exciting new year comes and exciting new release of OlegDB! We have a
+sweet suite of backwards-compatible (kind of) changes in store for all 12 of you
+using this mayo jar of a database! Including but not limited to:</p><p><ul><li>Removed Erlang in favor of Go</li><li>Transactions! Sort of.</li><li><a href=https://github.com/infoforcefeed/mayo-workbench>Mayo Workbench</a></li><li>Bug-fixes</li></ul>
+<h2>Go vs. Erlang</h2>
+The reasons we're not using Erlang anymore are pretty simple:</p><p><ul><li><a href=https://en.wikipedia.org/wiki/Bus_factor>Bus-factor</a></li><li>The Port Driver</li><li>Easier to find Go contributors</li><li>Shipping a binary is infinitely easier than handling a VM</li><li>Unix signal handling</li></ul></p><p>Expect a full blog post elaborating on these reasons, but for now just know that
+it was easier for us to switch to a Go + C stack rather than an Erlang + C
+one.
+<h2>Transactions</h2></p><p>In this release we've laid the foundation for full ACID transactions in OlegDB.
+They're not exposed via the API yet, and they're <a href=https://github.com/infoforcefeed/OlegDB/issues/140>not fully ACID yet</a> either, but
+the mechanism in place is much more durable than what we were doing before.</p><p>Each internal API call is using transactions, so the chance that you'll get your
+data back out of OlegDB is the highest it's ever been!
+<h2>Mayo Workbench</h2></p><p>Mayo workbench is a tool that came <a href=https://twitter.com/oleg_dbooks/status/463347397696176128>from our bot</a>
+which is how we do most of our brainstorming. It's a simple CRUD application for
+viewing and (soon) modifying your data. Check it out, it's a no-dependencies C
+project. Just point it at your OlegDB instance and start clicking around. I
+might eventually incorporate it into the official repository, but for now it's a
+seperate thing.
+<h2>File Deltas</h2>
+<pre class="language-
+"><code>$ git diff --stat v.0.1.4 HEAD
+...
+70 files changed, 6479 insertions(+), 6340 deletions(-)
+</code></pre></p><p></p></div><div id="disqus_thread"></div><script type="text/javascript">var disqus_shortname = 'olegdbblog';(function() {var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);})();</script><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></div></div></div>
 
 
         </div>
         <div id="busted_pixel">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUA/wA0XsCoAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==">
         </div>
-        
+            <script type="text/javascript">
+    var disqus_shortname = 'olegdbblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+
+
     <footer>
         <div class="grid grid-pad">
             <div class="col-1-2">
@@ -82,6 +119,8 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
       window.heap=window.heap||[],heap.load=function(t,e){window.heap.appid=t,window.heap.config=e;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+t+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(t){return function(){heap.push([t].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
       heap.load("2475063379");
     </script>
-    
+    <script type="text/javascript" src="/static/js/prism.js"></script>
+
+
     </body>
 </html>
