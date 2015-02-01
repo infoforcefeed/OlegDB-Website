@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--
+  ____ ____  _____ ____  _   _ _   _ _   _ _  _______ _
+ / ___|  _ \| ____/ ___|| | | | | | | \ | | |/ / ____| |
+| |  _| |_) |  _| \___ \| |_| | | | |  \| | ' /|  _| | |
+| |_| |  _ <| |___ ___) |  _  | |_| | |\  | . \| |___| |___
+ \____|_| \_\_____|____/|_| |_|\___/|_| \_|_|\_\_____|_____|
+
+Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
+-->
+<html>
+    <head>
+        <title>OlegDB - More on Go vs. Erlang
+</title>
+        <meta charset="UTF-8">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name="description" content="Technical blog and propoganda for OlegDB">
+
+
+        <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" media="all" href="/static/css/simplegrid.css" />
+        <link rel="stylesheet" media="all" href="/static/css/main.css" />
+        <link rel="stylesheet" href="/static/css/blog.css" />
+<link rel="stylesheet" href="/static/css/prism.css"/>
+
+
+        <link rel="stylesheet" media="(max-width: 800px)" href="/static/css/mobile.css" />
+    </head>
+    <body>
+        <header>
+            <div class="grid grid-pad">
+                <div id="logo_col" class="col-1-12">
+                    <div class="content">
+                        <img src="/static/img/olegdb_logo_compact.svg">
+                    </div>
+                </div>
+                <div id="olegdb_base_link" class="col-4-12">
+                    <div class="content mobile_hide">
+                        <h1><a href="/">OlegDB</a></h1>
+                    </div>
+                </div>
+                <div id="right_side_nav" class="col-6-12">
+                    <div class="pull-right content">
+                        <ul>
+                            <li class="mobile_show"><b><a href="/">OlegDB</a></b>
+                            <li><a href="/blog.html">Blog</a></li>
+                            <li><a href="/downloads.html">Downloads</a></li>
+                            <li><a href="/faq.html">FAQ</a></li>
+<li><a href="/docs/0.1.6/en/documentation.html">Docs</a></li>                            <li><a href="/community.html">Community</a></li>
+                            <li><a id="git_icon" href="https://github.com/infoforcefeed/OlegDB"></a></li>
+                        </ul>
+                    </div> <!-- Content -->
+                </div> <!-- right_side_nav -->
+            </div> <!-- Grid -->
+        </header>
+        <div id="main_container">
+            <div class="blog_container">
+<div class="grid grid-pad"><div class="col-1-1"><div class="language-bash content"><h2 class="post_title">More on Go vs. Erlang</h2><p><span class="author_name">2015-01-31 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0007_More_on_Go_vs_Erlang.html#disqus_thread">Comments</a></span></p><p>During our most recent episode of OlegDB muckery, I glossed over how we migrated
+from <a href=https://olegdb.org/blog/0006_OlegDB_0.1.5_Release.html>Go to Erlang for the latest release.</a>
+I also promised that I would go over in more detail why we switched and what the
+benefit was, even if our lines added/removed was about the same.</p><p>The first thing I would like to clarify is that OlegDB is <strong>not</strong> primarily written in Go,
+nor was it primarily written in Erlang. OlegDB is, and will always be, a giant C
+hairball. I say hairball with the fondest conotations a neurotic developer can
+conjure up. It seems many people were confused about this concept, so I will
+repeat: We did not <strong>rewrite</strong> OlegDB in Go, we rewrote the communication later
+from Erlang to Go.</p><p>So to go over why we switched, I'll elaborate on the reasons I gave last time in more
+detail:</p><p><ul><li>Bus-factor</li><li>The Port Driver</li><li>Easier to find Go contributors</li><li>Shipping a binary is infinitely easier than handling a VM</li><li>Unix signal handling</li></ul>
+<h2>Bus Factor</h2></p><p>This is not Erlang's fault, it's completely mine. In the circles the OlegDB devs
+run in, I push kind of a tyrannical <a href=http://qp-nodeps.shithouse.tv/>no dependencies</a>
+policy which results in a lot of reinvented wheels. Because of this, I <a href=https://github.com/qpfiffer/mttp>wrote my
+own HTTP server.</a> I had only
+recently learned Erlang, and ignored a lot of best practices.</p><p>There are no OTP fundamentals, no dialyzer type checks, or tests. This made it kind of a mess, and
+it doesn't help that everyone I talk to is scared to death of Erlang syntax for
+some reason. So it was really just me maintaining this Erlang code, which made
+it kind of a liability. Luckily <a href=http://friends.shithouse.tv/>we don't have any users so it's not really an issue.</a>
+<h2>The Port Driver</h2>
+Just <a href=https://github.com/infoforcefeed/OlegDB/blob/204779fa12334316e3c832a6881baa9b5cc43912/c_src/port_driver.c>look at this bad boy.</a>
+Thats 620 lines of weird looking C used to talk to Erlang. Those 620 lines took
+a <a href=http://qpfiffer.com/posts/2014-02-10-Erlang_port_drivers>long time to figure out,</a> and even
+then half of the callbacks in the <a href=https://github.com/infoforcefeed/OlegDB/blob/204779fa12334316e3c832a6881baa9b5cc43912/c_src/port_driver.c#L592>ErlDrvEntry struct aren't used</a>.
+Theres a lot of weird serialization that has to occur between the C and Erlang layers that isn't always
+decipherable. Most people I talked to about the port driver just looked at the
+code as one big black box of complexity. I guess this is probably my fault as
+the completely fallible programmer.</p><p>I could've gone with Erlang <a href=http://www.erlang.org/doc/tutorial/nif.html>NIFs</a>
+but those are designed for short, stateless, side-effectless computation which
+is basically the opposite of a database. Port drivers remain the fastest way to
+interface with foreign libraries.</p><p>The Go FFI stuff just <a href=https://github.com/infoforcefeed/OlegDB/blob/master/frontend/goleg/wrapper.go>makes more sense.</a>
+You have a one-to-one mapping between C functions, types, calls, etc. that make
+it really easy and readable.</p><p>I've used other FFI stuff, and Erlang's FFI solutions are definitely not my
+favorite. I would love to know how others are using the port driver
+interconnectivity in Erlang to see some good examples.
+<h2>Go Contributors</h2></p><p>Maybe this is just the info-bubble I find myself in, but I have more Gopher
+friends than Erlang friends. Since it's imperative and the syntax is mostly
+familiar to people, I guess that makes it more open.</p><p>When your project is mayonnaise themed, you take what you can get.
+<h2>Shipping a Binary</h2></p><p>I would rather ship a binary rather than beam files any day. I find it much easier to
+ship plain old C/Go source code around than Erlang code that depends on the the
+"ei.h" header, which apparently isn't even compiled <a href=https://gist.github.com/kyleterry/15b9cb23f3dfca4d8c12>for the right architecture
+on OS X</a>. It takes
+some real <a href=https://github.com/infoforcefeed/OlegDB/blob/d3b9f1ed5e8b60427f5285cc2790020c38684408/Makefile#L18>witches brew</a>
+to properly find, include and link the headers. I could never get these to link
+properly on OS X.
+<h2>Unix Signal Handling</h2></p><p>This was really what killed me. Erlang has this idea that all programs are
+running in the VM together, on a seperate plane of existance than userland. You
+can't just send a SIGTERM to your program and send events based on that.
+Instead you have to send signals to the running Erlang shell, which you tell
+to <a href=http://erlang.org/doc/man/erl.html#id165878>ignore them</a>
+with <code>+Bi</code>. Then Bash can catch them, send signals via a <a href=https://github.com/infoforcefeed/OlegDB/blob/204779fa12334316e3c832a6881baa9b5cc43912/run_server.sh#L10>new Erlang shell</a>
+telling your program to halt and cleanup.</p><p>All of this makes it a nightmare to deal with, which is why some of the bigger
+Erlang programs (<a href=http://www.rabbitmq.com/man/rabbitmqctl.1.man.html>RabbitMQ</a>, <a href=http://www.actordb.com/docs-getstarted.html#run>ActorDB</a>)
+use <code>ctl</code> scripts that do this sort of thing for you. If you want to have some
+fun, peruse the CouchDB init script sometime.
+<h2>Conclusions</h2></p><p>Erlang is great. I love it. I'd much rather create a project in Erlang than in
+Go, but it's not <a href=https://github.com/infoforcefeed/OlegDB/graphs/contributors>all about me,</a> so I made some
+concessions. The next time, I'll probably follow the
+guidelines:</p><p><ul><li>Listen to the community. OTP, <code>erlang.mk</code>, Rebar, everything.</li><li>Erlang should be the only thing in the project. No weird dependencies, Erlang stands strong alone. See Riak, CouchDB, RabbitMQ.</li><li>Read <a href=http://www.erlang-in-anger.com/>Erlang in Anger</a> and then read it again to find out what not to do.</li></ul></p><p>I would really love to see people talking more about what they've done with the
+port drivers, NIFs, BIFs, all that stuff. Spelunking through the <a href=https://github.com/mochi/mochiweb>Mochi webserver</a>
+source code to figure out that acceptor pools are a thing was really fun! The
+Erlang community really needs more visibility. For now we'll stick to Go and C.</p><p></p></div><div id="disqus_thread"></div><script type="text/javascript">var disqus_shortname = 'olegdbblog';(function() {var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);})();</script><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></div></div></div>
+
+
+        </div>
+        <div id="busted_pixel">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUA/wA0XsCoAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==">
+        </div>
+            <script type="text/javascript">
+    var disqus_shortname = 'olegdbblog';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+
+
+    <footer>
+        <div class="grid grid-pad">
+            <div class="col-1-2">
+                <div class="content">
+                    <ul>
+                        <li>&copy; Copyright 2014, <a href="http://qpfiffer.com/">Quinlan Pfiffer</a>, <a href="http://kyte.io/">Kyle Terry</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-1-2">
+                <div class="pull-right content">
+                    <ul>
+                        <a href="https://heapanalytics.com/?utm_source=badge"><img style="width:108px;height:41px" src="//heapanalytics.com/img/badgeLight.png" alt="Heap - iOS and Web Analytics" /></a>
+                        <li><a href="http://www.redbubble.com/people/qpfiffer/works/11380090-olegdb-graphics">Merch</a></li>
+                        <li><a href="/credits.html">Credits</a></li>
+                        <li>Contact: <a href="mailto:shithouse@goatse.cx">shithouse@goatse.cx</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript">
+      window.heap=window.heap||[],heap.load=function(t,e){window.heap.appid=t,window.heap.config=e;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+t+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(t){return function(){heap.push([t].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
+      heap.load("2475063379");
+    </script>
+    <script type="text/javascript" src="/static/js/prism.js"></script>
+
+
+    </body>
+</html>
