@@ -5,7 +5,7 @@ date:2015-01-31
 ---
 
 During our most recent episode of OlegDB muckery, I glossed over how we migrated
-from [Go to Erlang for the latest release.](https://olegdb.org/blog/0006_OlegDB_0.1.5_Release.html)
+from [Erlang to Go for the latest release.](https://olegdb.org/blog/0006_OlegDB_0.1.5_Release.html)
 I also promised that I would go over in more detail why we switched and what the
 benefit was, even if our lines added/removed was about the same.
 
@@ -13,7 +13,7 @@ The first thing I would like to clarify is that OlegDB is **not** primarily writ
 nor was it primarily written in Erlang. OlegDB is, and will always be, a giant C
 hairball. I say hairball with the fondest conotations a neurotic developer can
 conjure up. It seems many people were confused about this concept, so I will
-repeat: We did not **rewrite** OlegDB in Go, we rewrote the communication later
+repeat: We did not **rewrite** OlegDB in Go, we rewrote the communication layer
 from Erlang to Go.
 
 So to go over why we switched, I'll elaborate on the reasons I gave last time in more

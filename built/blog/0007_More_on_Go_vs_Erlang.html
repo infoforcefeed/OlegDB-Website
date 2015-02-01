@@ -56,13 +56,13 @@ Proudly generated with GRESHUNKEL, a static site generator for the dead inside.
         <div id="main_container">
             <div class="blog_container">
 <div class="grid grid-pad"><div class="col-1-1"><div class="language-bash content"><h2 class="post_title">More on Go vs. Erlang</h2><p><span class="author_name">2015-01-31 by Quinlan Pfiffer</span><span class="comment_count"><a href="/blog/0007_More_on_Go_vs_Erlang.html#disqus_thread">Comments</a></span></p><p>During our most recent episode of OlegDB muckery, I glossed over how we migrated
-from <a href=https://olegdb.org/blog/0006_OlegDB_0.1.5_Release.html>Go to Erlang for the latest release.</a>
+from <a href=https://olegdb.org/blog/0006_OlegDB_0.1.5_Release.html>Erlang to Go for the latest release.</a>
 I also promised that I would go over in more detail why we switched and what the
 benefit was, even if our lines added/removed was about the same.</p><p>The first thing I would like to clarify is that OlegDB is <strong>not</strong> primarily written in Go,
 nor was it primarily written in Erlang. OlegDB is, and will always be, a giant C
 hairball. I say hairball with the fondest conotations a neurotic developer can
 conjure up. It seems many people were confused about this concept, so I will
-repeat: We did not <strong>rewrite</strong> OlegDB in Go, we rewrote the communication later
+repeat: We did not <strong>rewrite</strong> OlegDB in Go, we rewrote the communication layer
 from Erlang to Go.</p><p>So to go over why we switched, I'll elaborate on the reasons I gave last time in more
 detail:</p><p><ul><li>Bus-factor</li><li>The Port Driver</li><li>Easier to find Go contributors</li><li>Shipping a binary is infinitely easier than handling a VM</li><li>Unix signal handling</li></ul>
 <h2>Bus Factor</h2></p><p>This is not Erlang's fault, it's completely mine. In the circles the OlegDB devs
