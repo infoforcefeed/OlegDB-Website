@@ -8,6 +8,7 @@ slogans = [
     "when determinism really isn't your thing.",
     "when JSON is holding you back.",
     "when you want to take a chance.",
+    "when you need to dog-food the kool-aid.",
     "when persistence means turning fsync on."
 ];
 function fade_change(element, text) {
