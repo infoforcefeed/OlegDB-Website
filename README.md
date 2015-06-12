@@ -15,11 +15,11 @@ tation. Neat!
 
 Installation
 ============
-````
+```
 git submodule init
 git submodule update
 ./build.py && ./deploy.sh
-````
+```
 
 Man that was easy.
 
