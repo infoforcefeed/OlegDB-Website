@@ -28,7 +28,7 @@ BASE_CONTEXT = { "questions":
             , "Yes, most definitely."
             , "Well, we're trend-setters. Clearly our way of accomplishing things just hasn't been accepted yet."
             , "We were. Never really made it past that."
-            , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments haved turned the project into a double-edged sword, ready to cut into anyone and anything."
+            , "With our stubborn dedication to quality, C and a lack of experience, we bring a unique perspective to an otherwise ugly and lacking marketplace. Arbitrary decisions, a lack of strong leadership and internal arguments have turned the project into a double-edged sword, ready to cut into anyone and anything."
             ,
             """ We like every flavor-of-the-week database. Here are a couple:
             <ul>
