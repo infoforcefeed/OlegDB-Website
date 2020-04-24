@@ -43,6 +43,12 @@ BASE_CONTEXT = { "questions":
             , "Don't use curl to upload files into Oleg. Use something else. See <a href=\"https://github.com/infoforcefeed/OlegDB/issues/26\">here.</a>"
             ],
         "ALL_DOWNLOADS": [
+                { "codename": "Meme Compliance",
+                  "version": "v.0.1.6",
+                  "release_date": "2020/04/23",
+                  "md5": "273bca944f5d445fe3dab2753be6a237",
+                  "tar_link": "https://github.com/infoforcefeed/OlegDB/archive/v.0.1.6.tar.gz",
+                },
                 { "codename": "Spider Marketplace",
                   "version": "v.0.1.5",
                   "release_date": "2015/01/25",
