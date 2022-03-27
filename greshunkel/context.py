@@ -190,7 +190,7 @@ def build_doc_context(default_context):
     output = subprocess.check_output("cd OlegDB && git tag --list", shell=True)
     default_context['docs'] = {}
     default_context['ALL_VERSIONS'] = []
-    versions = sorted(output.strip().split("\n"))
+    versions = sorted(output.decode().strip().split("\n"))
     versions.append("master")
 
     # Prepare a default documentation for versions pre 0.1.2
@@ -206,7 +206,7 @@ def build_doc_context(default_context):
     default_documentation_nav_html.close()
 
     for version in versions:
-        print "Checking out {}".format(version)
+        print("Checking out {}".format(version))
         cmd = "cd OlegDB && git checkout {} &> /dev/null".format(version)
         subprocess.check_output(cmd, shell=True)
         headers = ["oleg.h", "defs.h"]
@@ -216,7 +216,7 @@ def build_doc_context(default_context):
             try:
                 oleg_header = open(header_file)
             except IOError as e:
-                print e
+                print(e)
                 continue
 
             docstring_special = ["DEFINE", "ENUM", "STRUCT", "DESCRIPTION",

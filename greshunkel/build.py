@@ -84,7 +84,7 @@ def _render_loop(loop_obj, context):
     wombat = re.compile("xXx LOOP (?P<variable>[a-zA-S_]+) (?P<fancy_list>[a-zA-S_\$]+) xXx(?P<subloop>.*)xXx BBL xXx")
     shattered_loops = wombat.split(loop_str)
     if len(shattered_loops) != 1:
-        print "BEEP BEEP BEEP SUBLOOP DETECTED"
+        print("BEEP BEEP BEEP SUBLOOP DETECTED")
 
     i = 0
     for thing in context[loop_list]:
@@ -152,7 +152,7 @@ def parse_file(context, radical_file):
         elif "xXx LOOP " in stripped:
             variables = stripped.split("xXx")[1].strip().replace("LOOP ", "").split(" ")
             active_loops = active_loops + 1
-            print "We've entered timeskip {}!".format(variables[1])
+            print("We've entered timeskip {}!".format(variables[1]))
             if loop_stack is None:
                 loop_stack = {
                     "loop_depth": active_loops,
@@ -250,17 +250,17 @@ def main(context):
         post_meta = parse_file(context, BLOGPOST_FILE)
         _render_file(post_meta, context, output_filename="blog/" + post['built_filename'])
 
-    for vers,vers_context in context['docs'].iteritems():
+    for vers,vers_context in context['docs'].items():
         from greshunkel.context import DEFAULT_LANGUAGE
         # UGLY HACK YOU DUMB SHIT
-        for docinfo,docvalue in vers_context.iteritems():
+        for docinfo,docvalue in vers_context.items():
             context[docinfo] = docvalue
         desired_fname = './docs/{vers}/{lang}/{filename}'.format(
             vers=vers, lang=DEFAULT_LANGUAGE, filename=DOCUMENTATION_FILE)
         post_meta = parse_file(context, DOCUMENTATION_FILE)
         _render_file(post_meta, context, output_filename=desired_fname)
         # Clear out the context so we don't get issues
-        for docinfo,docvalue in vers_context.iteritems():
+        for docinfo,docvalue in vers_context.items():
             context[docinfo] = ""
 
     # BeCaUsE WhY NoT
