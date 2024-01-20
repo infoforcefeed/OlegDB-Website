@@ -210,7 +210,7 @@ def build_doc_context(default_context):
         cmd = "cd OlegDB && git checkout {} &> /dev/null".format(version)
         subprocess.check_output(cmd, shell=True)
         headers = ["oleg.h", "defs.h"]
-        headers = map(lambda x: "{}/{}".format(INCLUDE_DIR, x), headers)
+        headers = map(lambda x: "{}{}".format(INCLUDE_DIR, x), headers)
         version_context = {}
         for header_file in headers:
             try:
